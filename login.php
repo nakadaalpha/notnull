@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notnull</title>
+</head>
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: rgb(26, 26, 28);
+    }
+    
+    h1 {
+        text-align: center;
+    }
+
+    h3 {
+        text-align: center;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    .login-page {
+        padding: 10% 10% 10%;
+    }
+
+    .form {
+        position: relative;
+        z-index: 1;
+        background: rgb(26, 26, 28);
+        max-width: 80%;
+        margin: 0 auto 100px;
+        padding: 45px;
+        text-align: center;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.6), 0 5px 5px 0 rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+    }
+
+    .form h3 {
+        margin-top: -20px;
+        color: white;
+    }
+
+    .form input{
+        font-family: "Roboto", sans-serif;
+        background: black;
+        width: 90%;
+        border: 0;
+        margin: 0 0 15px;
+        padding: 18px;
+        box-sizing: border-box;
+        font-size: 14px;
+        border-radius: 20px;
+        color: whitesmoke;
+    }
+
+    .form input::placeholder{
+        color: whitesmoke;
+        opacity: 0.6;
+    }
+
+    .form button {
+        z-index: 2;
+        position: relative;
+        text-align: center;
+        box-sizing: border-box;
+        border-radius: 20px;
+        width: 90%;
+        padding: 19px;
+        border: 0;
+        font-weight: bold;
+        font-size: 15px;
+        background-color: grey;
+    }
+
+    .form button:hover {
+        background-color: whitesmoke;
+    }
+
+</style>
+
+<body>
+    <div class="login-page">
+        <div class="form">
+            <img src="maiden_angel.png" width="190px" height="190px" style="margin: -60px 0px 20px">
+            <h3>Login with notnull account</h3>
+            <form action="login_action.php" method="post">
+                <input type="text" placeholder="username" name="txtUsername">
+                <input type="password" placeholder="password" name="txtPassword">
+                <button>LOGIN</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
