@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Di sini terdapat isi</h1>
-</body>
-</html>
+<section>
+  <h1 class="text-cyan-400">Ini home</h1>
+  <h1>Ini home</h1>
+  <h1>Ini home</h1>
+  <h1>Ini home</h1>
+  <h1>Ini home</h1>
+  <h1>Ini home</h1>
+  <h1>Ini home</h1>
+</section>
