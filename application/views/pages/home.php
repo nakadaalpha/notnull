@@ -63,8 +63,6 @@
 </section>
 <!------ Hero Section End ------>
 
-<!------ Hero Section End------>
-
 
 
 <!------ Brand Selection Start ------>
