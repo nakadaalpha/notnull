@@ -1,6 +1,6 @@
 <!------ Hero Section Start ------>
 <section>
-  <img src="public/src/images/hero/notnull-hero.png" class="img-fluid" alt="Hero Image">
+  <img src="public/src/images/hero/notnull-hero.png" alt="Hero Image" width="100%">
   <div class="mt-5 mb-5">
     <div class="container">
       <div class="row">
