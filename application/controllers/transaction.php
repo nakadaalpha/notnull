@@ -3,13 +3,14 @@ class Transaction extends CI_Controller {
 
 public function __construct() {
     parent::__construct();
-    $this->load->model('Transaction_model');
+    $this->load->model('Mtransaction');
 }
 
 public function index() {
-    $data['transactions'] = $this->Transaction_model->get_all_transactions();
-    $this->load->view('transaction', $data);
-    $this->load->view('transaction');
+    $data['transactions'] = $this->Mtransaction->get_all_transactions();
+    $this->load->view('templates/header');
+    $this->load->view('transaction/index', $data);
+    $this->load->view('templates/footer');
 }
 
 public function create() {
