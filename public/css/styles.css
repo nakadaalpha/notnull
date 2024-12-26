@@ -61,7 +61,7 @@ body {
 
 .parent-H {
     width: 100%;
-    height: 300px;
+    height: max-content;
     overflow: hidden;
     position: relative;
     display: inline-block;
@@ -166,6 +166,10 @@ body {
 
 /* ----- Warehouse Page START ----- */
 
+.warehouse {
+    margin-top: -5vw;
+}
+
 .wrapper-car {
     margin-left: auto;
     margin-right: auto;
@@ -195,6 +199,10 @@ body {
 .wrapper-car:hover .child-car {
     box-shadow: 0 0 10px 0 rgba(54, 69, 79, 0.1), 0 0 0 0 rgba(54, 69, 79, 0.2);
     transform: scale(1.1);
+}
+
+.card-body {
+    background-color: transparent;
 }
 
 
