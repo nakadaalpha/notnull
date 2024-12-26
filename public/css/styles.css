@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
 }
 
 
@@ -28,7 +28,8 @@ body {
     border: 0;
     box-sizing: border-box;
     border-radius: 10px;
-    transition: all .5s;
+    transition: all 0.5s;
+    left: 0;
 }
 
 .navbar-icon {
@@ -40,6 +41,9 @@ body {
 }
 
 
+/* ----- Landing Page START ----- */
+
+
 /* ----- Hero Section ----- */
 
 .hero-bg {
@@ -47,7 +51,6 @@ body {
 }
 
 .wrapper-H {
-    text-align: center;
     margin-left: auto;
     margin-right: auto;
     position: relative;
@@ -68,20 +71,26 @@ body {
 
 .child-H {
     background-size: cover;
-    transition: all .5s;
+    transition: all 0.5s;
     position: relative;
     background-color: white;
 }
 
 .child-title-H {
-    bottom: 30px;
-    left: 10px;
+    bottom: 1vw;
+    left: 1vw;
     position: absolute;
     z-index: 10;
     color: black;
     font-weight: bold;
     font-size: 25px;
     text-align: left;
+}
+
+.car-price-card {
+    position: absolute;
+    bottom: 0.5vw;
+    left: 10px;
 }
 
 .wrapper-H:hover {
@@ -116,7 +125,7 @@ body {
     font-weight: bold;
 }
 
-.wrapper-BS {
+.wrapper-brand-Home {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
@@ -124,7 +133,7 @@ body {
     height: 100%;
 }
 
-.parent-BS {
+.parent-brand-Home {
     width: 100%;
     height: 350px;
     overflow: hidden;
@@ -134,13 +143,13 @@ body {
     margin: -10px;
 }
 
-.child-BS {
+.child-brand-Home {
     height: 100%;
-    transition: all .5s;
+    transition: all 0.5s;
     position: relative;
 }
 
-.child-title-BS {
+.child-title-Home {
     top: 30px;
     left: 10px;
     position: absolute;
@@ -152,7 +161,123 @@ body {
 }
 
 
+/* ----- Landing Page END ----- */
+
+
+/* ----- Warehouse Page START ----- */
+
+.wrapper-car {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    background-color: white;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.parent-car {
+    width: 100%;
+    max-height: max-content;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.child-car {
+    background-size: cover;
+    transition: all .5s;
+    position: relative;
+    background-color: white;
+}
+
+.wrapper-car:hover .child-car {
+    box-shadow: 0 0 10px 0 rgba(54, 69, 79, 0.1), 0 0 0 0 rgba(54, 69, 79, 0.2);
+    transform: scale(1.1);
+}
+
+
 /* Responsive Device */
+
+.dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+    /* Scroll jika banyak item */
+}
+
+.btn-outline-secondary {
+    font-weight: bold;
+}
+
+body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+}
+
+html {
+    height: -webkit-fill-available;
+}
+
+main {
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.dropdown-toggle {
+    outline: 0;
+}
+
+.btn-toggle {
+    padding: .25rem .5rem;
+    font-weight: 600;
+    color: var(--bs-emphasis-color);
+    background-color: transparent;
+}
+
+.btn-toggle:hover,
+.btn-toggle:focus {
+    color: rgba(var(--bs-emphasis-color-rgb), .85);
+    background-color: var(--bs-tertiary-bg);
+}
+
+.btn-toggle::before {
+    width: 1.25em;
+    line-height: 0;
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+    transition: transform .35s ease;
+    transform-origin: .5em 50%;
+}
+
+[data-bs-theme="dark"] .btn-toggle::before {
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+}
+
+.btn-toggle[aria-expanded="true"] {
+    color: rgba(var(--bs-emphasis-color-rgb), .85);
+}
+
+.btn-toggle[aria-expanded="true"]::before {
+    transform: rotate(90deg);
+}
+
+.btn-toggle-nav a {
+    padding: .1875rem .5rem;
+    margin-top: .125rem;
+    margin-left: 1.25rem;
+}
+
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+    background-color: var(--bs-tertiary-bg);
+}
+
+.scrollarea {
+    overflow-y: auto;
+}
 
 
 /* Tablet (<= 768px) */
