@@ -3,76 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction List</title>
+    <title>Transaction Form</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        .table thead th {
+        body {
             background-color: #f8f9fa;
         }
-        .action-buttons a {
-            margin-right: 5px;
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4 text-center">Transaction List</h1>
-        
-        <!-- Button to Add New Transaction -->
-        <div class="d-flex justify-content-between mb-3">
-            <a href="<?php echo site_url('transaction/create'); ?>" class="btn btn-primary">Add New Transaction</a>
-            <form method="GET" action="<?php echo site_url('transaction'); ?>" class="d-flex">
-                <input type="text" name="search" class="form-control me-2" placeholder="Search transactions..." value="<?php echo $this->input->get('search'); ?>">
-                <button type="submit" class="btn btn-outline-secondary">Search</button>
+        <h1 class="mb-4 text-center">Add New Transaction</h1>
+        <div class="form-container mx-auto">
+            <form action="<?php echo site_url('transaction/store'); ?>" method="POST">
+                <div class="mb-3">
+                    <label for="customer_id" class="form-label">Customer ID</label>
+                    <input type="text" class="form-control" id="customer_id" name="customer_id" placeholder="Enter Customer ID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="car_id" class="form-label">Car ID</label>
+                    <input type="text" class="form-control" id="car_id" name="car_id" placeholder="Enter Car ID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="transaction_date" class="form-label">Transaction Date</label>
+                    <input type="date" class="form-control" id="transaction_date" name="transaction_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter Amount" required>
+                </div>
+                <div class="mb-3">
+                    <label for="total_price" class="form-label">Total Price</label>
+                    <input type="text" class="form-control" id="total_price" name="total_price" placeholder="Enter Total Price" required>
+                </div>
+                <div class="mb-3">
+                    <label for="payment_method" class="form-label">Payment Method</label>
+                    <select class="form-select" id="payment_method" name="payment_method" required>
+                        <option value="" selected disabled>Select Payment Method</option>
+                        <option value="cash">Cash</option>
+                        <option value="credit_card">Credit Card</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="" selected disabled>Select Status</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
             </form>
-        </div>
-
-        <!-- Transaction Table -->
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Customer ID</th>
-                        <th>Car ID</th>
-                        <th>Transaction Date</th>
-                        <th>Amount</th>
-                        <th>Total Price</th>
-                        <th>Payment Method</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($transactions)): ?>
-                        <?php foreach ($transactions as $transaction): ?>
-                            <tr>
-                                <td><?php echo $transaction['transaction_id']; ?></td>
-                                <td><?php echo $transaction['customer_id']; ?></td>
-                                <td><?php echo $transaction['car_id']; ?></td>
-                                <td><?php echo $transaction['transaction_date']; ?></td>
-                                <td><?php echo number_format($transaction['amount']); ?></td>
-                                <td><?php echo number_format($transaction['total_price']); ?></td>
-                                <td><?php echo ucfirst($transaction['payment_method']); ?></td>
-                                <td>
-                                    <span class="badge <?php echo $transaction['status'] == 'completed' ? 'bg-success' : 'bg-warning'; ?>">
-                                        <?php echo ucfirst($transaction['status']); ?>
-                                    </span>
-                                </td>
-                                <td class="action-buttons">
-                                    <a href="<?php echo site_url('transaction/edit/' . $transaction['transaction_id']); ?>" class="btn btn-sm btn-warning">Edit</a>
-                                    <a href="<?php echo site_url('transaction/delete/' . $transaction['transaction_id']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this transaction?');">Delete</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="9" class="text-center">No transactions found.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
         </div>
     </div>
 
