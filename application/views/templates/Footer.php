@@ -12,7 +12,7 @@
 
 <section>
     <!-- Footer Start -->
-<footer class="bg-light pt-5 pb-4">
+    <footer class="bg-light pt-5 pb-4">
   <div class="container text-center text-md-start">
   <hr class="py-4">
     <div class="row">
@@ -27,25 +27,25 @@
       <!-- Navigasi Links -->
       <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
         <h5 class="text-uppercase mb-4 font-weight-bold">Navigasi</h5>
-        <p><a href="#" class="text-decoration-none">Beranda</a></p>
-        <p><a href="catalog" class="text-decoration-none">Katalog</a></p>
-        <p><a href="#" class="text-decoration-none">Tentang Kami</a></p>
-        <p><a href="#" class="text-decoration-none">Kontak</a></p>
+        <p><a href="#" class="text-decoration-none footer-link">Beranda</a></p>
+        <p><a href="catalog" class="text-decoration-none footer-link">Katalog</a></p>
+        <p><a href="#" class="text-decoration-none footer-link">Tentang Kami</a></p>
+        <p><a href="#" class="text-decoration-none footer-link">Kontak</a></p>
       </div>
 
       <!-- Media Sosial -->
       <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
         <h5 class="text-uppercase mb-4 font-weight-bold">Ikuti Kami</h5>
-        <a href="#" class="me-3">
+        <a href="#" class="footer-link me-3">
           <i class="bi bi-facebook" style="font-size: 1.5rem;"></i>
         </a>
-        <a href="#" class="me-3">
+        <a href="#" class="footer-link me-3">
           <i class="bi bi-instagram" style="font-size: 1.5rem;"></i>
         </a>
-        <a href="#" class="me-3">
+        <a href="#" class="footer-link me-3">
           <i class="bi bi-twitter" style="font-size: 1.5rem;"></i>
         </a>
-        <a href="#" class="me-3">
+        <a href="#" class="footer-link me-3">
           <i class="bi bi-youtube" style="font-size: 1.5rem;"></i>
         </a>
       </div>
@@ -60,6 +60,7 @@
     </div>
   </div>
 </footer>
+
 <!-- Footer End -->
 
 </section>
