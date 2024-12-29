@@ -12,11 +12,6 @@ public function index() {
     $this->load->view('transaction/index', $data);
     $this->load->view('templates/footer');
 }
-public function save_transaction($id) {
-    $this->load->view('templates/header');
-    $this->load->view('transaction/save_transaction', $data);
-    $this->load->view('templates/footer');
-}
 
 public function create() {
     $this->load->library('form_validation');
@@ -45,6 +40,12 @@ public function create() {
         $this->Transaction_model->insert_transaction($data);
         redirect('transaction');
     }
+}
+
+public function save_transaction() {
+    $this->load->view('templates/header');
+    $this->load->view('transaction/save_transaction');
+    $this->load->view('templates/footer');
 }
 
 public function delete($id) {
