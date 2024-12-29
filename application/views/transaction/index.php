@@ -32,6 +32,7 @@
 <body>
     <div class="form-container">
         <h1>Add Transaction</h1>
+        <?php echo validation_errors(); ?>
         <form action="<?php echo site_url('transaction/create'); ?>" method="POST">
             <div class="mb-3">
                 <input type="text" class="form-control" name="customer_id" placeholder="Customer ID" required>

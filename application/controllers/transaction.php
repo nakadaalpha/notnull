@@ -4,6 +4,7 @@ class Transaction extends CI_Controller {
 public function __construct() {
     parent::__construct();
     $this->load->model('Mtransaction');
+    $this->load->library('form_validation');
 }
 
 public function index() {
@@ -15,12 +16,11 @@ public function index() {
 
 public function create() {
     $this->load->library('form_validation');
-
     $this->form_validation->set_rules('customer_id', 'Customer ID', 'required');
     $this->form_validation->set_rules('car_id', 'Car ID', 'required');
     $this->form_validation->set_rules('transaction_date', 'Transaction Date', 'required');
     $this->form_validation->set_rules('amount', 'Amount', 'required|integer');
-    $this->form_validation->set_rules('total_price', 'Total Price', 'required|decimal');
+    $this->form_validation->set_rules('total_price', 'Total Price', 'required');
     $this->form_validation->set_rules('payment_method', 'Payment Method', 'required');
     $this->form_validation->set_rules('status', 'Status', 'required');
 
@@ -37,7 +37,7 @@ public function create() {
             'status' => $this->input->post('status')
         ];
 
-        $this->Transaction_model->insert_transaction($data);
+        $this->Mtransaction->insert_transaction($data);
         redirect('transaction');
     }
 }
