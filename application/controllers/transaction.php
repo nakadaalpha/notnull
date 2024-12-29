@@ -12,6 +12,11 @@ public function index() {
     $this->load->view('transaction/index', $data);
     $this->load->view('templates/footer');
 }
+public function save_transaction($id) {
+    $this->load->view('templates/header');
+    $this->load->view('transaction/save_transaction', $data);
+    $this->load->view('templates/footer');
+}
 
 public function create() {
     $this->load->library('form_validation');

@@ -32,7 +32,7 @@
 <body>
     <div class="form-container">
         <h1>Add Transaction</h1>
-        <form action="<?php echo site_url('transaction/store'); ?>" method="POST">
+        <form action="<?php echo site_url('transaction/save_transaction'); ?>" method="POST">
             <div class="mb-3">
                 <input type="text" class="form-control" name="customer_id" placeholder="Customer ID" required>
             </div>
