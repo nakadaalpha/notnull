@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="logo">
-                    <span class="logo-font">Go</span>Snippets
+                    <span class="text-black">notnull</span>
                 </div>
             </div>
         </div>
@@ -32,16 +32,16 @@
                 <h3 class="header-title">LOGIN</h3>
                 <form class="login-form" action="<?php echo site_url('auth/logging_in'); ?>" method="post">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="username" name="username" id="password">
+                        <input type="text" class="form-control rounded-2" placeholder="username" name="username" id="password">
                     </div>
                     <div class="form-group">
-                        <input type="Password" class="form-control" placeholder="password" name="password" id="password">
+                        <input type="Password" class="form-control rounded-2" placeholder="password" name="password" id="password">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary btn-block">LOGIN</button>
                     </div>
                     <div class="form-group">
-                        <div class="text-center">New Member? <a href="#!">Register Here</a></div>
+                        <div class="text-center"><a class="text-decoration-none" href="#!">Register Here</a></div>
                     </div>
                 </form>
             </div>

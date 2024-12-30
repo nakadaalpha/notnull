@@ -134,24 +134,31 @@
         <div data-aos="fade-up" data-aos-once="true" data-aos-duration="450">
           <div class="p-3 border bg-white rounded shadow-sm">
             <h5 class="fw-bold border-bottom pb-2 mb-3">Filter</h5>
-            <ul class="list-unstyled">
-              <li class="mb-1">
-                <button class="btn btn-toggle d-flex align-items-center w-100 border-0 bg-transparent p-0" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Home
-                </button>
-                <div class="collapse" id="home-collapse">
-                  <ul class="list-unstyled ps-3">
-                    <li><a href="#" class="text-decoration-none">Overview</a></li>
-                    <li><a href="#" class="text-decoration-none">Updates</a></li>
-                    <li><a href="#" class="text-decoration-none">Reports</a></li>
-                  </ul>
-                </div>
-              </li>
-              <!-- Additional navigation items can be added here -->
-            </ul>
+            <form method="GET" action="<?php echo site_url('warehouse'); ?>">
+              <!-- Sort by Year -->
+              <div class="mb-3">
+                <label for="sortYear" class="form-label">Sort by Year</label>
+                <select class="form-select" name="sort_year" id="sortYear">
+                  <option value="">Select</option>
+                  <option value="asc">Oldest to Newest</option>
+                  <option value="desc">Newest to Oldest</option>
+                </select>
+              </div>
+              <!-- Sort by Price -->
+              <div class="mb-3">
+                <label for="sortPrice" class="form-label">Sort by Price</label>
+                <select class="form-select" name="sort_price" id="sortPrice">
+                  <option value="">Select</option>
+                  <option value="asc">Lowest to Highest</option>
+                  <option value="desc">Highest to Lowest</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </form>
           </div>
         </div>
       </div>
+
 
       <!-- Car Content -->
       <div class="col-12 col-md-9">
@@ -161,7 +168,7 @@
               $aos_duration = 500 + (($key % 3) * 250); ?>
               <div class="col">
                 <div data-aos="fade-up" data-aos-once="true" data-aos-duration="<?php echo $aos_duration; ?>">
-                  <div class="card border-0 wrapper-car" onclick="location.href='catalog'">
+                  <div class="card border-0 wrapper-car" onclick="location.href='<?php echo site_url('warehouse/detail/' . $item['car_id']); ?>'">
                     <div class="parent-H">
                       <div class="parent-car">
                         <div class="child-car">

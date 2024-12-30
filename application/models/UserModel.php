@@ -27,4 +27,12 @@ class UserModel extends CI_Model
         $query = $this->db->get('customer'); // 'users' adalah nama tabel di database Anda
         return $query->row(); // Mengembalikan satu baris data sebagai objek
     }
+
+    // UserModel.php
+    public function get_admin_by_id($admin_id)
+    {
+        $this->db->where('admin_id', $admin_id); // 'admin_id' adalah kolom di database untuk admin
+        $query = $this->db->get('admin'); // 'admin' adalah nama tabel untuk admin
+        return $query->row(); // Mengembalikan satu baris data sebagai objek
+    }
 }

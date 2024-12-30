@@ -14,10 +14,17 @@ class cars extends CI_Model {
         return $query->num_rows() > 0;
     }
     // Fetch all cars
-    public function get_all_cars() {
+    public function get_all_cars($sort_year = null, $sort_price = null) {
+        if ($sort_year) {
+            $this->db->order_by('year_made', $sort_year);
+        }
+        if ($sort_price) {
+            $this->db->order_by('price', $sort_price);
+        }
         $query = $this->db->get('car');
         return $query->result_array();
     }
+    
 
     public function get_home_cars($limit = null) {
         if ($limit) {
