@@ -5,7 +5,7 @@ class Dashboard extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        if (!$this->session->userdata('admin_id')) {
+        if (!$this->session->userdata('admin_id')) {    
             redirect('login');
         }
     }

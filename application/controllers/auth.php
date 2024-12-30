@@ -11,6 +11,7 @@ class auth extends CI_Controller
         $this->load->library('session');
     }
 
+
     // Halaman Login
     public function index()
     {
