@@ -5,6 +5,7 @@ public function __construct() {
     parent::__construct();
     $this->load->model('Mtransaction');
     $this->load->model('cars');
+    $this->load->model('UserModel');
     $this->load->library('form_validation');
 }
 

@@ -19,4 +19,12 @@ class UserModel extends CI_Model
         $this->db->where('customer_password', $password);
         return $this->db->get('customer')->row_array();
     }
+
+    // Fungsi untuk mengambil data user berdasarkan ID
+    public function get_user_by_id($user_id)
+    {
+        $this->db->where('customer_id', $user_id); // 'id' adalah kolom di database yang merepresentasikan user ID
+        $query = $this->db->get('customer'); // 'users' adalah nama tabel di database Anda
+        return $query->row(); // Mengembalikan satu baris data sebagai objek
+    }
 }
