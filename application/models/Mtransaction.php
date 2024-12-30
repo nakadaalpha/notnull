@@ -7,6 +7,11 @@ class Mtransaction extends CI_Model
             $this->load->database();
     }
 
+    public function check_customer_exists($customer_id) {
+        $query = $this->db->get_where('customer', ['customer_id' => $customer_id]);
+        return $query->num_rows() > 0;
+    }
+
     public function get_all_transactions()
     {
         return $this->db->get('transaction')->result_array();

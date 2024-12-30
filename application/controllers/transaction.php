@@ -5,7 +5,6 @@ public function __construct() {
     parent::__construct();
     $this->load->model('Mtransaction');
     $this->load->model('cars');
-    $this->load->model('UserModel');
     $this->load->library('form_validation');
 }
 
@@ -27,11 +26,20 @@ public function create() {
     $this->form_validation->set_rules('status', 'Status', 'required');
 
     if ($this->form_validation->run() === FALSE) {
-        $this->load->view('transaction_form');
+        $this->load->view('transaction/index');
     } else {
+        $customer_id = $this->input->post('customer_id');
+        $car_id = $this->input->post('car_id');
+
+        // Validasi apakah customer_id dan car_id valid
+        if (!$this->Mtransaction->check_customer_exists($customer_id) || !$this->cars->check_car_exists($car_id)) {
+            $this->session->set_flashdata('error', 'Customer ID atau Car ID tidak valid.');
+            redirect('transaction/create');
+        }
+
         $data = [
-            'customer_id' => $this->input->post('customer_id'),
-            'car_id' => $this->input->post('car_id'),
+            'customer_id' => $customer_id,
+            'car_id' => $car_id,
             'transaction_date' => $this->input->post('transaction_date'),
             'amount' => $this->input->post('amount'),
             'total_price' => $this->input->post('total_price'),
@@ -40,15 +48,21 @@ public function create() {
         ];
 
         $this->Mtransaction->insert_transaction($data);
-        redirect('transaction');
+        redirect('transaction/save_transaction');
     }
 }
 
+
 public function save_transaction() {
+    // Ambil semua data transaksi dari database
+    $data['transactions'] = $this->Mtransaction->get_all_transactions();
+
+    // Load view dengan data transaksi
     $this->load->view('templates/header');
-    $this->load->view('transaction/save_transaction');
+    $this->load->view('transaction/save_transaction', $data);
     $this->load->view('templates/footer');
 }
+
 
 public function delete($id) {
     $this->Transaction_model->delete_transaction($id);

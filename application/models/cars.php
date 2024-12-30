@@ -8,6 +8,11 @@ class cars extends CI_Model {
             $this->load->database();
         
     }
+
+    public function check_car_exists($car_id) {
+        $query = $this->db->get_where('car', ['car_id' => $car_id]);
+        return $query->num_rows() > 0;
+    }
     // Fetch all cars
     public function get_all_cars() {
         $query = $this->db->get('car');
