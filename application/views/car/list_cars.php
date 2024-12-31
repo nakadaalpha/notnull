@@ -20,6 +20,10 @@
                         <th>Harga</th>
                         <th>Stok</th>
                         <th>Status</th>
+                        <th>Tipe</th>
+                        <th>Tahun</th>
+                        <th>Spesifikasi</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +34,10 @@
                             <td><?= number_format($car['price'], 0, ',', '.'); ?></td>
                             <td><?= $car['stock']; ?></td>
                             <td><?= $car['status']; ?></td>
+                            <td><?= $car['car_type']; ?></td>
+                            <td><?= $car['year_made']; ?></td>
+                            <td><?= $car['car_spec']; ?></td>
+                            
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
