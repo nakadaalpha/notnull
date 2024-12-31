@@ -18,7 +18,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Mengelola Data Mobil</h5>
-                        <p class="card-text">Tambah, edit, atau hapus data mobil di sini.</p>
+                        <p class="card-text">Tambah data mobil di sini.</p>
                         <a href="<?= base_url('Car'); ?>" class="btn btn-primary">Kelola Mobil</a>
                     </div>
                 </div>

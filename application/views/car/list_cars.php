@@ -18,6 +18,8 @@
                         <th>Nama</th>
                         <th>Merek</th>
                         <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,6 +28,8 @@
                             <td><?= $car['car_name']; ?></td>
                             <td><?= $car['car_brand']; ?></td>
                             <td><?= number_format($car['price'], 0, ',', '.'); ?></td>
+                            <td><?= $car['stock']; ?></td>
+                            <td><?= $car['status']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
