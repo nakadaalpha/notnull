@@ -44,7 +44,7 @@
                 <?php endif; ?>
             </tbody>
         </table>
-        <a href="<?= site_url('transaction'); ?>" class="btn btn-primary mt-3">Back to Add Transaction</a>
+        <a href="<?= site_url('home'); ?>" class="btn btn-primary mt-3">Back to Home</a>
     </div>
 </body>
 </html>
