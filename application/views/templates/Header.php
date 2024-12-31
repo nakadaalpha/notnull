@@ -60,9 +60,14 @@
             <?php if ($user): ?>
               Logged In as <?= htmlspecialchars($user->customer_username); ?>
             <?php else: ?>
-              
+
             <?php endif; ?>
           </li>
+          <?php if ($user): ?>
+            <li class="nav-item">
+              <button class="btn btn-danger"><a class="text-decoration-none text-black" href="auth/logout">Logout</a></button>
+            </li>
+          <?php endif; ?>
         </ul>
       </div>
     </div>

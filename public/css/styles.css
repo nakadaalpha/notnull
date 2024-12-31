@@ -282,12 +282,6 @@ body {
     color: #3BC3FF;
 }
 
-@media only screen and (max-width: 767px) {
-    .logo {
-        font-size: 34px;
-    }
-}
-
 .header-title {
     text-align: center;
     margin-bottom: 50px;
@@ -367,7 +361,8 @@ body {
     font-weight: bold;
 }
 
-body {
+
+/* body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
 }
@@ -382,7 +377,7 @@ main {
     max-height: 100vh;
     overflow-x: auto;
     overflow-y: hidden;
-}
+} */
 
 .dropdown-toggle {
     outline: 0;

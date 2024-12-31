@@ -8,7 +8,7 @@
       HIGHLIGHT
     </div>
     <div class="row">
-      <!----- CarItems ----->
+      <!----- Car Items ----->
       <?php if (!empty($cars)) { // Pastikan data tidak kosong 
       ?>
         <?php foreach ($cars as $key => $car) {
@@ -17,7 +17,7 @@
         ?>
           <div class="col-lg-4 col-md-6 col-12 my-3">
             <div data-aos="fade-up" data-aos-once="true" data-aos-duration="<?php echo $aos_duration; ?>">
-              <div class="wrapper-H rounded-4" onclick="location.href='warehouse'">
+              <div class="wrapper-H rounded-4" onclick="location.href='<?php echo site_url('warehouse/detail/' . $car['car_id']); ?>'">
                 <div class="parent-H">
                   <div class="child-H">
                     <img src="<?php echo base_url($car['car_image']); ?>" class="img-fluid">
@@ -37,8 +37,6 @@
       <?php } ?>
       <!------ Hero Section End ------>
 
-
-
       <!------ Brand Selection Start ------>
       <section class="brand-selection">
         <div class="container">
@@ -46,7 +44,7 @@
             BRANDS
           </div>
           <div class="row">
-            <!----- CarItems ----->
+            <!----- Brand Items ----->
             <?php if (!empty($brands)) { // Pastikan data tidak kosong 
             ?>
               <?php foreach ($brands as $key => $brand) {
@@ -54,7 +52,7 @@
                 $aos_duration = 500 + (($key % 4) * 250);
               ?>
                 <div class="col-6 col-md-4 col-lg-3 my-3">
-                  <div data-aos="fade-up" data-aos-once="true" data-aos-duration="<?php echo $aos_duration?>">
+                  <div data-aos="fade-up" data-aos-once="true" data-aos-duration="<?php echo $aos_duration ?>">
                     <div class="wrapper-brand-Home shadow-sm rounded-4">
                       <div class="parent-brand-Home">
                         <a href="catalog">
@@ -76,4 +74,7 @@
           </div>
         </div>
       </section>
-      <!------ Brand Selection End ------>
+    </div>
+  </div>
+</section>
+<!------ Brand Selection End ------>

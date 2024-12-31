@@ -31,4 +31,25 @@ class Home extends CI_Controller
         $this->load->view("pages/home/index", $query);
         $this->load->view("templates/footer");
     }
+
+    public function detail($car_id)
+    {
+        $user_data = null; // Default user data kosong
+        if ($this->session->userdata('user_id')) {
+            $user_id = $this->session->userdata('user_id'); // Ambil user_id dari session
+            $user_data = $this->UserModel->get_user_by_id($user_id); // Ambil data user
+        }
+
+        $data['user'] = $user_data;
+        $this->load->model('cars');
+        $data['car'] = $this->cars->get_car_by_id($car_id);
+
+        if (empty($data['car'])) {
+            show_404(); // Tampilkan halaman 404 jika data tidak ditemukan
+        }
+
+        $this->load->view("templates/header", $data);
+        $this->load->view("pages/warehouse/detail", $data);
+        $this->load->view("templates/footer");
+    }
 }
