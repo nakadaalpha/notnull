@@ -8,7 +8,8 @@
             <p><strong>Year Made:</strong> <?php echo $car['year_made']; ?></p>
             <p><strong>Price:</strong> $<?php echo number_format($car['price'], 0, '.', ','); ?></p>
             <p><strong>Description:</strong> <?php echo $car['car_spec']; ?></p>
-            <a href="<?php echo site_url('warehouse'); ?>" class="btn btn-secondary">Back to Warehouse</a>
+            <!-- Tombol Checkout -->
+            <a href="<?php echo site_url('transaction/create/' . $car['car_id']); ?>" class="btn btn-success">Checkout</a>
         </div>
     </div>
 </div>

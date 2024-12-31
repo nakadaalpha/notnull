@@ -25,7 +25,6 @@ class cars extends CI_Model {
         return $query->result_array();
     }
     
-
     public function get_home_cars($limit = null) {
         if ($limit) {
             $this->db->limit($limit); // Tambahkan limit pada query

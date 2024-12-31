@@ -13,7 +13,7 @@ class auth extends CI_Controller
 
 
     // Halaman Login
-    public function index()
+    public function login()
     {
         $this->load->view('templates/header');
         $this->load->view('login');
