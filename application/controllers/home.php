@@ -7,6 +7,7 @@ class Home extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Cars');
+        $this->load->model('brands');
         $this->load->model('UserModel');
         $this->load->library('session');
     }
@@ -22,6 +23,7 @@ class Home extends CI_Controller
 
         // Ambil data mobil untuk halaman home
         $query['user'] = $user_data; // Jika user tidak login, ini tetap null
+        $query['brands'] = $this->brands->get_home_brands(8); // Ambil data brand untuk ditampilkan
         $query['cars'] = $this->Cars->get_home_cars(6); // Ambil data mobil untuk ditampilkan
 
         // Load view dengan data

@@ -8,10 +8,10 @@
       HIGHLIGHT
     </div>
     <div class="row">
-      <!-- Items -->
+      <!----- CarItems ----->
       <?php if (!empty($cars)) { // Pastikan data tidak kosong 
       ?>
-        <?php foreach ($cars as $key => $item) {
+        <?php foreach ($cars as $key => $car) {
           // Menghitung durasi AOS
           $aos_duration = 500 + (($key % 3) * 250);
         ?>
@@ -20,12 +20,12 @@
               <div class="wrapper-H rounded-4" onclick="location.href='warehouse'">
                 <div class="parent-H">
                   <div class="child-H">
-                    <img src="<?php echo base_url($item['car_image']); ?>" class="img-fluid">
+                    <img src="<?php echo base_url($car['car_image']); ?>" class="img-fluid">
                   </div>
                   <div class="child-title-H">
-                    <?php echo $item['car_brand']; ?>
-                    <?php echo $item['car_name']; ?>
-                    <?php echo $item['car_type']; ?>
+                    <?php echo $car['car_brand']; ?>
+                    <?php echo $car['car_name']; ?>
+                    <?php echo $car['car_type']; ?>
                   </div>
                 </div>
               </div>
@@ -33,7 +33,7 @@
           </div>
         <?php } ?>
       <?php } else { ?>
-        <p>Tidak ada data mobil tersedia.</p>
+        <p>There is no car available right now</p>
       <?php } ?>
       <!------ Hero Section End ------>
 
@@ -46,144 +46,34 @@
             BRANDS
           </div>
           <div class="row">
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="250">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/1.png" width="400px">
+            <!----- CarItems ----->
+            <?php if (!empty($brands)) { // Pastikan data tidak kosong 
+            ?>
+              <?php foreach ($brands as $key => $brand) {
+                // Menghitung durasi AOS
+                $aos_duration = 500 + (($key % 4) * 250);
+              ?>
+                <div class="col-6 col-md-4 col-lg-3 my-3">
+                  <div data-aos="fade-up" data-aos-once="true" data-aos-duration="<?php echo $aos_duration?>">
+                    <div class="wrapper-brand-Home shadow-sm rounded-4">
+                      <div class="parent-brand-Home">
+                        <a href="catalog">
+                          <div class="child-brand-Home">
+                            <img src="<?php echo base_url($brand['image']); ?>" width="400px">
+                          </div>
+                          <div class="child-title-Home">
+                            <?php echo $brand['brand_name']; ?>
+                          </div>
+                        </a>
                       </div>
-                      <div class="child-title-Home">
-                        Koenigsegg
-                      </div>
-                    </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="500">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/2.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        Ferrari
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="750">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/3.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        BMW
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="1000">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/4.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        Mercedes-Benz
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="250">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/5.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        McLaren
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="500">
-                <div class="wrapper-brand-Home shadow rounded-">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/6.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        Cadillac
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="750">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/7.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        Honda
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3 my-3">
-              <div data-aos="fade-up" data-aos-once="true" data-aos-duration="1000">
-                <div class="wrapper-brand-Home shadow rounded-4">
-                  <div class="parent-brand-Home">
-                    <a href="catalog">
-                      <div class="child-brand-Home">
-                        <img src="public/src/images/brand/8.png" width="400px">
-                      </div>
-                      <div class="child-title-Home">
-                        Bugatti
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <?php } ?>
+            <?php } else { ?>
+              <p>There is no brand available right now</p>
+            <?php } ?>
           </div>
         </div>
       </section>
       <!------ Brand Selection End ------>
-
-      <!-- Tester Section Start-->
-
-      <section>
-
-      </section>
-
-
-      <!-- Tester Section End-->
