@@ -20,8 +20,8 @@
                         <div class="carousel-item active rounded-1">
                             <div class="slider-feature-card rounded-5">
                                 <img src="<?= base_url('public/src/images/brand/1.png'); ?>" alt="koenigsegg">
-                                <h3 class="slider-title">Title Here</h3>
-                                <p class="slider-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure, odio!</p>
+                                <h3 class="slider-title">Car Dealer</h3>
+                                <p class="slider-description">Browse your favorite car!</p>
                             </div>
                         </div>
                     </div>
