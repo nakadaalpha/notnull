@@ -40,9 +40,6 @@
                     <div class="form-group">
                         <button class="btn btn-primary btn-block">LOGIN</button>
                     </div>
-                    <div class="form-group">
-                        <div class="text-center"><a class="text-decoration-none" href="#!">Register Here</a></div>
-                    </div>
                 </form>
             </div>
         </div>
