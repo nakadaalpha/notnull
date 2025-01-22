@@ -180,13 +180,28 @@ body {
     /* Sudut melengkung untuk estetika */
 }
 
-.brand-slider .row {
-    gap: -10vw;
-    /* Menambahkan jarak antar item */
-}
-
 .brand-slider-row {
     min-height: 5vw;
+    display: flex;
+}
+
+.cardio {
+    display: flex;
+    animation: scroll-left 10s linear infinite;
+}
+
+.slider-item {
+    flex: 0 0 auto;
+    /* transition: transform 0.5s ease-in-out; */
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
 .card {
@@ -279,7 +294,7 @@ body {
 }
 
 .logo .logo-font {
-    color: #3BC3FF;
+    color: #3bc3ff;
 }
 
 .header-title {
@@ -315,7 +330,7 @@ body {
 }
 
 .login-form .btn.btn-primary {
-    background: #3BC3FF;
+    background: #3bc3ff;
     border-color: #31c0ff;
 }
 

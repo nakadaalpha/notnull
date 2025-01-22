@@ -20,7 +20,14 @@ class Transaction extends CI_Controller
             $user_data = $this->UserModel->get_user_by_id($user_id); // Ambil data user
         }
 
+        $admin_data = null; // Default user data kosong
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+        }
+
         // Ambil data mobil untuk halaman home
+        $data['admin'] = $admin_data;
         $data['user'] = $user_data; // Jika user tidak login, ini tetap null
         $data['transactions'] = $this->Mtransaction->get_all_transactions();
         $this->load->view('templates/header',$data);

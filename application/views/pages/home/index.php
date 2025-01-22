@@ -1,7 +1,7 @@
 <!------ Hero Section Start ------>
 <section>
   <div class="mb-5">
-    <img src="public/src/images/hero/home-hero.png" alt="Hero Image" width="100%">
+    <img src="<?= base_url('public/src/images/hero/home-hero.png');?>" alt="Hero Image" width="100%">
   </div>
   <div class="container py-5">
     <div class="brand-header">
@@ -60,7 +60,7 @@
                             <img src="<?php echo base_url($brand['image']); ?>" width="400px">
                           </div>
                           <div class="child-title-Home">
-                            <?php echo $brand['brand_name']; ?>
+                            <?php echo $brand['car_brand']; ?>
                           </div>
                         </a>
                       </div>

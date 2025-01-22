@@ -3,7 +3,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Car extends CI_Controller {
+class car extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -14,13 +14,14 @@ class Car extends CI_Controller {
     public function index() {
         $this->load->model('cars');
         $query['cars'] = $this->cars->get_all_cars();
-        $this->load->view('car/list_cars', $query);
+        $this->load->view('templates/dashboard_head');
+        $this->load->view('pages/dashboard/car/index', $query);
     }
 
     public function add() {
         if ($this->input->post()) {
             // Form validation rules
-            $this->form_validation->set_rules('car_id', 'Car ID', 'required|is_unique[car.car_id]');
+            $this->form_validation->set_rules('car_id', 'Car ID', 'required');
             $this->form_validation->set_rules('car_name', 'Car Name', 'required');
             $this->form_validation->set_rules('car_brand', 'Car Brand', 'required');
             $this->form_validation->set_rules('year_made', 'Year Made', 'required|numeric');

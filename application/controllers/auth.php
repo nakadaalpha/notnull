@@ -11,7 +11,6 @@ class auth extends CI_Controller
         $this->load->library('session');
     }
 
-
     // Halaman Login
     public function login()
     {
@@ -32,7 +31,7 @@ class auth extends CI_Controller
         if ($admin) {
             $this->session->set_userdata([
                 'admin_id' => $admin['admin_id'],
-                'admin_name' => $admin['admin_username'],
+                'admin_name' => $admin['admin_name'],
                 'role' => 'admin',
                 'logged_in' => TRUE
             ]);

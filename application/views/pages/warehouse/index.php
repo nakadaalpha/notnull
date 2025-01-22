@@ -9,121 +9,32 @@
       <div class="col-12">
         <div class="brand-slider bg-white shadow-sm">
           <div class="container">
-            <div class="row brand-slider-row flex-nowrap overflow-auto">
+            <div class="row brand-slider-row flex-nowrap overflow-auto" id="brandSlider">
               <!-- Loop Cards -->
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 1">
+              <?php if (!empty($brands)) { ?>
+                <?php foreach ($brands as $key => $brand) { ?>
+                  <div class="col-1 slider-item">
+                    <div class="cardio text-center border-0">
+                      <div class="card-body p-2">
+                        <img src="<?= base_url($brand['image']) ?>" class="img-fluid" alt="Brand <?= $key + 1 ?>">
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 2">
+                <?php } ?>
+                <!-- Duplikasi Elemen -->
+                <?php foreach ($brands as $key => $brand) { ?>
+                  <div class="col-1 slider-item">
+                    <div class="cardio text-center border-0">
+                      <div class="card-body p-2">
+                        <img src="<?= base_url($brand['image']) ?>" class="img-fluid" alt="Brand <?= $key + 1 ?> (Copy)">
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <div class="col-1 slider-item">
-                <div class="card text-center border-0">
-                  <div class="card-body p-2">
-                    <img src="public/src/images/brand/1.png" class="img-fluid" alt="Brand 3">
-                  </div>
-                </div>
-              </div>
-              <!-- Additional cards can be added here -->
+                <?php } ?>
+              <?php } else { ?>
+                <p>No brands available.</p>
+              <?php } ?>
+
             </div>
           </div>
         </div>
@@ -131,7 +42,7 @@
 
       <!-- Sidebar -->
       <div class="col-12 col-md-3">
-        <div data-aos="fade-up" data-aos-once="true" data-aos-duration="450">
+        <div data-aos="fade-right" data-aos-once="true" data-aos-duration="450">
           <div class="p-3 border bg-white rounded shadow-sm">
             <h5 class="fw-bold border-bottom pb-2 mb-3">Filter</h5>
             <form method="GET" action="<?php echo site_url('warehouse'); ?>">

@@ -12,6 +12,7 @@ class Home extends CI_Controller
         $this->load->library('session');
     }
 
+
     public function index()
     {
         // Periksa apakah ada session aktif
@@ -21,10 +22,16 @@ class Home extends CI_Controller
             $user_data = $this->UserModel->get_user_by_id($user_id); // Ambil data user
         }
 
-        // Ambil data mobil untuk halaman home
-        $query['user'] = $user_data; // Jika user tidak login, ini tetap null
-        $query['brands'] = $this->brands->get_home_brands(8); // Ambil data brand untuk ditampilkan
-        $query['cars'] = $this->Cars->get_home_cars(6); // Ambil data mobil untuk ditampilkan
+        $admin_data = null; // Default user data kosong
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+        }
+
+        $query['admin']     = $admin_data;
+        $query['user']      = $user_data;
+        $query['cars']      = $this->Cars->get_home_cars(6); // Ambil data mobil untuk ditampilkan
+        $query['brands']    = $this->brands->get_home_brands(8); // Ambil data brand untuk ditampilkan
 
         // Load view dengan data
         $this->load->view("templates/header", $query);
@@ -40,9 +47,16 @@ class Home extends CI_Controller
             $user_data = $this->UserModel->get_user_by_id($user_id); // Ambil data user
         }
 
-        $data['user'] = $user_data;
+        $admin_data = null; // Default user data kosong
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+        }
+
+        $data['admin']  = $admin_data;
+        $data['user']   = $user_data;
         $this->load->model('cars');
-        $data['car'] = $this->cars->get_car_by_id($car_id);
+        $data['car']    = $this->cars->get_car_by_id($car_id);
 
         if (empty($data['car'])) {
             show_404(); // Tampilkan halaman 404 jika data tidak ditemukan

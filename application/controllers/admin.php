@@ -13,7 +13,7 @@ class Admin extends CI_Controller {
     public function index() {
         // Data untuk ditampilkan di dashboard
         $data['admin_name'] = $this->session->userdata('admin_name');
-        $this->load->view('pages/admin_dashboard', $data);
+        $this->load->view('pages/dashboard/index', $data);
     }
 
     public function logout() {

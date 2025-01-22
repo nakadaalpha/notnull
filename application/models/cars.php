@@ -15,28 +15,48 @@ class cars extends CI_Model {
     }
     // Fetch all cars
     public function get_all_cars($sort_year = null, $sort_price = null) {
+        $this->db->select('car.*, brand.car_brand');
+        $this->db->from('car');
+        $this->db->join('brand', 'car.car_brand = brand.brand_id');
+    
         if ($sort_year) {
             $this->db->order_by('year_made', $sort_year);
         }
         if ($sort_price) {
             $this->db->order_by('price', $sort_price);
         }
-        $query = $this->db->get('car');
+    
+        $query = $this->db->get();
         return $query->result_array();
     }
     
+    
     public function get_home_cars($limit = null) {
+        $this->db->select('car.*, brand.car_brand');
+        $this->db->from('car');
+        $this->db->join('brand', 'car.car_brand = brand.brand_id');
+    
         if ($limit) {
             $this->db->limit($limit); // Tambahkan limit pada query
         }
-        $query = $this->db->get('car');
+    
+        $query = $this->db->get();
         return $query->result_array();
-    }
+    }    
 
     // Fetch a single car by ID
     public function get_car_by_id($car_id) {
         $query = $this->db->get_where('car', ['car_id' => $car_id]);
         return $query->row_array();
+    }
+
+    public function get_cars_by_brand($brand_id) {
+        $this->db->select('*'); // Pilih semua kolom
+        $this->db->from('cars'); // Nama tabel mobil
+        $this->db->where('car_brand', $brand_id); // Filter berdasarkan brand_id
+        $query = $this->db->get(); // Eksekusi query
+
+        return $query->result_array(); // Kembalikan hasil sebagai array
     }
 
     // Add a new car
