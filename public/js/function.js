@@ -46,10 +46,27 @@ function filterByBrand(brandId) {
 //     });
 // });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const slider = document.getElementById('brandSlider');
-    let sliderItems = slider.innerHTML;
+// document.addEventListener('DOMContentLoaded', function() {
+//     const slider = document.getElementById('brandSlider');
+//     let sliderItems = slider.innerHTML;
 
-    // Duplikasi konten untuk looping
-    slider.innerHTML += sliderItems;
+//     // Duplikasi konten untuk looping
+//     slider.innerHTML += sliderItems;
+// });
+
+document.getElementById("applyFilter").addEventListener("click", function() {
+    const brand = document.getElementById("brandFilter").value;
+    const year = document.getElementById("yearFilter").value;
+    const priceMin = document.getElementById("priceMin").value;
+    const priceMax = document.getElementById("priceMax").value;
+
+    const params = new URLSearchParams();
+
+    if (brand) params.append("brand", brand);
+    if (year) params.append("year", year);
+    if (priceMin) params.append("priceMin", priceMin);
+    if (priceMax) params.append("priceMax", priceMax);
+
+    console.log("Filters applied with:", params.toString());
+    // Example: fetch(`/filterCars?${params.toString()}`).then(...);
 });

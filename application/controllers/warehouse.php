@@ -42,22 +42,13 @@ class warehouse extends CI_Controller
         // Ambil data mobil untuk halaman home
         $query['admin']     = $admin_data;
         $query['user']      = $user_data;
-        $query['cars']      = $this->cars->get_all_cars($sort_year, $sort_price);
+        $query['cars']      = $this->cars->get_warehouse_cars($sort_year, $sort_price);
         $query['brands'] = $this->brands->get_all_brands();
 
         $this->load->view("templates/header", $query);
         $this->load->view("pages/warehouse/index", $query);
         $this->load->view("templates/footer");
     }
-
-    // public function filter_by_brand()
-    // {
-        
-
-    //     $query['brands'] = $this->brands->get_all_brands(); // Semua brand untuk dropdown filter
-
-    //     $this->load->view('warehouse', $data);
-    // }
 
     public function detail($car_id)
     {

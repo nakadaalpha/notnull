@@ -6,11 +6,12 @@ class Dashboard extends CI_Controller
     {
         parent::__construct();
         if (!$this->session->userdata('admin_id')) {
-            redirect('login');
+            redirect('auth/login');
         }
         $this->load->model('Mtransaction');
         $this->load->model('UserModel');
         $this->load->model('cars');
+        $this->load->model('brands');
         $this->load->library('form_validation');
     }
     public function index()
@@ -22,10 +23,10 @@ class Dashboard extends CI_Controller
 
     public function cars()
     {
-        $admin_data = null; // Default user data kosong
         if ($this->session->userdata('admin_id')) {
             $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
             $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+
         }
 
         $query['admin'] = $admin_data;
@@ -34,7 +35,37 @@ class Dashboard extends CI_Controller
         $this->load->view('pages/dashboard/car/index', $query);
     }
 
-    public function add()
+    public function brands()
+    {
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+
+        }
+
+        $query['admin'] = $admin_data;
+        $query['brands']  = $this->brands->get_all_brands();
+        $this->load->view('templates/dashboard_head');
+        $this->load->view('pages/dashboard/brand/index', $query);
+    }
+
+    private function _upload_image()
+    {
+        if (!empty($_FILES['car_image']['name'])) {
+            $config['upload_path'] = './uploads/cars/';
+            $config['allowed_types'] = 'jpg|jpeg|png';
+            $config['file_name'] = uniqid();
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('car_image')) {
+                return $this->upload->data('file_name');
+            }
+        }
+        return 'default.jpg'; // Default image
+    }
+
+    public function add_cars()
     {
         if ($this->input->post()) {
             // Form validation rules
@@ -70,26 +101,8 @@ class Dashboard extends CI_Controller
         $this->load->view('car/add');
     }
 
-    private function _upload_image()
-    {
-        if (!empty($_FILES['car_image']['name'])) {
-            $config['upload_path'] = './uploads/cars/';
-            $config['allowed_types'] = 'jpg|jpeg|png';
-            $config['file_name'] = uniqid();
-
-            $this->load->library('upload', $config);
-
-            if ($this->upload->do_upload('car_image')) {
-                return $this->upload->data('file_name');
-            }
-        }
-        return 'default.jpg'; // Default image
-    }
-
     public function transactions()
     {
-        // Periksa apakah ada session aktif
-        $admin_data = null; // Default user data kosong
         if ($this->session->userdata('admin_id')) {
             $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
             $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
@@ -138,5 +151,15 @@ class Dashboard extends CI_Controller
             $this->Mtransaction->insert_transaction($data);
             redirect('transaction/save_transaction');
         }
+    }
+
+    public function logout() {
+        // Hapus session terkait admin
+        $this->session->unset_userdata('admin_id');
+        $this->session->unset_userdata('admin_name');
+        $this->session->sess_destroy();
+
+        // Redirect ke halaman login
+        redirect('auth/login');
     }
 }

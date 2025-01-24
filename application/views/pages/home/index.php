@@ -20,7 +20,7 @@
               <div class="wrapper-H rounded-4" onclick="location.href='<?php echo site_url('warehouse/detail/' . $car['car_id']); ?>'">
                 <div class="parent-H">
                   <div class="child-H">
-                    <img src="<?php echo base_url($car['car_image']); ?>" class="img-fluid">
+                    <img src="<?php echo base_url('public/src/images/cars/' . $car['car_image']); ?>" class="img-fluid">
                   </div>
                   <div class="child-title-H">
                     <?php echo $car['car_brand']; ?>
@@ -57,7 +57,7 @@
                       <div class="parent-brand-Home">
                         <a href="catalog">
                           <div class="child-brand-Home">
-                            <img src="<?php echo base_url($brand['image']); ?>" width="400px">
+                            <img src="<?php echo base_url('public/src/images/brands/' . $brand['image']); ?>" width="400px">
                           </div>
                           <div class="child-title-Home">
                             <?php echo $brand['car_brand']; ?>

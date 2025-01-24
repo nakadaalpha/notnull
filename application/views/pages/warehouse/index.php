@@ -16,7 +16,7 @@
                   <div class="col-1 slider-item">
                     <div class="cardio text-center border-0">
                       <div class="card-body p-2">
-                        <img src="<?= base_url($brand['image']) ?>" class="img-fluid" alt="Brand <?= $key + 1 ?>">
+                        <img src="<?= base_url('public/src/images/brands/' . $brand['image']) ?>" class="img-fluid" alt="Brand <?= $key + 1 ?>">
                       </div>
                     </div>
                   </div>
@@ -26,7 +26,7 @@
                   <div class="col-1 slider-item">
                     <div class="cardio text-center border-0">
                       <div class="card-body p-2">
-                        <img src="<?= base_url($brand['image']) ?>" class="img-fluid" alt="Brand <?= $key + 1 ?> (Copy)">
+                        <img src="<?= base_url('public/src/images/brands/' . $brand['image']) ?>" class="img-fluid" alt="Brand <?= $key + 1 ?> (Copy)">
                       </div>
                     </div>
                   </div>
@@ -83,7 +83,7 @@
                     <div class="parent-H">
                       <div class="parent-car">
                         <div class="child-car">
-                          <img src="<?php echo base_url($item['car_image']); ?>" class="card-img-top" alt="Car Image">
+                          <img src="<?php echo base_url('public/src/images/cars/' . $item['car_image']); ?>" class="card-img-top" alt="Car Image">
                         </div>
                       </div>
                     </div>
