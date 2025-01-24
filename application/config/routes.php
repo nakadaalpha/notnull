@@ -55,3 +55,5 @@ $route['translate_uri_dashes'] = FALSE;
 $route['admin/logout'] = 'admin/logout';
 $route['transaction/create'] = 'transaction/create';
 $route['car/add'] = 'car/add';
+$route['customer'] = 'customer';
+$route['customer/edit/(:num)'] = 'customer/edit/$1';

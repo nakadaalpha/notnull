@@ -41,29 +41,40 @@ class Customer extends CI_Controller {
     }
     
 
-    public function edit($id) {
+        public function edit($id)
+    {
         $data['customer'] = $this->CustomerModel->getCustomerById($id);
 
-        $this->form_validation->set_rules('customer_username', 'username', 'required');
-        $this->form_validation->set_rules('customer_password', 'password', 'required');
-        $this->form_validation->set_rules('customer_email', 'email', 'required|valid_email');
-        $this->form_validation->set_rules('customer_phonenumb', 'phone number', 'required');
-        $this->form_validation->set_rules('customer_address', 'address', 'required');
+        // Validasi input
+        $this->form_validation->set_rules('customer_username', 'Username', 'required');
+        $this->form_validation->set_rules('customer_email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('customer_phonenumb', 'Phone Number', 'required');
+        $this->form_validation->set_rules('customer_address', 'Address', 'required');
 
-        if ($this->form_validation->run() === FALSE) {
-            $this->load->view('customer/edit', $data);  
+        if ($this->form_validation->run() == FALSE) {
+            // Jika validasi gagal, kembalikan ke halaman edit dengan pesan error
+            $this->load->view('customer/edit', $data);
         } else {
-            $data = [
+            // Ambil data dari form
+            $updated_data = [
                 'customer_username' => $this->input->post('customer_username'),
-                'customer_password' => $this->input->post('customer_password'),
                 'customer_email' => $this->input->post('customer_email'),
                 'customer_phonenumb' => $this->input->post('customer_phonenumb'),
                 'customer_address' => $this->input->post('customer_address')
             ];
-            $this->CustomerModel->updateCustomer($id, $data);
-            redirect('customer');
-        }
+
+            // Simpan data ke database
+            if ($this->CustomerModel->updateCustomer($id, $updated_data)) {
+                $this->session->set_flashdata('success', 'Data pelanggan berhasil diperbarui.');
+            } else {
+                $this->session->set_flashdata('error', 'Terjadi kesalahan saat memperbarui data.');
+            }
+
+        // Redirect kembali ke halaman daftar pelanggan
+        redirect('customer');
     }
+}
+
 
     public function hapus($id) {
         $this->CustomerModel->deleteCustomer($id);
