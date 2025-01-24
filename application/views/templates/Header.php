@@ -42,9 +42,6 @@
             <a class="nav-link" href="transaction">Transaction</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="contact">Contact</a>
-          </li>
-          <li class="nav-item">
             <?php if (!$user && !$admin): ?>
               <!-- Tampilkan tombol Login jika tidak ada user atau admin yang login -->
               <a class="nav-link" href="<?= base_url('auth/login'); ?>">Login</a>

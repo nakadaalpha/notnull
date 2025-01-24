@@ -22,8 +22,8 @@
                 </a>
             </li>
             <li>
-                <a href="<?= base_url('dashboard/users'); ?>" class="nav-link text-dark">
-                    <i class="bi bi-people me-2"></i> Users
+                <a href="<?= base_url('dashboard/customers'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-people me-2"></i> Customers
                 </a>
             </li>
             <li>
@@ -62,10 +62,10 @@
                         <tr>
                             <!-- Kolom untuk Gambar -->
                             <td class="text-center">
-                                <img src="<?= base_url('public/src/images/cars/' . $car['car_image']); ?>" 
-                                     alt="Car Image" 
-                                     class="img-thumbnail" 
-                                     style="width: 100px; height: 75px; object-fit: cover;">
+                                <img src="<?= base_url('public/src/images/cars/' . $car['car_image']); ?>"
+                                    alt="Car Image"
+                                    class="img-thumbnail"
+                                    style="width: 100px; height: 75px; object-fit: cover;">
                             </td>
                             <td class="text-center"><?= $car['car_brand']; ?></td>
                             <td class="text-center"><?= $car['car_name']; ?></td>
@@ -78,11 +78,11 @@
                             </td>
                             <td class="text-center"><?= $car['stock']; ?></td>
                             <td class="text-center">
-                                <a href="<?= base_url('dashboard/edit_car/' . $car['car_id']); ?>" 
-                                   class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('dashboard/delete_car/' . $car['car_id']); ?>" 
-                                   class="btn btn-danger btn-sm" 
-                                   onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
+                                <a href="<?= base_url('dashboard/edit_car/' . $car['car_id']); ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('dashboard/delete_car/' . $car['car_id']); ?>"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

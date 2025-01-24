@@ -12,6 +12,7 @@ class Dashboard extends CI_Controller
         $this->load->model('UserModel');
         $this->load->model('cars');
         $this->load->model('brands');
+        $this->load->model('CustomerModel');
         $this->load->library('form_validation');
     }
     public function index()
@@ -346,7 +347,7 @@ class Dashboard extends CI_Controller
         }
     }
 
-    public function customer()
+    public function customers()
     {
         if ($this->session->userdata('admin_id')) {
             $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
@@ -355,6 +356,7 @@ class Dashboard extends CI_Controller
 
         $data['admin'] = $admin_data;
         $data['customers'] = $this->CustomerModel->getAllCustomers();
+        $this->load->view('templates/dashboard_head');
         $this->load->view('customer/index', $data);
     }
 

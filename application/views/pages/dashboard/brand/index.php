@@ -22,8 +22,8 @@
                 </a>
             </li>
             <li>
-                <a href="<?= base_url('dashboard/users'); ?>" class="nav-link text-dark">
-                    <i class="bi bi-people me-2"></i> Users
+                <a href="<?= base_url('dashboard/customers'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-people me-2"></i> Customers
                 </a>
             </li>
             <li>
@@ -64,11 +64,11 @@
                                     style="width: 100px; height: 100px; object-fit: cover;">
                             </td>
                             <td class="text-center">
-                                <a href="<?= base_url('dashboard/edit_brand/' . $brand['brand_id']); ?>" 
-                                   class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('dashboard/delete_brand/' . $brand['brand_id']); ?>" 
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
+                                <a href="<?= base_url('dashboard/edit_brand/' . $brand['brand_id']); ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('dashboard/delete_brand/' . $brand['brand_id']); ?>"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

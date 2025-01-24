@@ -22,8 +22,8 @@
                 </a>
             </li>
             <li>
-                <a href="<?= base_url('dashboard/users'); ?>" class="nav-link text-dark">
-                    <i class="bi bi-people me-2"></i> Users
+                <a href="<?= base_url('dashboard/customers'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-people me-2"></i> Customers
                 </a>
             </li>
             <li>
