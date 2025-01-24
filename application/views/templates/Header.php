@@ -44,46 +44,45 @@
           <li class="nav-item">
             <a class="nav-link" href="contact">Contact</a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="macanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Macan Electric
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="macanDropdown">
-              <li><a class="dropdown-item" href="macan-4s">Macan 4S</a></li>
-              <li><a class="dropdown-item" href="macan-turbo">Macan Turbo</a></li>
-            </ul>
-          </li>
           <li class="nav-item">
             <?php if (!$user && !$admin): ?>
               <!-- Tampilkan tombol Login jika tidak ada user atau admin yang login -->
               <a class="nav-link" href="<?= base_url('auth/login'); ?>">Login</a>
             <?php endif; ?>
           </li>
-          <li class="nav-item">
+          <li class="nav-item dropdown">
             <?php if ($user): ?>
-              Logged In as <?= htmlspecialchars($user->customer_username); ?>
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Logged In as <?= htmlspecialchars($user->customer_username); ?>
+              </a>
             <?php else: ?>
             <?php endif; ?>
-
+            <ul class="dropdown-menu">
+              <?php if ($user): ?>
+                <li class="nav-item">
+                  <a class="dropdown-item text-decoration-none text-black" href="<?= base_url('auth/logout'); ?>">Logout</a>
+                </li>
+              <?php endif; ?>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
             <?php if ($admin): ?>
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard">Dashboard</a>
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Logged In as <?= htmlspecialchars($admin->admin_name); ?>
+              </a>
+            <?php else: ?>
+            <?php endif; ?>
+            <ul class="dropdown-menu">
+              <?php if ($admin): ?>
+                <li class="nav-item">
+                  <a class="dropdown-item" href="dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="dropdown-item text-decoration-none text-black" href="<?= base_url('auth/logout'); ?>">Logout</a>
+                </li>
+              <?php endif; ?>
+            </ul>
           </li>
-          Logged In as <?= htmlspecialchars($admin->admin_name); ?>
-        <?php else: ?>
-        <?php endif; ?>
-        </li>
-        <?php if ($user): ?>
-          <li class="nav-item">
-            <button class="btn btn-danger"><a class="text-decoration-none text-black" href="<?= base_url('auth/logout'); ?>">Logout</a></button>
-          </li>
-        <?php endif; ?>
-
-        <?php if ($admin): ?>
-          <li class="nav-item">
-            <button class="btn btn-danger"><a class="text-decoration-none text-black" href="<?= base_url('auth/logout'); ?>">Logout</a></button>
-          </li>
-        <?php endif; ?>
         </ul>
       </div>
     </div>

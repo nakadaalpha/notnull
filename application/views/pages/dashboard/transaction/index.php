@@ -39,39 +39,41 @@
         </div>
     </div>
     <div class="container mt-5 flex-grow-1">
-        <h1 class="mb-4 text-center">Brands</h1>
-        <a href="<?= base_url('brand/add'); ?>" class="btn btn-success mb-3">Add brand</a>
+        <h1 class="mb-4 text-center">Transaction</h1>
+        <a href="<?= base_url('brand/add'); ?>" class="btn btn-success mb-3">Add transaction</a>
         <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-dark" style="position: sticky; top: 0; z-index: 1020;">
                     <tr class="text-center">
-                        <th>Brand id</th>
-                        <th>Brand name</th>
-                        <th>Image</th>
-                        <th>Action</th>
+                        <th>Transaction ID</th>
+                        <th>Customer ID</th>
+                        <th>Car ID</th>
+                        <th>Transaction Date</th>
+                        <th>Amount</th>
+                        <th>Total Price</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($brands as $brand): ?>
+                    <?php if (!empty($transactions)) : ?>
+                        <?php foreach ($transactions as $transaction) : ?>
+                            <tr>
+                                <td><?= $transaction['transaction_id']; ?></td>
+                                <td><?= $transaction['customer_id']; ?></td>
+                                <td><?= $transaction['car_id']; ?></td>
+                                <td><?= $transaction['transaction_date']; ?></td>
+                                <td><?= $transaction['amount']; ?></td>
+                                <td><?= $transaction['total_price']; ?></td>
+                                <td><?= $transaction['payment_method']; ?></td>
+                                <td><?= $transaction['status']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
                         <tr>
-                            <!-- Kolom untuk Gambar -->
-                            <td class="text-center"><?= $brand['brand_id']; ?></td>
-                            <td class="text-center"><?= $brand['car_brand']; ?></td>
-                            <td class="text-center">
-                                <img src="<?= base_url('public/src/images/brands/' . $brand['image']); ?>"
-                                    alt="Brand Image"
-                                    class="img-thumbnail"
-                                    style="width: 100px; height: 100px; object-fit: cover;">
-                            </td>
-                            <td class="text-center">
-                                <a href="<?= base_url('Car/edit/' . $brand['brand_id']); ?>"
-                                    class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('Car/delete/' . $brand['brand_id']); ?>"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
-                            </td>
+                            <td colspan="8" class="text-center">No transactions found.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

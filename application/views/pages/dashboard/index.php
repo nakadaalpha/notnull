@@ -33,40 +33,7 @@
     </ul>
     <hr>
     <div>
-        <span class="fw-bold"><?= $admin_name; ?></span>
+        <span class="fw-bold"><?= htmlspecialchars($admin->admin_name); ?></span>
         <a href="<?= base_url('auth/logout'); ?>" class="btn btn-danger btn-sm float-end">Logout</a>
     </div>
 </div>
-
-<!-- ``<div class="container mt-5">
-    <h1 class="mb-4">Welcome, <?= $admin_name; ?>!</h1>
-    <div class="row">
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Manage Cars</h5>
-                    <p class="card-text">Manage Cars Data/Stock</p>
-                    <a href="<?= base_url('car'); ?>" class="btn btn-primary">Cars Management</a>
-                 </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Manage Brands</h5>
-                    <p class="card-text">Manage Brands Data</p>
-                    <a href="<?= base_url('brand'); ?>" class="btn btn-success">Brands Management</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Manage Transactions</h5>
-                    <p class="card-text">Manage Transaction Data</p>
-                    <a href="<?= base_url('transaction/save_transaction'); ?>" class="btn btn-info">Access Report</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->

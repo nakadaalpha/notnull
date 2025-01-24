@@ -42,64 +42,64 @@ class car extends CI_Controller
             }
         }
     }
-    
-    public function edit($car_id)
-{
-    $data['car'] = $this->cars->get_car_by_id($car_id);
-    $data['brands'] = $this->db->get('brand')->result_array();
 
-    if (empty($data['car'])) {
-        $this->session->set_flashdata('error', 'Car not found.');
+    public function edit($car_id)
+    {
+        $data['car'] = $this->cars->get_car_by_id($car_id);
+        $data['brands'] = $this->db->get('brand')->result_array();
+
+        if (empty($data['car'])) {
+            $this->session->set_flashdata('error', 'Car not found.');
+            redirect('dashboard/cars');
+        }
+
+        $this->load->view('pages/dashboard/car/edit', $data);
+    }
+
+    public function update($car_id)
+    {
+        $name   = $this->input->post('car_name');
+        $brand  = $this->input->post('car_brand');
+        $type   = $this->input->post('car_type');
+        $year   = $this->input->post('year_made');
+        $price  = $this->input->post('price');
+        $stock  = $this->input->post('stock');
+        $status = $this->input->post('status');
+        $spec   = $this->input->post('car_spec');
+
+        $data = array(
+            'car_name' => $name,
+            'car_brand' => $brand,
+            'car_type' => $type,
+            'year_made' => $year,
+            'price' => $price,
+            'stock' => $stock,
+            'status' => $status,
+            'car_spec' => $spec
+        );
+
+        if (!empty($_FILES['car_image']['name'])) {
+            $data['car_image'] = $this->_upload_image();
+        }
+
+        if ($this->cars->update_car($car_id, $data)) {
+            $this->session->set_flashdata('success', 'Car updated successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to update car.');
+        }
         redirect('dashboard/cars');
     }
 
-    $this->load->view('pages/dashboard/car/edit', $data);
-}
-
-public function update($car_id)
-{
-    $name   = $this->input->post('car_name');
-    $brand  = $this->input->post('car_brand');
-    $type   = $this->input->post('car_type');
-    $year   = $this->input->post('year_made');
-    $price  = $this->input->post('price');
-    $stock  = $this->input->post('stock');
-    $status = $this->input->post('status');
-    $spec   = $this->input->post('car_spec');
-
-    $data = array(
-        'car_name' => $name,
-        'car_brand' => $brand,
-        'car_type' => $type,
-        'year_made' => $year,
-        'price' => $price,
-        'stock' => $stock,
-        'status' => $status,
-        'car_spec' => $spec
-    );
-
-    if (!empty($_FILES['car_image']['name'])) {
-        $data['car_image'] = $this->_upload_image();
-    }
-
-    if ($this->cars->update_car($car_id, $data)) {
-        $this->session->set_flashdata('success', 'Car updated successfully.');
-    } else {
-        $this->session->set_flashdata('error', 'Failed to update car.');
-    }
-    redirect('dashboard/cars');
-}
-
     public function delete($car_id)
-{
-    if ($this->cars->check_car_exists($car_id)) {
-        $this->cars->delete_car($car_id);
-        $this->session->set_flashdata('success', 'Car deleted successfully.');
-    } else {
-        $this->session->set_flashdata('error', 'Car not found.');
+    {
+        if ($this->cars->check_car_exists($car_id)) {
+            $this->cars->delete_car($car_id);
+            $this->session->set_flashdata('success', 'Car deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Car not found.');
+        }
+        redirect('dashboard/cars');
     }
-    redirect('dashboard/cars');
-}
     public function add_cars_action()
     {
         $name   = $this->input->post('car_name');

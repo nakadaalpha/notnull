@@ -1,15 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Car</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container mt-5">
+<div class="d-flex overflow-hidden">
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light vh-100" style="width: 280px;">
+        <a href="<?= base_url('dashboard'); ?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <i class="bi bi-display" style="font-size: 1.5rem; margin-right: .5rem;"></i>
+            <span class="fs-4">Dashboard</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="<?= base_url('dashboard/cars'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-car-front-fill me-2"></i> Cars
+                </a>
+            </li>
+            <li>
+                <a href="<?= base_url('dashboard/brands'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-globe-americas me-2"></i> Brands
+                </a>
+            </li>
+            <li>
+                <a href="<?= base_url('dashboard/transactions'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-journal-text me-2"></i> Transactions
+                </a>
+            </li>
+            <li>
+                <a href="<?= base_url('dashboard/users'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-people me-2"></i> Users
+                </a>
+            </li>
+            <li>
+                <a href="<?= base_url('home'); ?>" class="nav-link text-dark">
+                    <i class="bi bi-house me-2"></i> Home
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div>
+            <span class="fw-bold"><?= htmlspecialchars($admin->admin_name); ?></span>
+            <a href="<?= base_url('auth/logout'); ?>" class="btn btn-danger btn-sm float-end">Logout</a>
+        </div>
+    </div>
+    <div class="container vh-100 p-5" style="overflow-y: auto; width:100vw;">
         <h2 class="mb-4">Add New Car</h2>
         <?php if ($this->session->flashdata('success')): ?>
             <div class="alert alert-success">
@@ -17,7 +46,7 @@
             </div>
         <?php endif; ?>
         <?= validation_errors('<div class="alert alert-danger">', '</div>'); ?>
-        <form action="<?= base_url('car/add_cars_action') ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= base_url('dashboard/add_cars_action') ?>" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="car_name" class="form-label">Car Name</label>
                 <input type="text" class="form-control" id="car_name" name="car_name" required>
@@ -65,7 +94,4 @@
             <button type="submit" class="btn btn-primary">Add Car</button>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+</div>
