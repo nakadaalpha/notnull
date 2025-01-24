@@ -25,4 +25,28 @@ class brands extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function get_brand_by_id($brand_id) {
+        $this->db->where('brand_id', $brand_id);
+        $query = $this->db->get('brand');
+        return $query->row_array(); // Mengembalikan data sebagai array
+    }
+
+    public function add_brands($data)
+    {
+        $this->db->insert('brand', $data);
+    }
+
+    public function update_brand($brand_id, $data)
+    {
+        $this->db->where('brand_id', $brand_id);
+        return $this->db->update('brand', $data);
+    }
+
+    // Delete a car
+    public function delete_brand($brand_id)
+    {
+        $this->db->where('brand_id', $brand_id);
+        return $this->db->delete('brand');
+    }
 }

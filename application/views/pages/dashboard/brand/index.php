@@ -40,7 +40,7 @@
     </div>
     <div class="container mt-5 flex-grow-1">
         <h1 class="mb-4 text-center">Brands</h1>
-        <a href="<?= base_url('brand/add'); ?>" class="btn btn-success mb-3">Add brand</a>
+        <a href="<?= base_url('dashboard/add_brand'); ?>" class="btn btn-success mb-3">Add brand</a>
         <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-dark" style="position: sticky; top: 0; z-index: 1020;">
@@ -64,11 +64,11 @@
                                     style="width: 100px; height: 100px; object-fit: cover;">
                             </td>
                             <td class="text-center">
-                                <a href="<?= base_url('Car/edit/' . $brand['brand_id']); ?>"
-                                    class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('Car/delete/' . $brand['brand_id']); ?>"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
+                                <a href="<?= base_url('dashboard/edit_brand/' . $brand['brand_id']); ?>" 
+                                   class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('dashboard/delete_brand/' . $brand['brand_id']); ?>" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this car?');">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

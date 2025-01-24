@@ -39,27 +39,30 @@
         </div>
     </div>
     <div class="container vh-100 p-5" style="overflow-y: auto; width:100vw;">
-        <h2 class="mb-4">Add New Brand</h2>
-        <?php if ($this->session->flashdata('success')): ?>
-            <div class="alert alert-success">
-                <?= $this->session->flashdata('success'); ?>
-            </div>
-        <?php endif; ?>
-        <?= validation_errors('<div class="alert alert-danger">', '</div>'); ?>
-        <form action="<?= base_url('dashboard/add_brands_action') ?>" method="post" enctype="multipart/form-data">
+        <h1 class="text-center mb-4">Edit Brand</h1>
+        <form action="<?= base_url('dashboard/update_brand/' . $brand['brand_id']); ?>" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             <div class="mb-3">
                 <label for="brand_id" class="form-label">Brand Id</label>
-                <input type="text" class="form-control" id="brand_id" name="brand_id" required>
+                <input type="text" class="form-control" id="brand_id" name="brand_id" value="<?= $brand['brand_id']; ?>" required>
+                <div class="invalid-feedback">Please enter the brand name.</div>
             </div>
             <div class="mb-3">
                 <label for="car_brand" class="form-label">Brand Name</label>
-                <input type="text" class="form-control" id="car_brand" name="car_brand">
+                <input type="text" class="form-control" id="car_brand" name="car_brand" value="<?= $brand['car_brand']; ?>" required>
+                <div class="invalid-feedback">Please enter the car type.</div>
             </div>
             <div class="mb-3">
-                <label for="car_image" class="form-label">Brand Image</label>
+                <label for="image" class="form-label">Car Image:</label>
                 <input type="file" class="form-control" id="image" name="image">
+                <div class="mt-2">
+                    <img src="<?= base_url('public/src/images/brands/' . $brand['image']); ?>" alt="Car Image" class="img-thumbnail" width="150">
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Add Brand</button>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="<?= base_url('dashboard/brands'); ?>" class="btn btn-secondary">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

@@ -95,7 +95,7 @@ class Dashboard extends CI_Controller
 
         if ($this->db->affected_rows()) {
             $this->session->set_flashdata('success', 'Add Product successfully.');
-            redirect('dashboard/cars' . $id);
+            redirect('dashboard/cars');
         } else {
             $this->session->display_errors();
         }
@@ -194,6 +194,106 @@ class Dashboard extends CI_Controller
         $this->load->view('pages/dashboard/brand/index', $query);
     }
 
+    public function add_brand()
+    {
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+        }
+
+        $query['admin'] = $admin_data;
+        $this->load->view('templates/dashboard_head');
+        $this->load->view('pages/dashboard/brand/add', $query);
+    }
+
+    public function add_brands_action()
+    {
+        $id   = $this->input->post('brand_id');
+        $brand  = $this->input->post('car_brand');
+
+        $config['upload_path'] = './public/src/images/brands';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload('image')) {
+            $image = $this->upload->data('file_name');
+        } else {
+            $image = null;
+            $error = $this->upload->display_errors();
+        }
+
+        $data = array(
+            'brand_id' => $id,
+            'car_brand' => $brand,
+            'image' => $image
+        );
+        $this->brands->add_brands($data);
+
+        $this->db->select_max('brand_id');
+        $query = $this->db->get('brand')->row_array();
+        $id = $query['brand_id'];
+
+
+        if ($this->db->affected_rows()) {
+            $this->session->set_flashdata('success', 'Add Product successfully.');
+            redirect('dashboard/brands');
+        } else {
+            $this->session->display_errors();
+        }
+    }
+
+    public function edit_brand($brand_id)
+    {
+        $data['brand'] = $this->brands->get_brand_by_id($brand_id);
+
+        if (empty($data['brand'])) {
+            $this->session->set_flashdata('error', 'brand not found.');
+            redirect('dashboard/brands');
+        }
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+        }
+
+        $data['admin'] = $admin_data;
+        $this->load->view('templates/dashboard_head');
+        $this->load->view('pages/dashboard/brand/edit', $data);
+    }
+
+    public function update_brand($brand_id)
+    {
+        $id   = $this->input->post('brand_id');
+        $brand  = $this->input->post('car_brand');
+
+        $data = array(
+            'brand_id' => $id,
+            'car_brand' => $brand,
+        );
+
+        if (!empty($_FILES['image']['name'])) {
+            $data['image'] = $this->_upload_image();
+        }
+
+        if ($this->brands->update_brand($brand_id, $data)) {
+            $this->session->set_flashdata('success', 'Car updated successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Failed to update car.');
+        }
+        redirect('dashboard/brands');
+    }
+
+    public function delete_brand($brand_id)
+    {
+        if ($this->brands->check_car_exists($brand_id)) {
+            $this->brands->delete_brand($brand_id);
+            $this->session->set_flashdata('success', 'Brand deleted successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'Brand not found.');
+        }
+        redirect('dashboard/brands');
+    }
+
     public function transactions()
     {
         if ($this->session->userdata('admin_id')) {
@@ -244,6 +344,18 @@ class Dashboard extends CI_Controller
             $this->Mtransaction->insert_transaction($data);
             redirect('transaction/save_transaction');
         }
+    }
+
+    public function customer()
+    {
+        if ($this->session->userdata('admin_id')) {
+            $admin_id = $this->session->userdata('admin_id'); // Ambil user_id dari session
+            $admin_data = $this->UserModel->get_admin_by_id($admin_id); // Ambil data user
+        }
+
+        $data['admin'] = $admin_data;
+        $data['customers'] = $this->CustomerModel->getAllCustomers();
+        $this->load->view('customer/index', $data);
     }
 
     public function logout()
