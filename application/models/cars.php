@@ -61,9 +61,9 @@ class cars extends CI_Model
 
     public function get_all_cars()
     {
-        $this->db->select('car.*, brand.car_brand as brand_name');
+        $this->db->select('car.*, brand.car_brand');
         $this->db->from('car');
-        $this->db->join('brand', 'car.car_brand = brand.brand_id', 'left');
+        $this->db->join('brand', 'car.car_brand = brand.brand_id');
         return $this->db->get()->result_array();
     }
 

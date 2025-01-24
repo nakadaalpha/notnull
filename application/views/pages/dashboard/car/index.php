@@ -1,6 +1,6 @@
 <div class="container mt-5">
-    <h1 class="mb-4 text-center text-primary">Daftar Mobil</h1>
-    <a href="<?= base_url('Car/add'); ?>" class="btn btn-success mb-3">Tambah Mobil</a>
+    <h1 class="mb-4 text-center">Cars</h1>
+    <a href="<?= base_url('Car/add'); ?>" class="btn btn-success mb-3">Add car</a>
     <div class="table-responsive">
         <table class="table table-bordered table-hover table-striped">
             <thead class="table-dark">
@@ -22,7 +22,7 @@
                     <tr>
                         <!-- Kolom untuk Gambar -->
                         <td class="text-center">
-                            <img src="<?= base_url($car['car_image']); ?>" 
+                            <img src="<?= base_url('public/src/images/cars/' . $car['car_image']); ?>" 
                                  alt="Car Image" 
                                  class="img-thumbnail" 
                                  style="width: 100px; height: 75px; object-fit: cover;">
@@ -32,7 +32,7 @@
                         <td class="text-center"><?= $car['car_type']; ?></td>
                         <td class="text-center"><?= $car['year_made']; ?></td>
                         <td class="text-center"><?= $car['car_spec']; ?></td>
-                        <td class="text-end"><?= number_format($car['price'], 0, ',', '.'); ?> IDR</td>
+                        <td class="text-end">$<?= number_format($car['price'], 0, ',', '.'); ?></td>
                         <td class="<?= $car['status'] === 'Available' ? 'text-success text-center' : 'text-danger text-center'; ?>">
                             <?= $car['status']; ?>
                         </td>

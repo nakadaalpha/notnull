@@ -44,7 +44,7 @@
           <li class="nav-item">
             <a class="nav-link" href="contact">Contact</a>
           </li>
-          <!-- <li class="nav-item dropdown">
+          <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="macanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Macan Electric
             </a>
@@ -52,7 +52,7 @@
               <li><a class="dropdown-item" href="macan-4s">Macan 4S</a></li>
               <li><a class="dropdown-item" href="macan-turbo">Macan Turbo</a></li>
             </ul>
-          </li> -->
+          </li>
           <li class="nav-item">
             <?php if (!$user && !$admin): ?>
               <!-- Tampilkan tombol Login jika tidak ada user atau admin yang login -->

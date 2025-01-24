@@ -17,24 +17,24 @@
       <div class="row">
         <!-- Logo & Deskripsi -->
         <div class="col-md-4 col-lg-4 col-xl-3 mx-auto mt-3">
-          <h5 class="text-uppercase mb-4 font-weight-bold">NotNull</h5>
+          <h5 class="text-uppercase mb-4 font-weight-bold">notnull</h5>
           <p>
-            Menyediakan koleksi mobil premium terbaik dari berbagai brand ternama di seluruh dunia.
+          At notnull Premium Cars, we redefine luxury and performance. Discover an exclusive selection of premium cars from world-renowned brands. Our commitment is to deliver excellence, tailored service, and the ultimate driving experience for our clients.
           </p>
         </div>
 
         <!-- Navigasi Links -->
         <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-          <h5 class="text-uppercase mb-4 font-weight-bold">Navigasi</h5>
-          <p><a href="#" class="text-decoration-none footer-link">Beranda</a></p>
-          <p><a href="catalog" class="text-decoration-none footer-link">Katalog</a></p>
-          <p><a href="#" class="text-decoration-none footer-link">Tentang Kami</a></p>
-          <p><a href="#" class="text-decoration-none footer-link">Kontak</a></p>
+          <h5 class="text-uppercase mb-4 font-weight-bold">Navigation</h5>
+          <p><a href="<?= base_url('home')?>" class="text-decoration-none footer-link">Home</a></p>
+          <p><a href="<?= base_url('warehouse')?>" class="text-decoration-none footer-link">Warehouse</a></p>
+          <p><a href="<?= base_url('transaction')?>" class="text-decoration-none footer-link">Transaction</a></p>
+          <p><a href="<?= base_url('aboutus')?>" class="text-decoration-none footer-link">About Us</a></p>
         </div>
 
         <!-- Media Sosial -->
         <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
-          <h5 class="text-uppercase mb-4 font-weight-bold">Ikuti Kami</h5>
+          <h5 class="text-uppercase mb-4 font-weight-bold">Our Social Media</h5>
           <a href="#" class="footer-link me-3">
             <i class="bi bi-facebook" style="font-size: 1.5rem;"></i>
           </a>
