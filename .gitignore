@@ -63,6 +63,7 @@ frontend/.eslintcache
 frontend/coverage/
 frontend/.env
 frontend/.env.*
+frontend/.vite/
 
 # ==========================================
 # Backend (Express + Prisma)
