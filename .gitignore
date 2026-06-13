@@ -1,32 +1,94 @@
+# ==========================================
+# General OS / Environment
+# ==========================================
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
 
-application/cache/*
-!application/cache/index.html
-
-application/logs/*
-!application/logs/index.html
-
-!application/*/.htaccess
-
-composer.lock
-tests/mocks/database/ci_test.sqlite
-
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
-/vendor/
-
-# IDE Files
-#-------------------------
+# ==========================================
+# IDEs and Editors
+# ==========================================
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
 /nbproject/
-.idea/*
-
-## Sublime Text cache files
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.cache
-*.sublime-workspace
-*.sublime-project
-/tests/tests/
-/tests/results/
+
+# ==========================================
+# Common Node.js
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store
+.env
+.env.test
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+coverage/
+dist/
+build/
+*.log
+
+# ==========================================
+# Frontend (React + Vite)
+# ==========================================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.eslintcache
+frontend/coverage/
+frontend/.env
+frontend/.env.*
+
+# ==========================================
+# Backend (Express + Prisma)
+# ==========================================
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/coverage/
+backend/.env
+backend/.env.*
+# Note: prisma/migrations/ should typically be committed!
+
+# ==========================================
+# Legacy PHP (CodeIgniter)
+# ==========================================
+legacy-php/application/cache/*
+!legacy-php/application/cache/index.html
+legacy-php/application/logs/*
+!legacy-php/application/logs/index.html
+!legacy-php/application/*/.htaccess
+legacy-php/composer.lock
+legacy-php/tests/mocks/database/ci_test.sqlite
+legacy-php/user_guide_src/build/*
+legacy-php/user_guide_src/cilexer/build/*
+legacy-php/user_guide_src/cilexer/dist/*
+legacy-php/user_guide_src/cilexer/pycilexer.egg-info/*
+legacy-php/vendor/
+legacy-php/tests/tests/
+legacy-php/tests/results/

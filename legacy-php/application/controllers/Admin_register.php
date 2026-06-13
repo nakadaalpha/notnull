@@ -1,16 +1,19 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Admin_register extends CI_Controller {
+class Admin_register extends CI_Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('Admin_register_model');
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
     }
 
-    public function index() {
+    public function index()
+    {
         $this->form_validation->set_rules('username', 'Username', 'required|is_unique[admin.admin_username]');
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('password', 'Password', 'required');

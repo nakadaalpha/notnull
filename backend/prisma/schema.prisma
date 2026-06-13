@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Brand {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  imageUrl  String?
+  cars      Car[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Car {
+  id           Int           @id @default(autoincrement())
+  brandId      Int
+  brand        Brand         @relation(fields: [brandId], references: [id])
+  model        String
+  yearMade     Int
+  price        Float
+  status       String        @default("AVAILABLE") // AVAILABLE, RENTED, SOLD
+  imageUrl     String?
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Customer {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  phone        String?
+  address      String?
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  customer    Customer @relation(fields: [customerId], references: [id])
+  carId       Int
+  car         Car      @relation(fields: [carId], references: [id])
+  type        String   // RENT, BUY
+  totalPrice  Float
+  status      String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

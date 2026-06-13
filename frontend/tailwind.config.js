@@ -1,0 +1,22 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: 'class', // Allow manual toggle
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'], // Premium font look
+      },
+      colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+      }
+    },
+  },
+  plugins: [],
+}
