@@ -16,26 +16,31 @@ const getAllTransactions = async (req, res) => {
 };
 
 const createTransaction = async (req, res) => {
-  const { customerId, carId, type, totalPrice, startDate, endDate } = req.body;
+  const { customerId, carId, amount, totalPrice } = req.body;
   try {
-    // 1. Create transaction
+    const buyAmount = parseInt(amount) || 1;
+    
+    // 1. Check stock
+    const car = await prisma.car.findUnique({ where: { id: parseInt(carId) } });
+    if (!car || car.stock < buyAmount) {
+      return res.status(400).json({ error: 'Insufficient stock or car not found' });
+    }
+
+    // 2. Create transaction
     const newTransaction = await prisma.transaction.create({
       data: {
         customerId: parseInt(customerId),
         carId: parseInt(carId),
-        type, // RENT or BUY
+        amount: buyAmount,
         totalPrice: parseFloat(totalPrice),
-        startDate: startDate ? new Date(startDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
         status: 'PENDING'
       }
     });
 
-    // 2. Update car status (if rented or bought, it's no longer AVAILABLE)
-    const newStatus = type === 'RENT' ? 'RENTED' : 'SOLD';
+    // 3. Update car stock
     await prisma.car.update({
       where: { id: parseInt(carId) },
-      data: { status: newStatus }
+      data: { stock: car.stock - buyAmount }
     });
 
     res.status(201).json(newTransaction);
@@ -54,11 +59,12 @@ const updateTransactionStatus = async (req, res) => {
       data: { status }
     });
 
-    // If transaction is COMPLETED and it was a RENT, the car becomes AVAILABLE again
-    if (status === 'COMPLETED' && transaction.type === 'RENT') {
+    // If transaction is CANCELLED, return stock
+    if (status === 'CANCELLED') {
+      const car = await prisma.car.findUnique({ where: { id: transaction.carId } });
       await prisma.car.update({
         where: { id: transaction.carId },
-        data: { status: 'AVAILABLE' }
+        data: { stock: car.stock + transaction.amount }
       });
     }
 

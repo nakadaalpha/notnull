@@ -32,11 +32,9 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   const menuItems = [
-    { name: 'Models', path: '/warehouse' },
-    { name: 'Vehicle Purchase', path: '#' },
-    { name: 'Services', path: '#' },
-    { name: 'Experience', path: '#' },
-    { name: 'Find a Dealer', path: '#' }
+    { name: 'Home', path: '/' },
+    { name: 'Vehicle Collection', path: '/warehouse' },
+    { name: 'Admin Portal', path: '/admin' }
   ];
 
   return (
@@ -119,7 +117,9 @@ export default function Navbar() {
 
           {/* Header of Sidebar */}
           <div className="w-full flex items-center justify-between px-10 py-8 border-b border-primary/10">
-            <span className="text-xs font-bold tracking-[0.3em] uppercase text-primary/50">Navigation</span>
+            <span className="text-2xl md:text-3xl font-black tracking-widest uppercase" style={{ letterSpacing: '0.2em' }}>
+              NOT<span className="text-primary/50 font-light">NULL</span>
+            </span>
             
             {/* Mobile X button (inside) */}
             <button 

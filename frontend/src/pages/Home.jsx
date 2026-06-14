@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Sparkles } from 'lucide-react';
 import api from '../api';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -9,9 +10,12 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const [cars, setCars] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [recommendedCars, setRecommendedCars] = useState([]);
+  
   const heroRef = useRef(null);
   const highlightRef = useRef(null);
   const brandsRef = useRef(null);
+  const recommendedRef = useRef(null);
 
   useEffect(() => {
     // Fetch data
@@ -21,9 +25,23 @@ export default function Home() {
           api.get('/cars'),
           api.get('/brands')
         ]);
-        // Limit highlight cars to 3 for the home page
-        setCars(carsRes.data.slice(0, 3));
+        
+        const allCars = carsRes.data;
+        setCars(allCars.slice(0, 3));
         setBrands(brandsRes.data);
+
+        // AI Personalization Logic (Login-Free Customization)
+        try {
+          const tracked = JSON.parse(localStorage.getItem('trackedBrands') || '[]');
+          if (tracked.length > 0) {
+            const matches = allCars.filter(car => tracked.includes(car.brand?.name));
+            // Show up to 3 recommendations
+            setRecommendedCars(matches.slice(0, 3));
+          }
+        } catch (e) {
+          console.error("Failed to read tracking logic", e);
+        }
+
       } catch (error) {
         console.error("Failed to fetch data", error);
       }
@@ -33,12 +51,24 @@ export default function Home() {
 
   useEffect(() => {
     if (cars.length > 0 || brands.length > 0) {
-      // Hero Animation - Gentle fade and scale up
+      // Hero Animation
       gsap.fromTo(
         heroRef.current,
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out', delay: 0.2 }
       );
+
+      // Recommended Cars Stagger
+      if (recommendedRef.current && recommendedRef.current.children.length > 0) {
+        gsap.fromTo(
+          recommendedRef.current.children,
+          { y: 60, opacity: 0 },
+          {
+            y: 0, opacity: 1, duration: 1.2, stagger: 0.2, ease: 'expo.out',
+            scrollTrigger: { trigger: recommendedRef.current, start: 'top 85%' }
+          }
+        );
+      }
 
       // Highlight Cars Stagger
       if (highlightRef.current && highlightRef.current.children.length > 0) {
@@ -46,15 +76,8 @@ export default function Home() {
           highlightRef.current.children,
           { y: 60, opacity: 0 },
           {
-            y: 0,
-            opacity: 1,
-            duration: 1.2,
-            stagger: 0.2,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: highlightRef.current,
-              start: 'top 85%',
-            },
+            y: 0, opacity: 1, duration: 1.2, stagger: 0.2, ease: 'expo.out',
+            scrollTrigger: { trigger: highlightRef.current, start: 'top 85%' }
           }
         );
       }
@@ -65,20 +88,52 @@ export default function Home() {
           brandsRef.current.children,
           { y: 40, opacity: 0 },
           {
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            stagger: 0.1,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: brandsRef.current,
-              start: 'top 90%',
-            },
+            y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'expo.out',
+            scrollTrigger: { trigger: brandsRef.current, start: 'top 90%' }
           }
         );
       }
     }
-  }, [cars, brands]);
+  }, [cars, brands, recommendedCars]);
+
+  const renderCarCard = (car, isRecommended = false) => (
+    <div key={car.id} className="group cursor-pointer">
+      <Link to={`/car/${car.id}`} className="block h-full relative">
+        {isRecommended && (
+          <div className="absolute top-4 right-4 z-20 bg-background/80 backdrop-blur-md border border-primary/20 px-3 py-1.5 flex items-center space-x-2 shadow-xl">
+            <Sparkles size={12} className="text-primary/80" />
+            <span className="text-[10px] font-bold tracking-widest uppercase text-primary">For You</span>
+          </div>
+        )}
+        <div className="bg-secondary/20 dark:bg-black/20 overflow-hidden h-full flex flex-col transition-all duration-500 hover:bg-secondary/40 border border-transparent hover:border-primary/10 shadow-sm hover:shadow-2xl">
+          <div className="aspect-[16/10] overflow-hidden bg-white/50 dark:bg-white/5 p-8 flex items-center justify-center relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10 pointer-events-none"></div>
+            <img 
+              src={car.imageUrl ? `/images/cars/${car.imageUrl}` : `/images/cars/default.png`} 
+              alt={car.model}
+              className="w-full h-full object-contain relative z-0 transform group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              onError={(e) => { e.target.src = 'https://via.placeholder.com/600x400?text=Premium+Vehicle'; }}
+            />
+          </div>
+          <div className="p-8 flex-grow flex flex-col justify-between relative bg-background">
+            <div className="absolute top-0 left-8 w-12 h-[1px] bg-primary/30 group-hover:w-full group-hover:left-0 transition-all duration-700"></div>
+            <div>
+              <p className="text-primary/50 text-xs font-bold tracking-[0.2em] uppercase mb-2">
+                {car.brand?.name}
+              </p>
+              <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-wide mb-4">
+                {car.model}
+              </h3>
+            </div>
+            <div className="mt-8 flex justify-between items-center">
+              <span className="text-lg font-light">${car.price.toLocaleString()}</span>
+              <span className="text-xs font-bold tracking-widest uppercase hover:underline">Discover</span>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
 
   return (
     <div className="w-full bg-background min-h-screen">
@@ -97,6 +152,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Personalization Section */}
+      {recommendedCars.length > 0 && (
+        <section className="max-w-[1600px] mx-auto px-6 md:px-12 pt-24 pb-8 border-b border-primary/5">
+          <div className="flex flex-col mb-12">
+            <h2 className="text-xs font-bold tracking-[0.3em] uppercase text-primary/50 mb-2 flex items-center">
+              <Sparkles size={14} className="mr-2" /> Smart Recommendations
+            </h2>
+            <h3 className="text-3xl md:text-4xl font-light tracking-widest uppercase">
+              Curated <span className="font-bold">For You</span>
+            </h3>
+          </div>
+          <div ref={recommendedRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+            {recommendedCars.map((car) => renderCarCard(car, true))}
+          </div>
+        </section>
+      )}
+
       {/* Luxury HIGHLIGHT Section */}
       <section className="max-w-[1600px] mx-auto px-6 md:px-12 py-24">
         <div className="flex items-end justify-between mb-16 border-b border-primary/10 pb-6">
@@ -110,42 +182,7 @@ export default function Home() {
         
         <div ref={highlightRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {cars.length > 0 ? (
-            cars.map((car) => (
-              <div key={car.id} className="group cursor-pointer">
-                <Link to={`/car/${car.id}`} className="block h-full">
-                  <div className="bg-secondary/20 dark:bg-black/20 overflow-hidden h-full flex flex-col transition-all duration-500 hover:bg-secondary/40 border border-transparent hover:border-primary/10 shadow-sm hover:shadow-2xl">
-                    <div className="aspect-[16/10] overflow-hidden bg-white/50 dark:bg-white/5 p-8 flex items-center justify-center relative">
-                      {/* Subtle Vignette overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10 pointer-events-none"></div>
-                      
-                      <img 
-                        src={car.imageUrl ? `/images/cars/${car.imageUrl}` : `/images/cars/default.png`} 
-                        alt={car.model}
-                        className="w-full h-full object-contain relative z-0 transform group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/600x400?text=Premium+Vehicle'; }}
-                      />
-                    </div>
-                    <div className="p-8 flex-grow flex flex-col justify-between relative bg-background">
-                      {/* Decorative Line */}
-                      <div className="absolute top-0 left-8 w-12 h-[1px] bg-primary/30 group-hover:w-full group-hover:left-0 transition-all duration-700"></div>
-                      
-                      <div>
-                        <p className="text-primary/50 text-xs font-bold tracking-[0.2em] uppercase mb-2">
-                          {car.brand?.name}
-                        </p>
-                        <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-wide mb-4">
-                          {car.model}
-                        </h3>
-                      </div>
-                      <div className="mt-8 flex justify-between items-center">
-                        <span className="text-lg font-light">${car.price.toLocaleString()} / day</span>
-                        <span className="text-xs font-bold tracking-widest uppercase hover:underline">Discover</span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))
+            cars.map((car) => renderCarCard(car, false))
           ) : (
             <div className="col-span-3 h-40 flex items-center justify-center border border-primary/10">
               <p className="text-primary/40 font-light tracking-widest uppercase">No vehicles currently available</p>

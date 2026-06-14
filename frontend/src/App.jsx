@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
+import ChatWidget from './components/ChatWidget';
 import Home from './pages/Home';
 import Warehouse from './pages/Warehouse';
 import CarDetail from './pages/CarDetail';
@@ -22,6 +23,7 @@ function App() {
                 <main className="flex-grow">
                   <Home />
                 </main>
+                <ChatWidget />
               </div>
             } />
             <Route path="/warehouse" element={
@@ -30,6 +32,7 @@ function App() {
                 <main className="flex-grow">
                   <Warehouse />
                 </main>
+                <ChatWidget />
               </div>
             } />
             <Route path="/car/:id" element={
@@ -38,6 +41,7 @@ function App() {
                 <main className="flex-grow">
                   <CarDetail />
                 </main>
+                <ChatWidget />
               </div>
             } />
 

@@ -3,7 +3,9 @@ const prisma = new PrismaClient();
 
 const getAllCustomers = async (req, res) => {
   try {
-    const customers = await prisma.customer.findMany();
+    const customers = await prisma.user.findMany({
+      where: { role: 'CUSTOMER' }
+    });
     res.json(customers);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch customers' });
@@ -12,9 +14,9 @@ const getAllCustomers = async (req, res) => {
 
 const getCustomerById = async (req, res) => {
   try {
-    const customer = await prisma.customer.findUnique({
-      where: { id: parseInt(req.params.id) },
-      include: { transactions: true }
+    const customer = await prisma.user.findFirst({
+      where: { id: parseInt(req.params.id), role: 'CUSTOMER' },
+      include: { transactions: true, reservationsAsCust: true }
     });
     if (customer) {
       res.json(customer);
@@ -27,10 +29,10 @@ const getCustomerById = async (req, res) => {
 };
 
 const createCustomer = async (req, res) => {
-  const { name, email, phone, address } = req.body;
+  const { username, password, email, phone, address } = req.body;
   try {
-    const newCustomer = await prisma.customer.create({
-      data: { name, email, phone, address }
+    const newCustomer = await prisma.user.create({
+      data: { username, password, email, phone, address, role: 'CUSTOMER' }
     });
     res.status(201).json(newCustomer);
   } catch (error) {

@@ -40,17 +40,12 @@ async function migrate() {
     const carMap = {}; // Maps old car_id (varchar) to new PostgreSQL car ID (int)
 
     for (const c of cars) {
-      // Map status
-      let newStatus = 'AVAILABLE';
-      if (c.status.toUpperCase() === 'SOLD') newStatus = 'SOLD';
-      if (c.status.toUpperCase() === 'RENTED') newStatus = 'RENTED';
-
       const newCar = await prisma.car.create({
         data: {
           model: c.car_name,
           yearMade: parseInt(c.year_made),
           price: parseFloat(c.price),
-          status: newStatus,
+          stock: parseInt(c.stock) || 1,
           imageUrl: c.car_image || null,
           brandId: brandMap[c.car_brand] || 1 // Fallback to 1 if not found
         }
@@ -59,23 +54,25 @@ async function migrate() {
     }
     console.log(`Migrated ${cars.length} cars.`);
 
-    // 3. Migrate Customers
-    console.log('Migrating Customers...');
+    // 3. Migrate Customers into Users
+    console.log('Migrating Customers to Users...');
     const [customers] = await connection.execute('SELECT * FROM customer');
-    const customerMap = {}; // Maps old customer_id to new PostgreSQL customer ID
+    const customerMap = {}; // Maps old customer_id to new PostgreSQL User ID
 
     for (const cus of customers) {
-      const newCus = await prisma.customer.create({
+      const newCus = await prisma.user.create({
         data: {
-          name: cus.customer_username,
+          username: cus.customer_username,
+          password: cus.customer_password || 'password123', // From legacy
           email: cus.customer_email || `${cus.customer_username}@example.com`,
           phone: cus.customer_phonenumb || null,
-          address: cus.customer_address || null
+          address: cus.customer_address || null,
+          role: 'CUSTOMER'
         }
       });
       customerMap[cus.customer_id] = newCus.id;
     }
-    console.log(`Migrated ${customers.length} customers.`);
+    console.log(`Migrated ${customers.length} customers to Users.`);
 
     // 4. Migrate Transactions
     console.log('Migrating Transactions...');
@@ -85,22 +82,16 @@ async function migrate() {
       let tStatus = 'COMPLETED';
       if (t.status.toUpperCase() === 'PENDING') tStatus = 'PENDING';
 
-      // Old db only has transaction_date and amount (days). Let's calculate endDate
-      const startDate = new Date(t.transaction_date);
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + parseInt(t.amount));
-
       // Check if mapped car and customer exist
       if (customerMap[t.customer_id] && carMap[t.car_id]) {
         await prisma.transaction.create({
           data: {
             customerId: customerMap[t.customer_id],
             carId: carMap[t.car_id],
-            type: 'RENT',
-            startDate: startDate,
-            endDate: endDate,
+            amount: parseInt(t.amount) || 1,
             totalPrice: parseFloat(t.total_price),
-            status: tStatus
+            status: tStatus,
+            createdAt: new Date(t.transaction_date) // Map legacy date to createdAt
           }
         });
       }
