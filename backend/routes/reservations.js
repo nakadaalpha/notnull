@@ -29,19 +29,35 @@ router.get('/user/:userId', async (req, res) => {
 
 // Create a new reservation
 router.post('/', async (req, res) => {
-  const { customerId, carId, salesId, inspectionDate, notes } = req.body;
+  const { customerId, carId, salesId, inspectionDate, fullName, email, identityNumber, notes } = req.body;
   try {
+    // Save administrative data as JSON in notes
+    const adminData = {
+      fullName,
+      email,
+      identityNumber,
+      userNotes: notes || ''
+    };
+
     const newReservation = await prisma.reservation.create({
       data: {
         customerId: parseInt(customerId),
         carId: parseInt(carId),
         salesId: salesId ? parseInt(salesId) : null,
         inspectionDate: new Date(inspectionDate),
-        notes: notes || '',
+        notes: JSON.stringify(adminData),
         status: 'PENDING'
       }
     });
-    res.status(201).json(newReservation);
+    
+    // Simulate Xendit integration
+    const mockCheckoutUrl = `https://checkout.xendit.co/web/mock-${newReservation.id}-${Date.now()}`;
+    
+    res.status(201).json({
+      message: 'Reservation created. Redirect to checkout.',
+      reservation: newReservation,
+      checkout_url: mockCheckoutUrl
+    });
   } catch (error) {
     res.status(500).json({ error: 'Failed to create reservation' });
   }

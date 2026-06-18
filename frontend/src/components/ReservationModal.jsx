@@ -4,9 +4,9 @@ import { X, CreditCard } from 'lucide-react';
 export default function ReservationModal({
   isModalOpen, setIsModalOpen, car,
   inspectionDate, setInspectionDate,
-  cardNumber, setCardNumber,
-  expiry, setExpiry,
-  cvv, setCvv,
+  fullName, setFullName,
+  email, setEmail,
+  identityNumber, setIdentityNumber,
   handleReservationSubmit,
   isSubmitting, submitMessage
 }) {
@@ -37,7 +37,7 @@ export default function ReservationModal({
           </div>
           <div className="mt-8 flex items-center text-[10px] tracking-widest uppercase text-primary/40">
             <CreditCard size={14} className="mr-2" />
-            SSL Encrypted Payment
+            Powered by Xendit Payment Gateway
           </div>
         </div>
 
@@ -50,7 +50,7 @@ export default function ReservationModal({
           <form onSubmit={handleReservationSubmit} className="space-y-6 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Preferred Date & Time</label>
+                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Preferred Inspection Date & Time</label>
                 <input 
                   type="datetime-local" 
                   value={inspectionDate}
@@ -61,41 +61,38 @@ export default function ReservationModal({
               </div>
               
               <div className="col-span-2">
-                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Card Number</label>
-                <div className="relative">
-                  <input 
-                    type="text" 
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    placeholder="0000 0000 0000 0000"
-                    maxLength="19"
-                    className="w-full bg-transparent border border-primary/20 p-3 pl-10 text-sm font-light focus:outline-none focus:border-primary transition-colors rounded-md"
-                  />
-                  <CreditCard size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40" />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Expiry Date</label>
+                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Full Name</label>
                 <input 
                   type="text" 
-                  value={expiry}
-                  onChange={(e) => setExpiry(e.target.value)}
-                  placeholder="MM/YY"
-                  maxLength="5"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="John Doe"
                   className="w-full bg-transparent border border-primary/20 p-3 text-sm font-light focus:outline-none focus:border-primary transition-colors rounded-md"
+                  required
                 />
               </div>
               
-              <div>
-                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">CVV</label>
+              <div className="col-span-2 md:col-span-1">
+                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Email Address</label>
                 <input 
-                  type="password" 
-                  value={cvv}
-                  onChange={(e) => setCvv(e.target.value)}
-                  placeholder="***"
-                  maxLength="4"
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="john@example.com"
                   className="w-full bg-transparent border border-primary/20 p-3 text-sm font-light focus:outline-none focus:border-primary transition-colors rounded-md"
+                  required
+                />
+              </div>
+              
+              <div className="col-span-2 md:col-span-1">
+                <label className="block text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70 mb-2">Identity Number (NIK)</label>
+                <input 
+                  type="text" 
+                  value={identityNumber}
+                  onChange={(e) => setIdentityNumber(e.target.value)}
+                  placeholder="3170000000000"
+                  className="w-full bg-transparent border border-primary/20 p-3 text-sm font-light focus:outline-none focus:border-primary transition-colors rounded-md"
+                  required
                 />
               </div>
             </div>
@@ -111,7 +108,7 @@ export default function ReservationModal({
               disabled={isSubmitting}
               className="w-full py-4 bg-foreground text-background text-xs font-bold tracking-[0.2em] uppercase hover:bg-primary transition-colors disabled:opacity-50 mt-4 rounded-md"
             >
-              {isSubmitting ? 'Processing...' : 'Pay $500 & Reserve'}
+              {isSubmitting ? 'Generating Invoice...' : 'Proceed to Xendit Payment'}
             </button>
           </form>
         </div>

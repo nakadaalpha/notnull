@@ -35,10 +35,10 @@ export default function CarDetail() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   
-  // Payment Mock States
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
+  // Administrative Data
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [identityNumber, setIdentityNumber] = useState('');
 
   // Financing Calculator States
   const [downPayment, setDownPayment] = useState(20);
@@ -93,36 +93,42 @@ export default function CarDetail() {
 
   const handleReservationSubmit = async (e) => {
     e.preventDefault();
-    if (!cardNumber || !expiry || !cvv) {
-      setSubmitMessage('Please complete the payment details.');
+    if (!fullName || !email || !identityNumber || !inspectionDate) {
+      setSubmitMessage('Please complete all administrative details.');
       return;
     }
     setIsSubmitting(true);
-    setSubmitMessage('Processing secure payment via Mock Stripe...');
+    setSubmitMessage('Generating Xendit Invoice... Redirecting to secure checkout...');
     
-    setTimeout(async () => {
-      try {
-        await api.post('/reservations', {
-          customerId: 1,
-          carId: parseInt(id),
-          inspectionDate,
-          notes
-        });
-        setSubmitMessage('Payment successful! Reservation confirmed.');
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setSubmitMessage('');
-          setInspectionDate('');
-          setNotes('');
-          setCardNumber(''); setExpiry(''); setCvv('');
-        }, 3000);
-      } catch (error) {
-        console.error("Failed to book inspection", error);
-        setSubmitMessage('Failed to process. Please try again.');
-      } finally {
+    try {
+      const response = await api.post('/reservations', {
+        customerId: 1,
+        carId: parseInt(id),
+        inspectionDate,
+        fullName,
+        email,
+        identityNumber
+      });
+      
+      setSubmitMessage('Invoice generated! Redirecting...');
+      
+      // Simulate redirect to checkout URL
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSubmitMessage('');
+        setInspectionDate('');
+        setFullName(''); setEmail(''); setIdentityNumber('');
         setIsSubmitting(false);
-      }
-    }, 2000);
+        
+        // Open the Xendit mock URL in a new tab
+        window.open(response.data.checkout_url, '_blank');
+      }, 1500);
+      
+    } catch (error) {
+      console.error("Failed to book inspection", error);
+      setSubmitMessage('Failed to connect to Payment Gateway. Please try again.');
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -280,9 +286,9 @@ export default function CarDetail() {
       <ReservationModal 
         isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} car={car}
         inspectionDate={inspectionDate} setInspectionDate={setInspectionDate}
-        cardNumber={cardNumber} setCardNumber={setCardNumber}
-        expiry={expiry} setExpiry={setExpiry}
-        cvv={cvv} setCvv={setCvv}
+        fullName={fullName} setFullName={setFullName}
+        email={email} setEmail={setEmail}
+        identityNumber={identityNumber} setIdentityNumber={setIdentityNumber}
         handleReservationSubmit={handleReservationSubmit}
         isSubmitting={isSubmitting} submitMessage={submitMessage}
       />
