@@ -2,10 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
+
+// Serve static files (like custom swagger CSS)
+app.use(express.static('public'));
 
 // Setup Socket.io
 const io = new Server(server, {
@@ -52,6 +57,11 @@ const reservationRoutes = require('./routes/reservations');
 const webhookRoutes = require('./routes/webhooks');
 
 // Mount Routes
+const swaggerOptions = {
+  customCssUrl: '/swagger-theme.css',
+  customSiteTitle: 'NOTNULL API Documentation'
+};
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 app.use('/api/cars', carRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/brands', brandRoutes);

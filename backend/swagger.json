@@ -1,0 +1,209 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "NOTNULL API",
+    "version": "1.0.0",
+    "description": "API documentation for NOTNULL Premium Digital Showroom backend"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" },
+                  "role": { "type": "string", "example": "CUSTOMER" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User registered successfully" },
+          "400": { "description": "Username or email already exists" }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login to account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful, returns JWT token" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/api/cars": {
+      "get": {
+        "tags": ["Cars"],
+        "summary": "Get all cars",
+        "responses": {
+          "200": { "description": "List of all cars" }
+        }
+      },
+      "post": {
+        "tags": ["Cars"],
+        "summary": "Create a new car (Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "201": { "description": "Car created" }
+        }
+      }
+    },
+    "/api/cars/{id}": {
+      "get": {
+        "tags": ["Cars"],
+        "summary": "Get car details by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Car details" },
+          "404": { "description": "Car not found" }
+        }
+      }
+    },
+    "/api/reservations": {
+      "post": {
+        "tags": ["Reservations"],
+        "summary": "Create a reservation (Book Inspection)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "carId": { "type": "integer" },
+                  "inspectionDate": { "type": "string", "format": "date-time" },
+                  "fullName": { "type": "string" },
+                  "email": { "type": "string" },
+                  "identityNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Reservation created, returns mock checkout_url" }
+        }
+      }
+    },
+    "/api/reservations/user/{userId}": {
+      "get": {
+        "tags": ["Reservations"],
+        "summary": "Get reservations by user ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "List of reservations" }
+        }
+      }
+    },
+    "/api/reservations/{id}/status": {
+      "put": {
+        "tags": ["Reservations"],
+        "summary": "Update reservation status (Sales/Admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "string", "example": "PAID" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated" }
+        }
+      }
+    },
+    "/api/webhooks/xendit": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Xendit Callback Webhook (Simulated)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reservationId": { "type": "integer" },
+                  "status": { "type": "string", "example": "PAID" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Webhook processed" }
+        }
+      }
+    }
+  }
+}

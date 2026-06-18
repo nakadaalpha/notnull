@@ -1,0 +1,195 @@
+/* Swagger Custom Theme for NOTNULL */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+
+/* Base Styles (Light Mode Default) */
+body {
+  font-family: 'Inter', sans-serif !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.swagger-ui {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.swagger-ui .topbar {
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.swagger-ui .topbar .download-url-wrapper {
+  display: none !important; /* Hide the top search bar */
+}
+
+.swagger-ui .info .title {
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.swagger-ui .btn {
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em;
+  font-weight: 700 !important;
+  border-radius: 4px !important;
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+  }
+
+  .swagger-ui {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .topbar {
+    background-color: #050505 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .swagger-ui .info .title {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .info p, .swagger-ui .info a {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .swagger-ui .scheme-container {
+    background-color: #050505 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none !important;
+  }
+
+  .swagger-ui .opblock {
+    background-color: #0a0a0a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  .swagger-ui .opblock .opblock-summary-method {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .swagger-ui .opblock .opblock-summary-path {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .opblock .opblock-summary-description {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .swagger-ui .opblock-description-wrapper p, .swagger-ui .opblock-external-docs-wrapper p, .swagger-ui .opblock-title_normal p {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .btn {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .swagger-ui .btn.execute {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+  }
+
+  .swagger-ui .opblock-body pre.microlight {
+    background-color: #050505 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .swagger-ui .parameters-col_name {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui table thead tr td, .swagger-ui table thead tr th {
+    color: rgba(255, 255, 255, 0.6) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .swagger-ui .parameter__name {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .parameter__type {
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  .swagger-ui input[type=text], .swagger-ui input[type=password], .swagger-ui input[type=search], .swagger-ui textarea {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .swagger-ui .responses-inner h4, .swagger-ui .responses-inner h5 {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .response-col_status {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .response-col_description {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .swagger-ui .tab li button.tablinks {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .swagger-ui .tab li.active button.tablinks {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui section.models h4 {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui section.models .model-container {
+    background: #0a0a0a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .swagger-ui .model-title {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .model {
+    color: #ffffff !important;
+  }
+
+  .swagger-ui .prop-type {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .swagger-ui .auth-container {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .swagger-ui .auth-wrapper .authorize {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+  }
+
+  .swagger-ui svg {
+    fill: #ffffff !important;
+  }
+
+  .swagger-ui select {
+    background: #000000 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+}
