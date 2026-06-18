@@ -3,7 +3,9 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
 import gsap from 'gsap';
 import api from '../api';
-import { Settings2, Gauge } from 'lucide-react';
+import CarCard from '../components/CarCard';
+import PageHero from '../components/PageHero';
+import BrandMarquee from '../components/BrandMarquee';
 
 export default function Warehouse() {
   const [cars, setCars] = useState([]);
@@ -75,45 +77,25 @@ export default function Warehouse() {
   return (
     <div className="w-full pb-32 bg-background min-h-screen">
       {/* Elegant Hero Section */}
-      <section className="mb-16 w-full relative h-[40vh] md:h-[50vh] overflow-hidden">
-        <div className="absolute inset-0 bg-black/40 z-10"></div>
-        <img 
-          src="/images/hero/warehouse.png" 
-          alt="Warehouse Hero" 
-          className="w-full h-full object-cover transform scale-105" 
+      <div className="mb-16">
+        <PageHero 
+          imageUrl="/images/hero/warehouse.png"
+          pretext="The Collection"
+          title="Model"
+          subtitleHighlight="Overview"
+          titleLayout="center"
+          heightClass="h-screen"
+          overlayClass="bg-black/40"
         />
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center">
-          <p className="text-white/60 text-xs font-bold tracking-[0.4em] uppercase mb-4">The Collection</p>
-          <h1 className="text-white text-4xl md:text-6xl font-light tracking-[0.1em] uppercase">
-            Model <span className="font-bold">Overview</span>
-          </h1>
-        </div>
-      </section>
+      </div>
 
       <section ref={contentRef} className="max-w-[1600px] mx-auto px-6 md:px-12">
-        {/* Brand Marquee (Minimalist) */}
-        <div className="w-full border-y border-primary/10 mb-16 overflow-hidden relative group">
-          {/* Fading edges for the marquee effect */}
-          <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
-          
-          <div className="flex py-8 space-x-16 w-max animate-marquee-scroll px-8">
-            {[...brands, ...brands, ...brands, ...brands].map((brand, idx) => (
-              <div 
-                key={`${brand.id}-${idx}`} 
-                className={`flex-none w-24 h-14 flex items-center justify-center transition-all cursor-pointer ${selectedBrand === brand.id.toString() ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
-                onClick={() => setSelectedBrand(selectedBrand === brand.id.toString() ? '' : brand.id.toString())}
-              >
-                <img 
-                  src={brand.imageUrl ? `/images/brands/${brand.imageUrl}` : `/images/brands/${brand.name.toLowerCase()}.png`} 
-                  alt={brand.name}
-                  className="max-w-full max-h-full object-contain filter dark:invert hover:scale-110 transition-transform duration-500"
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Brand Marquee */}
+        <BrandMarquee 
+          brands={brands} 
+          selectedBrand={selectedBrand} 
+          setSelectedBrand={setSelectedBrand} 
+        />
 
         <div className="flex flex-col md:flex-row gap-12 lg:gap-20">
           {/* Sidebar Filter (Clean & Typography focused) */}
@@ -190,52 +172,7 @@ export default function Warehouse() {
             ) : filteredCars.length > 0 ? (
               <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredCars.map((car) => (
-                  <div key={car.id} className="group cursor-pointer flex flex-col h-full bg-background" onClick={() => window.location.href=`/car/${car.id}`}>
-                    <div className="aspect-[4/3] bg-secondary/20 dark:bg-white/5 p-8 flex items-center justify-center overflow-hidden relative">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent z-10 pointer-events-none"></div>
-                      <img 
-                        src={car.imageUrl ? `/images/cars/${car.imageUrl}` : `/images/cars/default.png`} 
-                        alt={car.model}
-                        className="w-full h-full object-contain transform group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] relative z-0"
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/400x300?text=Premium+Vehicle'; }}
-                      />
-                    </div>
-                    <div className="pt-6 pb-4 flex-grow flex flex-col justify-between border-b border-primary/10 group-hover:border-primary/50 transition-colors duration-500">
-                      <div>
-                        <p className="text-primary/50 text-xs font-bold tracking-[0.2em] uppercase mb-1">
-                          {car.brand?.name}
-                        </p>
-                        <h5 className="font-bold text-2xl uppercase tracking-wide mb-2">
-                          {car.model}
-                        </h5>
-                        {car.specifications?.performance && (
-                          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 mb-2">
-                            {car.specifications.performance.engine_type && (
-                              <div className="flex items-center text-primary/70">
-                                <Settings2 size={14} className="mr-2" strokeWidth={1.5} />
-                                <span className="text-[10px] uppercase tracking-widest font-bold">{car.specifications.performance.engine_type}</span>
-                              </div>
-                            )}
-                            {car.specifications.performance.horsepower && (
-                              <div className="flex items-center text-primary/70">
-                                <Gauge size={14} className="mr-2" strokeWidth={1.5} />
-                                <span className="text-[10px] uppercase tracking-widest font-bold">{car.specifications.performance.horsepower.split(' @')[0]}</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex justify-between items-end mt-4">
-                        <div>
-                          <p className="text-xs font-light text-primary/60 mb-1">From</p>
-                          <span className="font-light text-xl">${car.price.toLocaleString()}</span>
-                        </div>
-                        <span className="text-[10px] font-bold tracking-widest uppercase hover:underline">
-                          Explore &rsaquo;
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <CarCard key={car.id} car={car} />
                 ))}
               </div>
             ) : (
