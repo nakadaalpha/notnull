@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 import { ThemeProvider } from './context/ThemeContext';
+import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ChatWidget from './components/ChatWidget';
 import Home from './pages/Home';
 import Warehouse from './pages/Warehouse';
@@ -15,6 +17,7 @@ function App() {
     <ThemeProvider>
       <ReactLenis root options={{ lerp: 0.2, wheelMultiplier: 1.5, smoothWheel: true }}>
         <Router>
+          <ScrollToTop />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={
@@ -23,6 +26,7 @@ function App() {
                 <main className="flex-grow">
                   <Home />
                 </main>
+                <Footer />
                 <ChatWidget />
               </div>
             } />
@@ -32,6 +36,7 @@ function App() {
                 <main className="flex-grow">
                   <Warehouse />
                 </main>
+                <Footer />
                 <ChatWidget />
               </div>
             } />
@@ -41,6 +46,7 @@ function App() {
                 <main className="flex-grow">
                   <CarDetail />
                 </main>
+                <Footer />
                 <ChatWidget />
               </div>
             } />

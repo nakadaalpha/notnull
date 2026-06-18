@@ -37,6 +37,8 @@ export default function Navbar() {
     { name: 'Admin Portal', path: '/admin' }
   ];
 
+  const isDarkHeroPage = location.pathname === '/' || location.pathname === '/warehouse';
+
   return (
     <>
       {/* Top Navbar */}
@@ -44,7 +46,7 @@ export default function Navbar() {
         className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
           scrolled && !isMenuOpen
             ? 'bg-white/80 dark:bg-black/80 backdrop-blur-lg shadow-sm py-4 text-foreground' 
-            : 'bg-transparent py-6 text-white'
+            : `bg-transparent py-6 ${isDarkHeroPage ? 'text-white' : 'text-foreground'}`
         }`}
       >
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -143,7 +145,7 @@ export default function Navbar() {
                     className="group flex items-center justify-between py-5 border-b border-primary/5 hover:border-primary/30 transition-colors duration-300 relative overflow-hidden"
                   >
                     <span className="text-2xl font-light tracking-wide group-hover:translate-x-2 transition-transform duration-300">{item.name}</span>
-                    <ChevronRight size={20} strokeWidth={1} className="text-primary/30 group-hover:text-primary group-hover:-translate-x-2 transition-all duration-300" />
+                    <ChevronRight size={20} strokeWidth={1} className="text-primary/30" />
                   </Link>
                 </li>
               ))}

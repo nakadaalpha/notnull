@@ -74,7 +74,7 @@ backend/build/
 backend/coverage/
 backend/.env
 backend/.env.*
-# Note: prisma/migrations/ should typically be committed!
+prisma/migrations/
 
 # ==========================================
 # Legacy PHP (CodeIgniter)

@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { useLenis } from 'lenis/react';
 import gsap from 'gsap';
 import api from '../api';
+import { Settings2, Gauge } from 'lucide-react';
 
 export default function Warehouse() {
   const [cars, setCars] = useState([]);
@@ -11,8 +13,24 @@ export default function Warehouse() {
   // Filter states
   const [sortYear, setSortYear] = useState('');
   const [sortPrice, setSortPrice] = useState('');
+  const [searchParams] = useSearchParams();
+  const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || '');
 
   const gridRef = useRef(null);
+  const contentRef = useRef(null);
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (searchParams.get('brand') && contentRef.current && lenis) {
+      setTimeout(() => {
+        lenis.scrollTo(contentRef.current, {
+          offset: -80, // Offset for navbar
+          duration: 1.8, // Slightly longer duration for premium feel
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Expo.easeOut curve
+        });
+      }, 300);
+    }
+  }, [searchParams, lenis]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +61,10 @@ export default function Warehouse() {
   }, [loading, cars]);
 
   // Handle filtering
-  const filteredCars = [...cars].sort((a, b) => {
+  const filteredCars = [...cars].filter(car => {
+    if (selectedBrand && car.brandId?.toString() !== selectedBrand && car.brand?.id?.toString() !== selectedBrand) return false;
+    return true;
+  }).sort((a, b) => {
     if (sortYear === 'asc') return a.yearMade - b.yearMade;
     if (sortYear === 'desc') return b.yearMade - a.yearMade;
     if (sortPrice === 'asc') return a.price - b.price;
@@ -69,16 +90,24 @@ export default function Warehouse() {
         </div>
       </section>
 
-      <section className="max-w-[1600px] mx-auto px-6 md:px-12">
-        {/* Brand Slider (Minimalist) */}
-        <div className="w-full border-y border-primary/10 mb-16">
-          <div className="flex overflow-x-auto py-8 space-x-12 scrollbar-hide items-center justify-start md:justify-center px-4">
-            {brands.map((brand) => (
-              <div key={brand.id} className="flex-none w-20 h-12 flex items-center justify-center opacity-40 hover:opacity-100 transition-opacity cursor-pointer group">
+      <section ref={contentRef} className="max-w-[1600px] mx-auto px-6 md:px-12">
+        {/* Brand Marquee (Minimalist) */}
+        <div className="w-full border-y border-primary/10 mb-16 overflow-hidden relative group">
+          {/* Fading edges for the marquee effect */}
+          <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
+          
+          <div className="flex py-8 space-x-16 w-max animate-marquee-scroll px-8">
+            {[...brands, ...brands, ...brands, ...brands].map((brand, idx) => (
+              <div 
+                key={`${brand.id}-${idx}`} 
+                className={`flex-none w-24 h-14 flex items-center justify-center transition-all cursor-pointer ${selectedBrand === brand.id.toString() ? 'opacity-100 scale-110' : 'opacity-40 hover:opacity-100'}`}
+                onClick={() => setSelectedBrand(selectedBrand === brand.id.toString() ? '' : brand.id.toString())}
+              >
                 <img 
                   src={brand.imageUrl ? `/images/brands/${brand.imageUrl}` : `/images/brands/${brand.name.toLowerCase()}.png`} 
                   alt={brand.name}
-                  className="max-w-full max-h-full object-contain filter dark:invert group-hover:scale-110 transition-transform duration-500"
+                  className="max-w-full max-h-full object-contain filter dark:invert hover:scale-110 transition-transform duration-500"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               </div>
@@ -94,6 +123,23 @@ export default function Warehouse() {
                 Refine Search
               </h5>
               
+              <div className="mb-8">
+                <label className="block text-sm font-light mb-3 tracking-wide">Filter by Brand</label>
+                <div className="relative">
+                  <select 
+                    className="w-full p-4 bg-transparent border border-primary/20 appearance-none focus:outline-none focus:border-primary transition-colors text-sm font-medium rounded-none"
+                    value={selectedBrand}
+                    onChange={(e) => setSelectedBrand(e.target.value)}
+                  >
+                    <option value="" className="dark:bg-black">All Brands</option>
+                    {brands.map(b => (
+                      <option key={b.id} value={b.id} className="dark:bg-black">{b.name}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/50">▼</div>
+                </div>
+              </div>
+
               <div className="mb-8">
                 <label className="block text-sm font-light mb-3 tracking-wide">Sort by Year</label>
                 <div className="relative">
@@ -127,7 +173,7 @@ export default function Warehouse() {
               </div>
 
               <button 
-                onClick={() => { setSortYear(''); setSortPrice(''); }}
+                onClick={() => { setSortYear(''); setSortPrice(''); setSelectedBrand(''); }}
                 className="w-full py-4 text-xs font-bold tracking-widest uppercase border border-primary/20 hover:bg-primary hover:text-background transition-all duration-300"
               >
                 Reset Filters
@@ -159,9 +205,25 @@ export default function Warehouse() {
                         <p className="text-primary/50 text-xs font-bold tracking-[0.2em] uppercase mb-1">
                           {car.brand?.name}
                         </p>
-                        <h5 className="font-bold text-2xl uppercase tracking-wide mb-4">
+                        <h5 className="font-bold text-2xl uppercase tracking-wide mb-2">
                           {car.model}
                         </h5>
+                        {car.specifications?.performance && (
+                          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 mb-2">
+                            {car.specifications.performance.engine_type && (
+                              <div className="flex items-center text-primary/70">
+                                <Settings2 size={14} className="mr-2" strokeWidth={1.5} />
+                                <span className="text-[10px] uppercase tracking-widest font-bold">{car.specifications.performance.engine_type}</span>
+                              </div>
+                            )}
+                            {car.specifications.performance.horsepower && (
+                              <div className="flex items-center text-primary/70">
+                                <Gauge size={14} className="mr-2" strokeWidth={1.5} />
+                                <span className="text-[10px] uppercase tracking-widest font-bold">{car.specifications.performance.horsepower.split(' @')[0]}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div className="flex justify-between items-end mt-4">
                         <div>

@@ -36,3 +36,17 @@ body {
   background: var(--secondary);
   border-radius: 4px;
 }
+
+/* Marquee Animation (Guaranteed to run without Tailwind restart) */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee-scroll {
+  animation: marquee-scroll 40s linear infinite;
+}
+
+.group:hover .animate-marquee-scroll {
+  animation-play-state: paused;
+}
