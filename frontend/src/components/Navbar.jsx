@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 import { User, Sun, Moon, ChevronRight, X } from "lucide-react";
 
 export default function Navbar() {
 	const { theme, toggleTheme } = useTheme();
+	const { user, logout } = useAuth();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const location = useLocation();
@@ -94,7 +96,7 @@ export default function Navbar() {
 							)}
 						</button>
 						<Link
-							to="/login"
+							to={user ? "/dashboard" : "/login"}
 							className="hover:opacity-60 transition-transform hover:scale-110 duration-300"
 						>
 							<User size={20} strokeWidth={2} />
@@ -170,18 +172,37 @@ export default function Navbar() {
 							Account
 						</p>
 						<div className="flex flex-col space-y-4">
-							<Link
-								to="/login"
-								className="text-sm font-bold tracking-widest hover:text-primary/60 transition-colors"
-							>
-								Sign In
-							</Link>
-							<Link
-								to="/register"
-								className="text-sm font-bold tracking-widest hover:text-primary/60 transition-colors"
-							>
-								Create Account
-							</Link>
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="text-sm font-bold tracking-widest hover:text-primary/60 transition-colors"
+                  >
+                    My Garage
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setIsMenuOpen(false); }}
+                    className="text-sm font-bold tracking-widest hover:text-red-500 text-left transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-sm font-bold tracking-widest hover:text-primary/60 transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="text-sm font-bold tracking-widest hover:text-primary/60 transition-colors"
+                  >
+                    Create Account
+                  </Link>
+                </>
+              )}
 						</div>
 					</div>
 				</div>

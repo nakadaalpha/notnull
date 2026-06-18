@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import api from '../api';
+import { useAuth } from '../context/AuthContext';
 import CarSpecsTabs from '../components/CarSpecsTabs';
 import FinancingCalculator from '../components/FinancingCalculator';
 import TradeInForm from '../components/TradeInForm';
@@ -9,6 +10,8 @@ import ReservationModal from '../components/ReservationModal';
 
 export default function CarDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -100,9 +103,14 @@ export default function CarDetail() {
     setIsSubmitting(true);
     setSubmitMessage('Generating Xendit Invoice... Redirecting to secure checkout...');
     
+    if (!user) {
+      setSubmitMessage('Please sign in to reserve this vehicle.');
+      setTimeout(() => navigate('/login'), 2000);
+      return;
+    }
+    
     try {
       const response = await api.post('/reservations', {
-        customerId: 1,
         carId: parseInt(id),
         inspectionDate,
         fullName,
@@ -271,7 +279,13 @@ export default function CarDetail() {
               </button>
               
               <button 
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  if (user) {
+                    setIsModalOpen(true);
+                  } else {
+                    navigate('/login');
+                  }
+                }}
                 className="w-full py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 bg-transparent border border-primary/20 text-foreground hover:bg-primary/5 rounded-md flex items-center justify-center space-x-2"
               >
                 <span>Book Inspection</span>

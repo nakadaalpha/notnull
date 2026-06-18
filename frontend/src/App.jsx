@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -8,16 +9,20 @@ import ChatWidget from './components/ChatWidget';
 import Home from './pages/Home';
 import Warehouse from './pages/Warehouse';
 import CarDetail from './pages/CarDetail';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import UserDashboard from './pages/Dashboard';
 import AdminLayout from './components/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
+import AdminDashboard from './pages/admin/Dashboard';
 import CarsAdmin from './pages/admin/CarsAdmin';
 
 function App() {
   return (
     <ThemeProvider>
-      <ReactLenis root options={{ lerp: 0.2, wheelMultiplier: 1.5, smoothWheel: true }}>
-        <Router>
-          <ScrollToTop />
+      <AuthProvider>
+        <ReactLenis root options={{ lerp: 0.2, wheelMultiplier: 1.5, smoothWheel: true }}>
+          <Router>
+            <ScrollToTop />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={
@@ -50,10 +55,22 @@ function App() {
                 <ChatWidget />
               </div>
             } />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={
+              <div className="min-h-screen flex flex-col font-sans selection:bg-primary selection:text-background">
+                <Navbar />
+                <main className="flex-grow">
+                  <UserDashboard />
+                </main>
+                <Footer />
+                <ChatWidget />
+              </div>
+            } />
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
+              <Route index element={<AdminDashboard />} />
               <Route path="cars" element={<CarsAdmin />} />
               <Route path="customers" element={<div className="p-4">Customers Coming Soon</div>} />
               <Route path="transactions" element={<div className="p-4">Transactions Coming Soon</div>} />
@@ -61,6 +78,7 @@ function App() {
           </Routes>
         </Router>
       </ReactLenis>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

@@ -49,6 +49,7 @@ const customerRoutes = require('./routes/customers');
 const transactionRoutes = require('./routes/transactions');
 const messageRoutes = require('./routes/messages');
 const reservationRoutes = require('./routes/reservations');
+const webhookRoutes = require('./routes/webhooks');
 
 // Mount Routes
 app.use('/api/cars', carRoutes);
@@ -58,6 +59,7 @@ app.use('/api/customers', customerRoutes); // To be renamed/refactored later
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/webhooks', webhookRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

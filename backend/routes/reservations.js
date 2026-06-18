@@ -2,10 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Get all reservations for a specific user (either customer or sales)
-router.get('/user/:userId', async (req, res) => {
+router.get('/user/:userId', authMiddleware, async (req, res) => {
   const { userId } = req.params;
+  
+  if (req.user.role === 'CUSTOMER' && req.user.userId !== parseInt(userId)) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
   try {
     const reservations = await prisma.reservation.findMany({
       where: {
@@ -28,8 +33,9 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 // Create a new reservation
-router.post('/', async (req, res) => {
-  const { customerId, carId, salesId, inspectionDate, fullName, email, identityNumber, notes } = req.body;
+router.post('/', authMiddleware, async (req, res) => {
+  const { carId, salesId, inspectionDate, fullName, email, identityNumber, notes } = req.body;
+  const customerId = req.user.userId;
   try {
     // Save administrative data as JSON in notes
     const adminData = {
@@ -64,7 +70,11 @@ router.post('/', async (req, res) => {
 });
 
 // Update reservation status
-router.put('/:id/status', async (req, res) => {
+router.put('/:id/status', authMiddleware, async (req, res) => {
+  if (req.user.role === 'CUSTOMER') {
+    return res.status(403).json({ error: 'Access denied. Only sales/admin can update status.' });
+  }
+
   const { id } = req.params;
   const { status } = req.body;
   try {
