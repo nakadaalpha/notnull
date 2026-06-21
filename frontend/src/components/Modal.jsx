@@ -13,7 +13,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = "ma
             <X size={20} />
           </button>
         </div>
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-6 overflow-y-auto flex-1" data-lenis-prevent="true">
           {children}
         </div>
       </div>

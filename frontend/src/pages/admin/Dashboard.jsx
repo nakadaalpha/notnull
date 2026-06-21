@@ -11,9 +11,9 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const [carsRes, custRes, transRes] = await Promise.all([
-          api.get('/cars'),
-          api.get('/customers'),
-          api.get('/transactions')
+          api.get('/cars').catch(e => { console.error(e); return { data: [] }; }),
+          api.get('/customers').catch(e => { console.error(e); return { data: [] }; }),
+          api.get('/transactions').catch(e => { console.error(e); return { data: [] }; })
         ]);
         setStats({
           cars: carsRes.data.length,

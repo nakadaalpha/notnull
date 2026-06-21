@@ -12,6 +12,7 @@ import CarDetail from './pages/CarDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/Dashboard';
 import CarsAdmin from './pages/admin/CarsAdmin';
@@ -72,6 +73,19 @@ function App() {
                 <ChatWidget />
               </div>
             } />
+            
+            <Route path="/profile" element={<ProtectedRoute />}>
+              <Route index element={
+                <div className="min-h-screen flex flex-col font-sans selection:bg-primary selection:text-background">
+                  <Navbar />
+                  <main className="flex-grow">
+                    <Profile />
+                  </main>
+                  <Footer />
+                  <ChatWidget />
+                </div>
+              } />
+            </Route>
 
             {/* Admin Routes */}
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN', 'SALES']} />}>

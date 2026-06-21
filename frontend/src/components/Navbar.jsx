@@ -180,6 +180,13 @@ export default function Navbar() {
                   >
                     My Garage
                   </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-sm font-bold tracking-widest hover:text-primary/60 text-left transition-colors"
+                  >
+                    My Profile
+                  </Link>
                   <button
                     onClick={() => { logout(); setIsMenuOpen(false); }}
                     className="text-sm font-bold tracking-widest hover:text-red-500 text-left transition-colors"

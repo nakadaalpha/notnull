@@ -2,6 +2,39 @@ import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import api from '../../api';
 import Modal from '../../components/Modal';
+import CarSpecsEditor from '../../components/CarSpecsEditor';
+
+const defaultSpecsTemplate = {
+  hero_specs: {
+    "Trim Level": "",
+    "Mileage": "",
+    "Condition": ""
+  },
+  performance: {
+    "Torque": "",
+    "Drivetrain": "",
+    "Horsepower": "",
+    "Engine Type": "",
+    "Acceleration": "",
+    "Transmission": ""
+  },
+  dimensions: {
+    "Length": "",
+    "Width": "",
+    "Height": "",
+    "Wheelbase": "",
+    "Curb Weight": "",
+    "Cargo Capacity": ""
+  },
+  interior: {
+    "Seating": [""],
+    "Infotainment": [""]
+  },
+  safety_and_features: {
+    "Active Safety": [""],
+    "Passive Safety": [""]
+  }
+};
 
 export default function CarsAdmin() {
   const [cars, setCars] = useState([]);
@@ -22,9 +55,11 @@ export default function CarsAdmin() {
     yearMade: '',
     price: '',
     stock: '',
-    imageUrl: ''
+    imageUrl: '',
+    specifications: defaultSpecsTemplate
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState('basic');
 
   const fetchData = async () => {
     try {
@@ -56,12 +91,28 @@ export default function CarsAdmin() {
         yearMade: car.yearMade,
         price: car.price,
         stock: car.stock,
-        imageUrl: car.imageUrl || ''
+        imageUrl: car.imageUrl || '',
+        specifications: car.specifications || {
+          hero_specs: {},
+          performance: {},
+          dimensions: {},
+          interior: {},
+          safety_and_features: {}
+        }
       });
     } else {
       setSelectedCarId(null);
-      setFormData({ brandId: brands[0]?.id || '', model: '', yearMade: '', price: '', stock: '1', imageUrl: '' });
+      setFormData({ 
+        brandId: brands[0]?.id || '', 
+        model: '', 
+        yearMade: '', 
+        price: '', 
+        stock: '1', 
+        imageUrl: '',
+        specifications: defaultSpecsTemplate
+      });
     }
+    setActiveTab('basic');
     setIsModalOpen(true);
   };
 
@@ -246,13 +297,32 @@ export default function CarsAdmin() {
 
           {/* Right Side: Form Inputs */}
           <div className="w-full lg:w-7/12 flex flex-col">
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="flex border-b border-primary/10 mb-6">
+              <button 
+                type="button"
+                onClick={() => setActiveTab('basic')}
+                className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'basic' ? 'border-primary text-primary' : 'border-transparent text-primary/40 hover:text-primary/70'}`}
+              >
+                Basic Info
+              </button>
+              <button 
+                type="button"
+                onClick={() => setActiveTab('specs')}
+                className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'specs' ? 'border-primary text-primary' : 'border-transparent text-primary/40 hover:text-primary/70'}`}
+              >
+                Specifications
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col">
+              {activeTab === 'basic' ? (
+                <div className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Brand</label>
                   <select
                     required
-                    className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium"
+                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                     value={formData.brandId}
                     onChange={(e) => setFormData({ ...formData, brandId: e.target.value })}
                   >
@@ -265,7 +335,7 @@ export default function CarsAdmin() {
                   <input
                     type="text"
                     required
-                    className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium"
+                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                     value={formData.model}
                     onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                   />
@@ -283,7 +353,7 @@ export default function CarsAdmin() {
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       disabled={isUploading}
                     />
-                    <div className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium flex items-center justify-center space-x-2">
+                    <div className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium flex items-center justify-center space-x-2 text-sm cursor-pointer hover:bg-primary/5">
                       <Plus size={18} />
                       <span>Choose File</span>
                     </div>
@@ -291,7 +361,7 @@ export default function CarsAdmin() {
                   <div className="flex-1">
                     <input
                       type="text"
-                      className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium text-sm"
+                      className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium text-sm"
                       value={formData.imageUrl}
                       onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                       placeholder="Or enter URL directly..."
@@ -306,7 +376,7 @@ export default function CarsAdmin() {
                   <input
                     type="number"
                     required
-                    className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium"
+                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                     value={formData.yearMade}
                     onChange={(e) => setFormData({ ...formData, yearMade: e.target.value })}
                   />
@@ -317,7 +387,7 @@ export default function CarsAdmin() {
                     type="number"
                     step="0.01"
                     required
-                    className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium"
+                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   />
@@ -331,12 +401,22 @@ export default function CarsAdmin() {
                     type="number"
                     required
                     min="0"
-                    className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium"
+                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                   />
                 </div>
               </div>
+              </div>
+              ) : (
+                <div className="flex-1 min-h-[300px]">
+                  <CarSpecsEditor 
+                    key={selectedCarId || 'new'}
+                    specs={formData.specifications} 
+                    onChange={(newSpecs) => setFormData({ ...formData, specifications: newSpecs })} 
+                  />
+                </div>
+              )}
 
               <div className="flex space-x-4 mt-8 pt-6 border-t border-primary/10">
                 {modalMode === 'edit' && (

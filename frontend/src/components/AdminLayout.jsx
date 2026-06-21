@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag } from 'lucide-react';
+import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings } from 'lucide-react';
 
 export default function AdminLayout() {
   const { theme, toggleTheme } = useTheme();
@@ -50,7 +50,11 @@ export default function AdminLayout() {
           </Link>
         </nav>
 
-        <div className="p-4 border-t border-primary/10">
+        <div className="p-4 border-t border-primary/10 space-y-2">
+          <Link to="/profile" className="flex items-center space-x-3 p-3 w-full rounded-lg hover:bg-secondary text-primary transition-colors">
+            <Settings size={20} />
+            <span className="font-medium">My Profile</span>
+          </Link>
           <button onClick={handleLogout} className="flex items-center space-x-3 p-3 w-full rounded-lg hover:bg-red-500/10 text-red-500 transition-colors">
             <LogOut size={20} />
             <span className="font-medium">Logout</span>

@@ -34,7 +34,7 @@ const getCarById = async (req, res) => {
 
 // Create a car
 const createCar = async (req, res) => {
-  const { brandId, model, yearMade, price, imageUrl, stock } = req.body;
+  const { brandId, model, yearMade, price, imageUrl, stock, specifications } = req.body;
   try {
     const newCar = await prisma.car.create({
       data: {
@@ -43,6 +43,7 @@ const createCar = async (req, res) => {
         yearMade: parseInt(yearMade),
         price: parseFloat(price),
         imageUrl,
+        specifications,
         stock: parseInt(stock || 1)
       }
     });
@@ -54,7 +55,7 @@ const createCar = async (req, res) => {
 
 const updateCar = async (req, res) => {
   const { id } = req.params;
-  const { brandId, model, yearMade, price, stock, imageUrl } = req.body;
+  const { brandId, model, yearMade, price, stock, imageUrl, specifications } = req.body;
   try {
     const updatedCar = await prisma.car.update({
       where: { id: parseInt(id) },
@@ -64,7 +65,8 @@ const updateCar = async (req, res) => {
         yearMade: yearMade ? parseInt(yearMade) : undefined,
         price: price ? parseFloat(price) : undefined,
         stock: stock ? parseInt(stock) : undefined,
-        imageUrl
+        imageUrl,
+        specifications
       }
     });
     res.json(updatedCar);

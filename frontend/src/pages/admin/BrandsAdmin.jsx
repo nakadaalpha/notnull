@@ -201,17 +201,17 @@ export default function BrandsAdmin() {
           <div className="w-full md:w-1/2 flex flex-col">
             <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col justify-center">
               <div>
-                <label className="block text-sm font-medium mb-1">Brand Name</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Brand Name</label>
                 <input
                   type="text"
                   required
-                  className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors"
+                  className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Brand Logo</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Brand Logo</label>
                 <div className="flex flex-col space-y-3">
                   <div className="relative">
                     <input
@@ -221,14 +221,14 @@ export default function BrandsAdmin() {
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       disabled={isUploading}
                     />
-                    <div className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium flex items-center justify-center space-x-2">
+                    <div className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors font-medium flex items-center justify-center space-x-2 text-sm cursor-pointer hover:bg-primary/5">
                       <Tag size={18} />
                       <span>Choose Image File</span>
                     </div>
                   </div>
                   <input
                     type="url"
-                    className="w-full bg-secondary text-primary px-4 py-3 rounded-lg border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm"
+                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
                     value={formData.imageUrl}
                     onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                     placeholder="Or enter URL directly..."
