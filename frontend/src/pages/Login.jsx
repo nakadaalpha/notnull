@@ -13,8 +13,12 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(username, password);
-      navigate('/dashboard');
+      const loggedInUser = await login(username, password);
+      if (loggedInUser.role === 'ADMIN' || loggedInUser.role === 'SALES') {
+        navigate('/admin');
+      } else {
+        navigate('/profile');
+      }
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }

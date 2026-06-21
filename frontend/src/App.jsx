@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
@@ -86,6 +86,10 @@ function App() {
                 <Route path="transactions" element={<TransactionsAdmin />} />
               </Route>
             </Route>
+
+            {/* Redirects & Catch-All */}
+            <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </ReactLenis>

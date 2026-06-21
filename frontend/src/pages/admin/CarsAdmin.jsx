@@ -144,6 +144,7 @@ export default function CarsAdmin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (modalMode === 'edit' && !window.confirm('Are you sure you want to save these changes?')) return;
     try {
       if (modalMode === 'create') {
         await api.post('/cars', formData);

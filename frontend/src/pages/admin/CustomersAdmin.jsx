@@ -42,6 +42,7 @@ export default function CustomersAdmin() {
   }, []);
 
   const handleRoleChange = async (id, newRole) => {
+    if (!window.confirm("Are you sure you want to change this user's role?")) return;
     try {
       await api.put(`/customers/${id}/role`, { role: newRole });
       setCustomers(customers.map(c => c.id === id ? { ...c, role: newRole } : c));
@@ -73,6 +74,7 @@ export default function CustomersAdmin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (modalMode === 'edit' && !window.confirm('Are you sure you want to save these changes?')) return;
     try {
       if (modalMode === 'create') {
         await api.post('/customers', formData);
@@ -105,11 +107,13 @@ export default function CustomersAdmin() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Customers</h1>
-        <button onClick={() => openModal('create')} className="bg-foreground text-background px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:opacity-90 transition-opacity">
-          <Users size={18} />
-          <span>Add Customer</span>
-        </button>
+        <h1 className="text-3xl font-bold">{user?.role === 'ADMIN' ? 'Users' : 'Customers'}</h1>
+        {user?.role === 'ADMIN' && (
+          <button onClick={() => openModal('create')} className="bg-foreground text-background px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:opacity-90 transition-opacity">
+            <Users size={18} />
+            <span>Add User</span>
+          </button>
+        )}
       </div>
 
       {/* Search and Filters */}
@@ -121,16 +125,18 @@ export default function CustomersAdmin() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <select 
-          className="bg-background border border-primary/20 px-4 py-2 rounded-lg focus:outline-none focus:border-primary text-primary"
-          value={filterRole}
-          onChange={(e) => setFilterRole(e.target.value)}
-        >
-          <option value="ALL">All Roles</option>
-          <option value="CUSTOMER">Customer</option>
-          <option value="SALES">Sales</option>
-          <option value="ADMIN">Admin</option>
-        </select>
+        {user?.role === 'ADMIN' && (
+          <select 
+            className="bg-background border border-primary/20 px-4 py-2 rounded-lg focus:outline-none focus:border-primary text-primary"
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value)}
+          >
+            <option value="ALL">All Roles</option>
+            <option value="CUSTOMER">Customer</option>
+            <option value="SALES">Sales</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        )}
       </div>
 
       <div className="bg-background border border-primary/10 rounded-2xl overflow-hidden">
@@ -141,10 +147,10 @@ export default function CustomersAdmin() {
               <th className="p-4 font-medium text-primary/60">Username</th>
               <th className="p-4 font-medium text-primary/60">Email</th>
               <th className="p-4 font-medium text-primary/60">Phone</th>
-              <th className="p-4 font-medium text-primary/60">Role</th>
+              {user?.role === 'ADMIN' && <th className="p-4 font-medium text-primary/60">Role</th>}
               <th className="p-4 font-medium text-primary/60">Registered</th>
               <th className="p-4 font-medium text-primary/60">Transactions</th>
-              <th className="p-4 font-medium text-primary/60 text-right">Actions</th>
+              {user?.role === 'ADMIN' && <th className="p-4 font-medium text-primary/60 text-right">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -153,48 +159,51 @@ export default function CustomersAdmin() {
             ) : customers.filter(cust => {
               const matchesSearch = cust.username.toLowerCase().includes(searchTerm.toLowerCase()) || 
                                     cust.email.toLowerCase().includes(searchTerm.toLowerCase());
-              const matchesRole = filterRole === 'ALL' || cust.role === filterRole;
+              const matchesRole = user?.role === 'ADMIN' ? (filterRole === 'ALL' || cust.role === filterRole) : cust.role === 'CUSTOMER';
               return matchesSearch && matchesRole;
             }).length === 0 ? (
-              <tr><td colSpan="8" className="p-4 text-center">No customers found matching filters.</td></tr>
+              <tr><td colSpan={user?.role === 'ADMIN' ? "8" : "6"} className="p-4 text-center">No {user?.role === 'ADMIN' ? 'users' : 'customers'} found matching filters.</td></tr>
             ) : (
               customers.filter(cust => {
                 const matchesSearch = cust.username.toLowerCase().includes(searchTerm.toLowerCase()) || 
                                       cust.email.toLowerCase().includes(searchTerm.toLowerCase());
-                const matchesRole = filterRole === 'ALL' || cust.role === filterRole;
+                const matchesRole = user?.role === 'ADMIN' ? (filterRole === 'ALL' || cust.role === filterRole) : cust.role === 'CUSTOMER';
                 return matchesSearch && matchesRole;
               }).map((cust) => (
-                <tr key={cust.id} onClick={() => openModal('edit', cust)} className="cursor-pointer border-b border-primary/5 hover:bg-secondary/50 transition-colors">
+                <tr key={cust.id} onClick={() => user?.role === 'ADMIN' && openModal('edit', cust)} className={`border-b border-primary/5 transition-colors ${user?.role === 'ADMIN' ? 'cursor-pointer hover:bg-secondary/50' : 'hover:bg-secondary/10'}`}>
                   <td className="p-4">#{cust.id}</td>
                   <td className="p-4 font-medium">{cust.username}</td>
                   <td className="p-4">{cust.email}</td>
                   <td className="p-4">{cust.phone || '-'}</td>
-                  <td className="p-4" onClick={(e) => e.stopPropagation()}>
-                    <select
-                      value={cust.role}
-                      onChange={(e) => handleRoleChange(cust.id, e.target.value)}
-                      disabled={user?.role !== 'ADMIN'}
-                      className="bg-secondary text-primary px-2 py-1 rounded border border-primary/20 focus:outline-none"
-                    >
-                      <option value="CUSTOMER">CUSTOMER</option>
-                      <option value="SALES">SALES</option>
-                      <option value="ADMIN">ADMIN</option>
-                    </select>
-                  </td>
+                  {user?.role === 'ADMIN' && (
+                    <td className="p-4" onClick={(e) => e.stopPropagation()}>
+                      <select
+                        value={cust.role}
+                        onChange={(e) => handleRoleChange(cust.id, e.target.value)}
+                        className="bg-secondary text-primary px-2 py-1 rounded border border-primary/20 focus:outline-none"
+                      >
+                        <option value="CUSTOMER">CUSTOMER</option>
+                        <option value="SALES">SALES</option>
+                        <option value="ADMIN">ADMIN</option>
+                      </select>
+                    </td>
+                  )}
                   <td className="p-4">{new Date(cust.createdAt).toLocaleDateString()}</td>
                   <td className="p-4">
                     <span className="bg-primary/5 px-3 py-1 rounded-full text-sm font-medium">
                       {cust._count?.transactions || 0}
                     </span>
                   </td>
-                  <td className="p-4 text-right">
-                    <button onClick={(e) => { e.stopPropagation(); openModal('edit', cust); }} className="p-2 hover:bg-primary/10 rounded-full transition-colors mr-2">
-                      <Edit size={18} />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleDelete(cust.id); }} disabled={user?.role !== 'ADMIN'} className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-colors disabled:opacity-50">
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
+                  {user?.role === 'ADMIN' && (
+                    <td className="p-4 text-right">
+                      <button onClick={(e) => { e.stopPropagation(); openModal('edit', cust); }} className="p-2 hover:bg-primary/10 rounded-full transition-colors mr-2">
+                        <Edit size={18} />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(cust.id); }} className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-colors disabled:opacity-50">
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             )}
@@ -202,7 +211,7 @@ export default function CustomersAdmin() {
         </table>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal} title={modalMode === 'create' ? 'Add New Customer' : 'Edit Customer'}>
+      <Modal isOpen={isModalOpen} onClose={closeModal} title={modalMode === 'create' ? `Add New ${user?.role === 'ADMIN' ? 'User' : 'Customer'}` : `Edit ${user?.role === 'ADMIN' ? 'User' : 'Customer'}`}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Username</label>
@@ -265,7 +274,7 @@ export default function CustomersAdmin() {
               </button>
             )}
             <button type="submit" className={`bg-foreground text-background py-3 rounded-lg font-bold hover:opacity-90 transition-opacity ${(modalMode === 'edit' && user?.role === 'ADMIN') ? 'w-2/3' : 'w-full'}`}>
-              {modalMode === 'create' ? 'Add Customer' : 'Save Changes'}
+              {modalMode === 'create' ? `Add ${user?.role === 'ADMIN' ? 'User' : 'Customer'}` : 'Save Changes'}
             </button>
           </div>
         </form>

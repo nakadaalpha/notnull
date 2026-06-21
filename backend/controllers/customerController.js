@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 const getAllCustomers = async (req, res) => {
   try {
     const customers = await prisma.user.findMany({
-      where: { role: { in: ['CUSTOMER', 'SALES'] } },
       include: {
         _count: {
           select: { transactions: true, reservationsAsCust: true }
@@ -50,7 +49,7 @@ const createCustomer = async (req, res) => {
 
 const updateCustomerRole = async (req, res) => {
   const { role } = req.body;
-  if (!['CUSTOMER', 'SALES'].includes(role)) {
+  if (!['CUSTOMER', 'SALES', 'ADMIN'].includes(role)) {
     return res.status(400).json({ error: 'Invalid role' });
   }
   try {
@@ -67,11 +66,15 @@ const updateCustomerRole = async (req, res) => {
 // Update a customer
 const updateCustomer = async (req, res) => {
   const { id } = req.params;
-  const { username, email, phone, address } = req.body;
+  const { username, email, phone, address, password } = req.body;
   try {
+    const updateData = { username, email, phone, address };
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
     const updatedCustomer = await prisma.user.update({
       where: { id },
-      data: { username, email, phone, address }
+      data: updateData
     });
     res.json(updatedCustomer);
   } catch (error) {

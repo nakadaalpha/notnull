@@ -42,7 +42,7 @@ export default function AdminLayout() {
           )}
           <Link to="/admin/customers" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
             <Users size={20} />
-            <span className="font-medium">Customers</span>
+            <span className="font-medium">{user?.role === 'ADMIN' ? 'Users' : 'Customers'}</span>
           </Link>
           <Link to="/admin/transactions" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
             <ClipboardList size={20} />

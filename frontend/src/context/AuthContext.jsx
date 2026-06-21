@@ -31,12 +31,13 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
+    return userData;
   };
 
   const register = async (username, email, password) => {
     await api.post('/auth/register', { username, email, password, role: 'CUSTOMER' });
     // Auto login after register
-    await login(username, password);
+    return await login(username, password);
   };
 
   const logout = () => {
