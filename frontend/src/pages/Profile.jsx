@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 import api from '../api';
-import { User, Mail, Phone, MapPin, Shield, Edit2, Check, X, KeyRound } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Shield, Edit2, Check, X, KeyRound, Car, ExternalLink, Calendar } from 'lucide-react';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   
+  // Tab State
+  const [activeTab, setActiveTab] = useState('identity'); // 'identity' | 'garage'
+
   // Inline edit state
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
@@ -16,17 +21,22 @@ export default function Profile() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetchProfile();
+    fetchData();
   }, []);
 
-  const fetchProfile = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/auth/me');
-      setProfile(res.data);
+      // We can run these in parallel to be faster
+      const [profileRes, reservationsRes] = await Promise.all([
+        api.get('/auth/me'),
+        api.get(`/reservations/user/${user.id}`)
+      ]);
+      setProfile(profileRes.data);
+      setReservations(reservationsRes.data);
     } catch (err) {
-      console.error('Failed to load profile', err);
-      setError('Failed to load profile details.');
+      console.error('Failed to load account data', err);
+      setError('Failed to load some account details.');
     } finally {
       setLoading(false);
     }
@@ -54,16 +64,14 @@ export default function Profile() {
     try {
       setSaving(true);
       
-      // Build the payload with all current profile data
       const payload = {
         username: profile.username,
         email: profile.email,
         phone: profile.phone || '',
         address: profile.address || '',
-        password: '' // Always empty unless changing password
+        password: ''
       };
       
-      // Override the specific field being edited
       payload[field] = editValue;
 
       const res = await api.put('/auth/me', payload);
@@ -77,7 +85,6 @@ export default function Profile() {
       setEditingField(null);
       setEditValue('');
       
-      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error('Update failed', err);
@@ -100,8 +107,8 @@ export default function Profile() {
     return (
       <div className="min-h-screen pt-32 pb-20 flex justify-center items-center bg-background text-primary">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Profile Not Found</h2>
-          <p className="text-primary/60">We could not load your profile details.</p>
+          <h2 className="text-2xl font-bold mb-2">Account Not Found</h2>
+          <p className="text-primary/60">We could not load your account details.</p>
         </div>
       </div>
     );
@@ -176,13 +183,13 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-background text-foreground">
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-12">
         
         {/* Header Section */}
-        <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4">
-              My <span className="text-primary/50 font-light">Profile</span>
+              My <span className="text-primary/50 font-light">Account</span>
             </h1>
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase">
@@ -191,6 +198,35 @@ export default function Profile() {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Custom Tab Navigation */}
+        <div className="flex space-x-8 border-b border-primary/10 mb-10 overflow-x-auto scrollbar-hide">
+          <button
+            onClick={() => setActiveTab('identity')}
+            className={`pb-4 text-xs font-bold tracking-[0.2em] uppercase transition-colors relative whitespace-nowrap ${
+              activeTab === 'identity' ? 'text-primary' : 'text-primary/40 hover:text-primary/70'
+            }`}
+          >
+            My Identity
+            {activeTab === 'identity' && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary"></span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('garage')}
+            className={`pb-4 text-xs font-bold tracking-[0.2em] uppercase transition-colors relative whitespace-nowrap flex items-center ${
+              activeTab === 'garage' ? 'text-primary' : 'text-primary/40 hover:text-primary/70'
+            }`}
+          >
+            My Garage
+            <span className="ml-2 bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px]">
+              {reservations.length}
+            </span>
+            {activeTab === 'garage' && (
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary"></span>
+            )}
+          </button>
         </div>
 
         {error && (
@@ -205,37 +241,94 @@ export default function Profile() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          {/* Avatar / Quick Info Card */}
-          <div className="md:col-span-1">
-            <div className="bg-secondary/20 border border-primary/10 rounded-2xl p-8 flex flex-col items-center text-center">
-              <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mb-6 relative group overflow-hidden">
-                <User size={64} className="text-primary/40 group-hover:scale-110 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-white text-xs font-bold tracking-widest uppercase">ID: {profile.id.slice(-6)}</span>
+        {/* Tab Content: Identity */}
+        {activeTab === 'identity' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Avatar Card */}
+            <div className="md:col-span-1">
+              <div className="bg-secondary/20 border border-primary/10 rounded-2xl p-8 flex flex-col items-center text-center">
+                <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mb-6 relative group overflow-hidden">
+                  <User size={64} className="text-primary/40 group-hover:scale-110 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-white text-xs font-bold tracking-widest uppercase">ID: {profile.id.slice(-6)}</span>
+                  </div>
+                </div>
+                <h2 className="text-2xl font-bold mb-1">{profile.username}</h2>
+                <p className="text-primary/60 text-sm">{profile.email}</p>
+              </div>
+            </div>
+
+            {/* Details Form */}
+            <div className="md:col-span-2">
+              <div className="bg-secondary/10 border border-primary/10 rounded-2xl p-6 md:p-10">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-primary/40 mb-6 border-b border-primary/10 pb-4">Personal Details</h3>
+                <div className="flex flex-col">
+                  {renderEditableField('username', 'Username', <User size={20} />)}
+                  {renderEditableField('email', 'Email Address', <Mail size={20} />, 'email')}
+                  {renderEditableField('phone', 'Phone Number', <Phone size={20} />)}
+                  {renderEditableField('address', 'Physical Address', <MapPin size={20} />, 'textarea')}
+                  {renderEditableField('password', 'Password', <KeyRound size={20} />, 'password')}
                 </div>
               </div>
-              <h2 className="text-2xl font-bold mb-1">{profile.username}</h2>
-              <p className="text-primary/60 text-sm">{profile.email}</p>
             </div>
           </div>
+        )}
 
-          {/* Details / Inline Edit Form */}
-          <div className="md:col-span-2">
-            <div className="bg-secondary/10 border border-primary/10 rounded-2xl p-6 md:p-10">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/40 mb-6 border-b border-primary/10 pb-4">Personal Details</h3>
-              
-              <div className="flex flex-col">
-                {renderEditableField('username', 'Username', <User size={20} />)}
-                {renderEditableField('email', 'Email Address', <Mail size={20} />, 'email')}
-                {renderEditableField('phone', 'Phone Number', <Phone size={20} />)}
-                {renderEditableField('address', 'Physical Address', <MapPin size={20} />, 'textarea')}
-                {renderEditableField('password', 'Password', <KeyRound size={20} />, 'password')}
+        {/* Tab Content: Garage */}
+        {activeTab === 'garage' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {reservations.length === 0 ? (
+              <div className="bg-secondary/5 border border-primary/10 rounded-xl p-16 text-center max-w-2xl mx-auto">
+                <Car size={48} strokeWidth={1} className="mx-auto mb-6 text-primary/20" />
+                <p className="text-sm font-light text-primary/60 tracking-widest uppercase mb-8">Your garage is currently empty.</p>
+                <Link to="/warehouse" className="inline-block px-8 py-3 bg-foreground text-background text-xs font-bold tracking-widest uppercase rounded-full hover:opacity-90 transition-opacity">
+                  Browse The Collection
+                </Link>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {reservations.map(res => (
+                  <div key={res.id} className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors">
+                    <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden">
+                      <img 
+                        src={res.car?.imageUrl ? `/images/cars/${res.car.imageUrl}` : '/images/cars/default.png'} 
+                        alt={res.car?.model} 
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50">{res.car?.brand?.name}</span>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                            res.status === 'PAID' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-orange-500/10 text-orange-600 border-orange-500/20'
+                          }`}>
+                            {res.status}
+                          </span>
+                        </div>
+                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{res.car?.model}</h3>
+                        
+                        <div className="space-y-2 mb-6">
+                          <div className="flex items-center text-xs font-light text-primary/70">
+                            <Calendar size={14} className="mr-3 text-primary/40" />
+                            <span>Inspection: {new Date(res.inspectionDate).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {res.status === 'PENDING' && (
+                        <button className="w-full py-3 border border-primary/20 text-[10px] font-bold uppercase tracking-widest hover:bg-primary/5 transition-colors rounded-lg flex items-center justify-center space-x-2">
+                          <span>Complete Payment</span>
+                          <ExternalLink size={14} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
       </div>
     </div>

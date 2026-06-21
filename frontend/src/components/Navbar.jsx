@@ -175,17 +175,11 @@ export default function Navbar() {
               {user ? (
                 <>
                   <Link
-                    to="/dashboard"
-                    className="text-sm font-bold tracking-widest hover:text-primary/60 transition-colors"
-                  >
-                    My Garage
-                  </Link>
-                  <Link
                     to="/profile"
                     onClick={() => setIsMenuOpen(false)}
                     className="text-sm font-bold tracking-widest hover:text-primary/60 text-left transition-colors"
                   >
-                    My Profile
+                    My Account
                   </Link>
                   <button
                     onClick={() => { logout(); setIsMenuOpen(false); }}

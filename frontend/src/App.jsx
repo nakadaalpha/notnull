@@ -11,7 +11,6 @@ import Warehouse from './pages/Warehouse';
 import CarDetail from './pages/CarDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import UserDashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -63,16 +62,6 @@ function App() {
             } />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={
-              <div className="min-h-screen flex flex-col font-sans selection:bg-primary selection:text-background">
-                <Navbar />
-                <main className="flex-grow">
-                  <UserDashboard />
-                </main>
-                <Footer />
-                <ChatWidget />
-              </div>
-            } />
             
             <Route path="/profile" element={<ProtectedRoute />}>
               <Route index element={
