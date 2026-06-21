@@ -6,6 +6,7 @@ import api from '../api';
 import CarCard from '../components/CarCard';
 import PageHero from '../components/PageHero';
 import BrandMarquee from '../components/BrandMarquee';
+import { Search } from 'lucide-react';
 
 export default function Warehouse() {
   const [cars, setCars] = useState([]);
@@ -13,6 +14,7 @@ export default function Warehouse() {
   const [loading, setLoading] = useState(true);
   
   // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortYear, setSortYear] = useState('');
   const [sortPrice, setSortPrice] = useState('');
   const [searchParams] = useSearchParams();
@@ -65,6 +67,12 @@ export default function Warehouse() {
   // Handle filtering
   const filteredCars = [...cars].filter(car => {
     if (selectedBrand && car.brandId?.toString() !== selectedBrand && car.brand?.id?.toString() !== selectedBrand) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchModel = car.model.toLowerCase().includes(q);
+      const matchBrand = car.brand?.name?.toLowerCase().includes(q);
+      if (!matchModel && !matchBrand) return false;
+    }
     return true;
   }).sort((a, b) => {
     if (sortYear === 'asc') return a.yearMade - b.yearMade;
@@ -105,6 +113,22 @@ export default function Warehouse() {
                 Refine Search
               </h5>
               
+              <div className="mb-8">
+                <label className="block text-sm font-light mb-3 tracking-wide">Search</label>
+                <div className="relative">
+                  <input 
+                    type="text"
+                    placeholder="Search model..."
+                    className="w-full p-4 bg-transparent border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium rounded-none"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-primary/50">
+                    <Search size={16} />
+                  </div>
+                </div>
+              </div>
+
               <div className="mb-8">
                 <label className="block text-sm font-light mb-3 tracking-wide">Filter by Brand</label>
                 <div className="relative">
@@ -155,7 +179,7 @@ export default function Warehouse() {
               </div>
 
               <button 
-                onClick={() => { setSortYear(''); setSortPrice(''); setSelectedBrand(''); }}
+                onClick={() => { setSortYear(''); setSortPrice(''); setSelectedBrand(''); setSearchQuery(''); }}
                 className="w-full py-4 text-xs font-bold tracking-widest uppercase border border-primary/20 hover:bg-primary hover:text-background transition-all duration-300"
               >
                 Reset Filters
