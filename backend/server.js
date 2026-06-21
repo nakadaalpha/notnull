@@ -4,13 +4,17 @@ const http = require('http');
 const { Server } = require('socket.io');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+const { PrismaClient } = require('@prisma/client');
+
+const prisma = new PrismaClient();
 
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 
-// Serve static files (like custom swagger CSS)
+// Serve static files
 app.use(express.static('public'));
+app.use('/uploads', express.static('public/uploads'));
 
 // Setup Socket.io
 const io = new Server(server, {
@@ -42,9 +46,32 @@ io.on('connection', (socket) => {
   });
 });
 
-// Basic Route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the PERN Stack API!' });
+// Basic Route / Health Check
+app.get('/', async (req, res) => {
+  try {
+    // Check database connection by running a simple query
+    await prisma.$queryRaw`SELECT 1`;
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Welcome to the NOTNULL API.',
+      timestamp: new Date().toISOString(),
+      services: {
+        server: 'running',
+        database: 'connected'
+      }
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'error',
+      message: 'API is currently experiencing issues.',
+      timestamp: new Date().toISOString(),
+      services: {
+        server: 'running',
+        database: 'disconnected'
+      }
+    });
+  }
 });
 
 const carRoutes = require('./routes/cars');
@@ -55,6 +82,7 @@ const transactionRoutes = require('./routes/transactions');
 const messageRoutes = require('./routes/messages');
 const reservationRoutes = require('./routes/reservations');
 const webhookRoutes = require('./routes/webhooks');
+const uploadRoutes = require('./routes/uploads');
 
 // Mount Routes
 const swaggerOptions = {
@@ -70,6 +98,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/webhooks', webhookRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

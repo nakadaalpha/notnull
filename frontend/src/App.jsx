@@ -15,6 +15,11 @@ import UserDashboard from './pages/Dashboard';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/Dashboard';
 import CarsAdmin from './pages/admin/CarsAdmin';
+import BrandsAdmin from './pages/admin/BrandsAdmin';
+import CustomersAdmin from './pages/admin/CustomersAdmin';
+import TransactionsAdmin from './pages/admin/TransactionsAdmin';
+import ProtectedRoute from './components/ProtectedRoute';
+
 
 function App() {
   return (
@@ -69,11 +74,14 @@ function App() {
             } />
 
             {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="cars" element={<CarsAdmin />} />
-              <Route path="customers" element={<div className="p-4">Customers Coming Soon</div>} />
-              <Route path="transactions" element={<div className="p-4">Transactions Coming Soon</div>} />
+            <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN', 'SALES']} />}>
+              <Route element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="brands" element={<BrandsAdmin />} />
+                <Route path="cars" element={<CarsAdmin />} />
+                <Route path="customers" element={<CustomersAdmin />} />
+                <Route path="transactions" element={<TransactionsAdmin />} />
+              </Route>
             </Route>
           </Routes>
         </Router>

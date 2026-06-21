@@ -1,0 +1,659 @@
+{
+  "brands": [
+    {
+      "id": 1,
+      "name": "BMW",
+      "imageUrl": "3.png",
+      "createdAt": "2026-06-13T21:37:58.943Z",
+      "updatedAt": "2026-06-13T21:37:58.943Z"
+    },
+    {
+      "id": 2,
+      "name": "Buggati",
+      "imageUrl": "8.png",
+      "createdAt": "2026-06-13T21:37:58.946Z",
+      "updatedAt": "2026-06-13T21:37:58.946Z"
+    },
+    {
+      "id": 3,
+      "name": "Cadillac",
+      "imageUrl": "6.png",
+      "createdAt": "2026-06-13T21:37:58.950Z",
+      "updatedAt": "2026-06-13T21:37:58.950Z"
+    },
+    {
+      "id": 4,
+      "name": "Ferrari",
+      "imageUrl": "2.png",
+      "createdAt": "2026-06-13T21:37:58.952Z",
+      "updatedAt": "2026-06-13T21:37:58.952Z"
+    },
+    {
+      "id": 5,
+      "name": "Honda",
+      "imageUrl": "7.png",
+      "createdAt": "2026-06-13T21:37:58.953Z",
+      "updatedAt": "2026-06-13T21:37:58.953Z"
+    },
+    {
+      "id": 6,
+      "name": "Koenigsegg",
+      "imageUrl": "1.png\r\n",
+      "createdAt": "2026-06-13T21:37:58.954Z",
+      "updatedAt": "2026-06-13T21:37:58.954Z"
+    },
+    {
+      "id": 7,
+      "name": "McLaren",
+      "imageUrl": "5.png",
+      "createdAt": "2026-06-13T21:37:58.956Z",
+      "updatedAt": "2026-06-13T21:37:58.956Z"
+    },
+    {
+      "id": 8,
+      "name": "Mercedes-Benz",
+      "imageUrl": "4.png",
+      "createdAt": "2026-06-13T21:37:58.956Z",
+      "updatedAt": "2026-06-13T21:37:58.956Z"
+    },
+    {
+      "id": 9,
+      "name": "Toyota",
+      "imageUrl": "Toyota1.png",
+      "createdAt": "2026-06-13T21:37:58.957Z",
+      "updatedAt": "2026-06-13T21:37:58.957Z"
+    }
+  ],
+  "cars": [
+    {
+      "id": 1,
+      "brandId": 6,
+      "model": "Agera",
+      "yearMade": 2013,
+      "price": 2000000,
+      "stock": 2,
+      "imageUrl": "1.png",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "0 km",
+          "condition": "Baru"
+        },
+        "performance": {
+          "torque": "740 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "590 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.964Z",
+      "updatedAt": "2026-06-14T19:56:00.081Z"
+    },
+    {
+      "id": 2,
+      "brandId": 7,
+      "model": "F1",
+      "yearMade": 1996,
+      "price": 20000000,
+      "stock": 1,
+      "imageUrl": "2.png",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "0 km",
+          "condition": "Baru"
+        },
+        "performance": {
+          "torque": "621 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "471 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.967Z",
+      "updatedAt": "2026-06-14T19:56:00.108Z"
+    },
+    {
+      "id": 3,
+      "brandId": 4,
+      "model": "812",
+      "yearMade": 2020,
+      "price": 350000,
+      "stock": 2,
+      "imageUrl": "4.png",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "5.000 km",
+          "condition": "Pre-Owned"
+        },
+        "performance": {
+          "torque": "600 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "450 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.968Z",
+      "updatedAt": "2026-06-14T19:56:00.110Z"
+    },
+    {
+      "id": 4,
+      "brandId": 1,
+      "model": "M4",
+      "yearMade": 2021,
+      "price": 75595,
+      "stock": 2,
+      "imageUrl": "5.png",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "0 km",
+          "condition": "Baru"
+        },
+        "performance": {
+          "torque": "476 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "326 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.969Z",
+      "updatedAt": "2026-06-14T19:56:00.111Z"
+    },
+    {
+      "id": 5,
+      "brandId": 1,
+      "model": "M8",
+      "yearMade": 2022,
+      "price": 130000,
+      "stock": 1,
+      "imageUrl": "6.png",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "26.000 km",
+          "condition": "Pre-Owned"
+        },
+        "performance": {
+          "torque": "579 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "429 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.969Z",
+      "updatedAt": "2026-06-14T19:56:00.112Z"
+    },
+    {
+      "id": 6,
+      "brandId": 3,
+      "model": "Escalade",
+      "yearMade": 2021,
+      "price": 76195,
+      "stock": 3,
+      "imageUrl": "7.png",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "0 km",
+          "condition": "Baru"
+        },
+        "performance": {
+          "torque": "679 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "529 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.970Z",
+      "updatedAt": "2026-06-14T19:56:00.131Z"
+    },
+    {
+      "id": 7,
+      "brandId": 6,
+      "model": "One:1",
+      "yearMade": 2013,
+      "price": 2500000,
+      "stock": 1,
+      "imageUrl": "Koenigsegg_One.jpg",
+      "specifications": {
+        "interior": {
+          "cockpit": [
+            "Kemudi: Berlapis Kulit dengan Tilt & Telescopic, Paddle Shifters",
+            "Instrumen: Virtual Cockpit Digital Display",
+            "Spion: Auto-dimming dengan Compass"
+          ],
+          "comfort": [
+            "Material Jok: Kulit Nappa Premium dengan Alcantara",
+            "Pengaturan Kursi: Elektrik 18-Arah dengan Pijat & Pemanas",
+            "AC: Auto Climate Control (Quad-zone)"
+          ],
+          "utility": [
+            "Trim: Open-pore Wood & Brushed Aluminium",
+            "Bagasi: 605 Liter (Bisa diekspansi)",
+            "Atap: Panoramic Sunroof"
+          ],
+          "infotainment": [
+            "Layar: 12.3 inci Touchscreen System",
+            "Konektivitas: Wireless Apple CarPlay & Android Auto",
+            "Audio: Bang & Olufsen 3D Premium Sound System",
+            "Port: 2x USB-C, 1x 12V, Wireless Smartphone Charger"
+          ]
+        },
+        "dimensions": {
+          "wheelbase": "2995 mm",
+          "curb_weight": "2200 kg",
+          "fuel_capacity": "85 L",
+          "ground_clearance": "190 mm",
+          "length_width_height": "4924 x 1983 x 1696 mm"
+        },
+        "hero_specs": {
+          "trim": "Luxury Trim",
+          "mileage": "0 km",
+          "condition": "Baru"
+        },
+        "performance": {
+          "torque": "774 Nm @ 3500 RPM",
+          "drivetrain": "AWD (Rear-biased)",
+          "horsepower": "624 HP @ 6500 RPM",
+          "engine_type": "4.0L Twin-Turbo V8",
+          "acceleration": "3.8s (0-100 km/h)",
+          "transmission": "8-Speed Dual Clutch (DCT)"
+        },
+        "safety_and_features": {
+          "active_safety": [
+            "Blind Spot Monitoring",
+            "Lane Keep Assist",
+            "Adaptive Cruise Control",
+            "Autonomous Emergency Braking"
+          ],
+          "passive_safety": [
+            "10 Airbags",
+            "Reinforced Rigid Chassis",
+            "ISOFIX"
+          ],
+          "exterior_features": [
+            "Laser LED Headlights",
+            "22-inch Forged Alloy Wheels",
+            "Soft-close Doors"
+          ]
+        }
+      },
+      "createdAt": "2026-06-13T21:37:58.971Z",
+      "updatedAt": "2026-06-14T19:56:00.134Z"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "Zetian",
+      "password": "Wu",
+      "email": "zetinwu@gmail.com",
+      "phone": "085158941664",
+      "address": "Susquehanna",
+      "role": "CUSTOMER",
+      "createdAt": "2026-06-13T21:37:58.974Z",
+      "updatedAt": "2026-06-13T21:37:58.974Z"
+    },
+    {
+      "id": 2,
+      "username": "SalesAgent_01",
+      "password": "password123",
+      "email": "sales@notnull.com",
+      "phone": null,
+      "address": null,
+      "role": "SALES",
+      "createdAt": "2026-06-13T23:17:38.571Z",
+      "updatedAt": "2026-06-13T23:17:38.571Z"
+    },
+    {
+      "id": 3,
+      "username": "Epicerie Kiosk",
+      "password": "$2b$10$2F6.R.eLOt7WdUJUXWdsrOO0aqPDKI3HZjR8yqpsJ0pANKWyWFCRu",
+      "email": "epiceriekiosk@gmail.com",
+      "phone": null,
+      "address": null,
+      "role": "CUSTOMER",
+      "createdAt": "2026-06-18T15:29:45.664Z",
+      "updatedAt": "2026-06-18T15:29:45.664Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "carId": 2,
+      "amount": 1,
+      "totalPrice": 2000000,
+      "status": "PENDING",
+      "createdAt": "2025-01-21T17:00:00.000Z",
+      "updatedAt": "2026-06-13T21:37:58.978Z"
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "carId": 1,
+      "salesId": null,
+      "inspectionDate": "2026-06-18T15:05:00.000Z",
+      "status": "PENDING",
+      "notes": "",
+      "createdAt": "2026-06-18T15:06:17.184Z",
+      "updatedAt": "2026-06-18T15:06:17.184Z"
+    },
+    {
+      "id": 2,
+      "customerId": 1,
+      "carId": 1,
+      "salesId": null,
+      "inspectionDate": "2026-06-19T15:20:00.000Z",
+      "status": "PENDING",
+      "notes": "{\"fullName\":\"Nom Nom\",\"email\":\"nomnom20041@gmail.com\",\"identityNumber\":\"3310331033103310\",\"userNotes\":\"\"}",
+      "createdAt": "2026-06-18T15:20:31.022Z",
+      "updatedAt": "2026-06-18T15:20:31.022Z"
+    }
+  ],
+  "messages": []
+}

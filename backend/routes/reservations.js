@@ -8,15 +8,15 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.get('/user/:userId', authMiddleware, async (req, res) => {
   const { userId } = req.params;
   
-  if (req.user.role === 'CUSTOMER' && req.user.userId !== parseInt(userId)) {
+  if (req.user.role === 'CUSTOMER' && req.user.userId !== userId) {
     return res.status(403).json({ error: 'Access denied' });
   }
   try {
     const reservations = await prisma.reservation.findMany({
       where: {
         OR: [
-          { customerId: parseInt(userId) },
-          { salesId: parseInt(userId) }
+          { customerId: userId },
+          { salesId: userId }
         ]
       },
       include: {
@@ -47,9 +47,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
     const newReservation = await prisma.reservation.create({
       data: {
-        customerId: parseInt(customerId),
+        customerId: customerId,
         carId: parseInt(carId),
-        salesId: salesId ? parseInt(salesId) : null,
+        salesId: salesId ? salesId : null,
         inspectionDate: new Date(inspectionDate),
         notes: JSON.stringify(adminData),
         status: 'PENDING'

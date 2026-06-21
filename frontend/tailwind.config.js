@@ -15,6 +15,7 @@ export default {
         foreground: 'var(--foreground)',
         primary: 'var(--primary)',
         secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
       },
       animation: {
         marquee: 'marquee 40s linear infinite',

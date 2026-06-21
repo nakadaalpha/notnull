@@ -1,13 +1,15 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag } from 'lucide-react';
 
 export default function AdminLayout() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    logout();
     navigate('/login');
   };
 
@@ -26,10 +28,18 @@ export default function AdminLayout() {
             <Home size={20} />
             <span className="font-medium">Dashboard</span>
           </Link>
-          <Link to="/admin/cars" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
-            <Car size={20} />
-            <span className="font-medium">Warehouse (Cars)</span>
-          </Link>
+          {user?.role === 'ADMIN' && (
+            <>
+              <Link to="/admin/brands" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <Tag size={20} />
+                <span className="font-medium">Brands</span>
+              </Link>
+              <Link to="/admin/cars" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <Car size={20} />
+                <span className="font-medium">Warehouse (Cars)</span>
+              </Link>
+            </>
+          )}
           <Link to="/admin/customers" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
             <Users size={20} />
             <span className="font-medium">Customers</span>
@@ -52,7 +62,14 @@ export default function AdminLayout() {
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Header */}
         <header className="h-20 bg-background border-b border-primary/10 flex items-center justify-between px-8 shrink-0">
-          <h2 className="text-xl font-bold">Admin Panel</h2>
+          <div className="flex items-center">
+            <h2 className="text-xl font-bold">Admin Panel</h2>
+            {user?.role && (
+              <span className="ml-4 text-xs font-semibold px-2.5 py-1 bg-primary/10 text-primary rounded-full tracking-wider">
+                {user.role}
+              </span>
+            )}
+          </div>
           <button 
             onClick={toggleTheme} 
             className="p-2 rounded-full bg-secondary hover:bg-primary/10 transition-colors"

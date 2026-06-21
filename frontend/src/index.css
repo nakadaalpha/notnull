@@ -8,13 +8,15 @@
     --foreground: #171717;
     --primary: #0a0a0a;
     --secondary: #f5f5f5;
+    --accent: #f59e0b; /* Amber 500 */
   }
 
   .dark {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #09090b; /* Zinc 950 */
+    --foreground: #fafafa;
     --primary: #ffffff;
-    --secondary: #171717;
+    --secondary: #27272a; /* Zinc 800 */
+    --accent: #f59e0b;
   }
 }
 

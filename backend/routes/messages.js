@@ -10,8 +10,8 @@ router.get('/:userId/:peerId', async (req, res) => {
     const messages = await prisma.message.findMany({
       where: {
         OR: [
-          { senderId: parseInt(userId), receiverId: parseInt(peerId) },
-          { senderId: parseInt(peerId), receiverId: parseInt(userId) }
+          { senderId: userId, receiverId: peerId },
+          { senderId: peerId, receiverId: userId }
         ]
       },
       orderBy: { createdAt: 'asc' }
@@ -28,8 +28,8 @@ router.post('/', async (req, res) => {
   try {
     const message = await prisma.message.create({
       data: {
-        senderId: parseInt(senderId),
-        receiverId: parseInt(receiverId),
+        senderId: senderId,
+        receiverId: receiverId,
         content
       }
     });

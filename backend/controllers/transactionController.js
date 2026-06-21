@@ -29,7 +29,7 @@ const createTransaction = async (req, res) => {
     // 2. Create transaction
     const newTransaction = await prisma.transaction.create({
       data: {
-        customerId: parseInt(customerId),
+        customerId: customerId,
         carId: parseInt(carId),
         amount: buyAmount,
         totalPrice: parseFloat(totalPrice),
