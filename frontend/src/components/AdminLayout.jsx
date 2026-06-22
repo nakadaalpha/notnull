@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings } from 'lucide-react';
+import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings, MessageSquare } from 'lucide-react';
 
 export default function AdminLayout() {
   const { theme, toggleTheme } = useTheme();
@@ -14,10 +14,10 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen flex bg-secondary/30 dark:bg-primary/5">
+    <div className="h-screen w-screen overflow-hidden flex bg-secondary/30 dark:bg-primary/5">
       {/* Sidebar */}
-      <aside className="w-64 bg-background border-r border-primary/10 flex flex-col hidden md:flex">
-        <div className="p-6">
+      <aside className="w-64 h-full overflow-y-auto bg-background border-r border-primary/10 flex flex-col hidden md:flex" data-lenis-prevent>
+        <div className="p-6 shrink-0">
           <Link to="/" className="text-2xl font-bold tracking-tighter">
             NOT<span className="text-gray-500">ADMIN</span>
           </Link>
@@ -48,6 +48,12 @@ export default function AdminLayout() {
             <ClipboardList size={20} />
             <span className="font-medium">Transactions</span>
           </Link>
+          {user?.role === 'SALES' && (
+            <Link to="/admin/messages" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+              <MessageSquare size={20} />
+              <span className="font-medium">Messages</span>
+            </Link>
+          )}
         </nav>
 
         <div className="p-4 border-t border-primary/10 space-y-2">
@@ -63,7 +69,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Top Header */}
         <header className="h-20 bg-background border-b border-primary/10 flex items-center justify-between px-8 shrink-0">
           <div className="flex items-center">
@@ -83,7 +89,7 @@ export default function AdminLayout() {
         </header>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-auto p-8">
+        <div className="flex-1 overflow-y-auto p-8 pb-24 min-h-0 relative" data-lenis-prevent>
           <Outlet />
         </div>
       </main>

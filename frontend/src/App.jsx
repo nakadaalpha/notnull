@@ -3,6 +3,9 @@ import { ReactLenis } from 'lenis/react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
+import PageTitleSetter from './components/PageTitleSetter';
+import ErrorBoundary from './components/ErrorBoundary';
+import ErrorPage from './components/ErrorPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatWidget from './components/ChatWidget';
@@ -18,6 +21,7 @@ import CarsAdmin from './pages/admin/CarsAdmin';
 import BrandsAdmin from './pages/admin/BrandsAdmin';
 import CustomersAdmin from './pages/admin/CustomersAdmin';
 import TransactionsAdmin from './pages/admin/TransactionsAdmin';
+import MessagesAdmin from './pages/admin/MessagesAdmin';
 import ProtectedRoute from './components/ProtectedRoute';
 
 
@@ -26,7 +30,9 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <ReactLenis root options={{ lerp: 0.2, wheelMultiplier: 1.5, smoothWheel: true }}>
-          <Router>
+          <ErrorBoundary>
+            <Router>
+            <PageTitleSetter />
             <ScrollToTop />
           <Routes>
             {/* Public Routes */}
@@ -84,15 +90,26 @@ function App() {
                 <Route path="cars" element={<CarsAdmin />} />
                 <Route path="customers" element={<CustomersAdmin />} />
                 <Route path="transactions" element={<TransactionsAdmin />} />
+                <Route path="messages" element={<MessagesAdmin />} />
               </Route>
             </Route>
 
             {/* Redirects & Catch-All */}
             <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={
+              <div className="min-h-screen flex flex-col font-sans selection:bg-primary selection:text-background">
+                <Navbar />
+                <main className="flex-grow flex items-center justify-center pt-28 pb-12">
+                  <ErrorPage code={404} />
+                </main>
+                <Footer />
+                <ChatWidget />
+              </div>
+            } />
           </Routes>
-        </Router>
-      </ReactLenis>
+          </Router>
+          </ErrorBoundary>
+        </ReactLenis>
       </AuthProvider>
     </ThemeProvider>
   );

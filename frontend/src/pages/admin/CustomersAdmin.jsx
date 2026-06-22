@@ -139,8 +139,8 @@ export default function CustomersAdmin() {
         )}
       </div>
 
-      <div className="bg-background border border-primary/10 rounded-2xl overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-background border border-primary/10 rounded-2xl overflow-x-auto" data-lenis-prevent>
+        <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr className="bg-secondary/50 border-b border-primary/10">
               <th className="p-4 font-medium text-primary/60">ID</th>

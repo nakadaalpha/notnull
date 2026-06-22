@@ -208,7 +208,7 @@ export default function Profile() {
               activeTab === 'identity' ? 'text-primary' : 'text-primary/40 hover:text-primary/70'
             }`}
           >
-            My Identity
+            My Profile
             {activeTab === 'identity' && (
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary"></span>
             )}
