@@ -1,4 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../api';
+import { MapPin } from 'lucide-react';
+import Modal from './Modal';
 
 export default function Footer() {
   const AnimatedLink = ({ to, href, children }) => {
@@ -21,6 +25,23 @@ export default function Footer() {
       </Link>
     );
   };
+
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [mapUrl, setMapUrl] = useState("https://maps.google.com/maps?q=Pantai%20Indah%20Kapuk%202,%20Jakarta&t=&z=14&ie=UTF8&iwloc=&output=embed");
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await api.get('/settings/showroom_map');
+        if (res.data && res.data.value) {
+          setMapUrl(res.data.value);
+        }
+      } catch (error) {
+        // Fallback to default if not found
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <footer className="w-full bg-secondary/5 dark:bg-white/5 border-t border-primary/10 pt-20 pb-10">
@@ -67,7 +88,16 @@ export default function Footer() {
               </li>
               <li className="text-xs font-light tracking-widest uppercase">
                 <span className="block text-primary/50 mb-1 text-[10px]">Showroom</span>
-                Jakarta, Indonesia
+                <button 
+                  onClick={() => setIsMapOpen(true)}
+                  className="group flex items-center hover:text-primary transition-colors text-left"
+                >
+                  <MapPin size={14} className="mr-2 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  <span className="relative">
+                    Pondok Indah Kapuk 2
+                    <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary transition-all duration-300 ease-out group-hover:w-full"></span>
+                  </span>
+                </button>
               </li>
             </ul>
           </div>
@@ -109,6 +139,32 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Showroom Location Modal */}
+      <Modal isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} title="Visit Our Showroom" maxWidth="max-w-4xl">
+        <div className="w-full h-[60vh] bg-secondary/10 rounded-xl overflow-hidden relative">
+          <iframe 
+            src={mapUrl}
+            width="100%" 
+            height="100%" 
+            style={{ border: 0 }} 
+            allowFullScreen="" 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            className="absolute inset-0"
+          ></iframe>
+        </div>
+        <div className="mt-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div>
+            <h4 className="font-bold text-lg tracking-widest uppercase">NotNull Premium Cars</h4>
+            <p className="text-sm text-primary/60 mt-1">Kawasan Pantai Indah Kapuk 2 (PIK 2), Jakarta</p>
+          </div>
+          <div className="mt-4 md:mt-0 text-left md:text-right">
+            <p className="text-xs font-bold tracking-widest uppercase text-primary/50">Operating Hours</p>
+            <p className="text-sm mt-1">Mon - Sun: 09:00 - 21:00</p>
+          </div>
+        </div>
+      </Modal>
     </footer>
   );
 }

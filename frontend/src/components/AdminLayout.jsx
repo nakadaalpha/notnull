@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings, MessageSquare } from 'lucide-react';
+import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings, MessageSquare, Wrench } from 'lucide-react';
 
 export default function AdminLayout() {
   const { theme, toggleTheme } = useTheme();
@@ -28,6 +28,7 @@ export default function AdminLayout() {
             <Home size={20} />
             <span className="font-medium">Dashboard</span>
           </Link>
+          
           {user?.role === 'ADMIN' && (
             <>
               <Link to="/admin/brands" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
@@ -40,18 +41,35 @@ export default function AdminLayout() {
               </Link>
             </>
           )}
-          <Link to="/admin/customers" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
-            <Users size={20} />
-            <span className="font-medium">{user?.role === 'ADMIN' ? 'Users' : 'Customers'}</span>
-          </Link>
-          <Link to="/admin/transactions" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
-            <ClipboardList size={20} />
-            <span className="font-medium">Transactions</span>
-          </Link>
-          {user?.role === 'SALES' && (
-            <Link to="/admin/messages" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
-              <MessageSquare size={20} />
-              <span className="font-medium">Messages</span>
+
+          {['ADMIN', 'MANAGER', 'SALES'].includes(user?.role) && (
+            <>
+              <Link to="/admin/customers" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <Users size={20} />
+                <span className="font-medium">{(user?.role === 'ADMIN' || user?.role === 'MANAGER') ? 'Users' : 'Customers'}</span>
+              </Link>
+              <Link to="/admin/transactions" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <ClipboardList size={20} />
+                <span className="font-medium">Transactions</span>
+              </Link>
+              <Link to="/admin/messages" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <MessageSquare size={20} />
+                <span className="font-medium">Messages</span>
+              </Link>
+            </>
+          )}
+
+          {['ADMIN', 'MANAGER', 'SALES', 'MECHANIC'].includes(user?.role) && (
+            <Link to="/admin/inspections" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+              <Wrench size={20} />
+              <span className="font-medium">Inspection Queue</span>
+            </Link>
+          )}
+
+          {user?.role === 'ADMIN' && (
+            <Link to="/admin/settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+              <Settings size={20} />
+              <span className="font-medium">System Settings</span>
             </Link>
           )}
         </nav>

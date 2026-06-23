@@ -8,6 +8,7 @@ export default function Profile() {
   const { user, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [reservations, setReservations] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Tab State
@@ -28,12 +29,14 @@ export default function Profile() {
     setLoading(true);
     try {
       // We can run these in parallel to be faster
-      const [profileRes, reservationsRes] = await Promise.all([
+      const [profileRes, reservationsRes, transactionsRes] = await Promise.all([
         api.get('/auth/me'),
-        api.get(`/reservations/user/${user.id}`)
+        api.get(`/reservations/user/${user.id}`),
+        api.get(`/transactions/user/${user.id}`)
       ]);
       setProfile(profileRes.data);
       setReservations(reservationsRes.data);
+      setTransactions(transactionsRes.data);
     } catch (err) {
       console.error('Failed to load account data', err);
       setError('Failed to load some account details.');
@@ -221,7 +224,7 @@ export default function Profile() {
           >
             My Garage
             <span className="ml-2 bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px]">
-              {reservations.length}
+              {reservations.length + transactions.length}
             </span>
             {activeTab === 'garage' && (
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary"></span>
@@ -277,7 +280,7 @@ export default function Profile() {
         {/* Tab Content: Garage */}
         {activeTab === 'garage' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {reservations.length === 0 ? (
+            {reservations.length === 0 && transactions.length === 0 ? (
               <div className="bg-secondary/5 border border-primary/10 rounded-xl p-16 text-center max-w-2xl mx-auto">
                 <Car size={48} strokeWidth={1} className="mx-auto mb-6 text-primary/20" />
                 <p className="text-sm font-light text-primary/60 tracking-widest uppercase mb-8">Your garage is currently empty.</p>
@@ -287,9 +290,42 @@ export default function Profile() {
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {transactions.map(tx => (
+                  <div key={`tx-${tx.id}`} className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors">
+                    <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative">
+                      <div className="absolute top-2 left-2 px-2 py-1 bg-foreground text-background text-[8px] font-bold tracking-widest uppercase rounded z-10">PURCHASE</div>
+                      <img 
+                        src={tx.car?.imageUrl ? `/images/cars/${tx.car.imageUrl}` : '/images/cars/default.png'} 
+                        alt={tx.car?.model} 
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50">{tx.car?.brand?.name}</span>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                            tx.status === 'COMPLETED' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                          }`}>
+                            {tx.status}
+                          </span>
+                        </div>
+                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{tx.car?.model}</h3>
+                        
+                        <div className="space-y-2 mb-6">
+                          <div className="flex items-center text-xs font-light text-primary/70">
+                            <Calendar size={14} className="mr-3 text-primary/40" />
+                            <span>Purchased: {new Date(tx.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
                 {reservations.map(res => (
-                  <div key={res.id} className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors">
-                    <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden">
+                  <div key={`res-${res.id}`} className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors">
+                    <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative">
+                      <div className="absolute top-2 left-2 px-2 py-1 bg-primary/10 text-primary text-[8px] font-bold tracking-widest uppercase rounded z-10">INSPECTION</div>
                       <img 
                         src={res.car?.imageUrl ? `/images/cars/${res.car.imageUrl}` : '/images/cars/default.png'} 
                         alt={res.car?.model} 

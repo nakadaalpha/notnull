@@ -20,13 +20,10 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     const response = await api.post('/auth/login', { username, password });
-    const { token } = response.data;
+    const { token, user: backendUser } = response.data;
     
-    // Decode token or fetch user details
-    // For simplicity, we decode JWT payload here manually or rely on backend to return user obj.
-    // The backend currently only returns token. Let's parse it basic way:
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const userData = { id: payload.userId, role: payload.role, username };
+    // Use the comprehensive user object returned by the backend
+    const userData = backendUser;
     
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));

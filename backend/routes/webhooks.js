@@ -6,26 +6,37 @@ const prisma = new PrismaClient();
 // Simulated Xendit Webhook Endpoint
 router.post('/xendit', async (req, res) => {
   // In a real scenario, Xendit sends { id, status, external_id, etc. }
-  // We'll mock it by expecting { reservationId, status: 'PAID' }
-  const { reservationId, status } = req.body;
+  // We'll mock it by expecting { transactionId, status: 'PAID' }
+  const { transactionId, status } = req.body;
 
-  if (!reservationId || !status) {
-    return res.status(400).json({ error: 'Invalid webhook payload' });
+  if (!transactionId || status !== 'PAID') {
+    return res.status(400).json({ error: 'Invalid webhook payload or not PAID' });
   }
 
   try {
-    const updatedReservation = await prisma.reservation.update({
-      where: { id: parseInt(reservationId) },
-      data: { status: status === 'PAID' ? 'PAID' : 'PENDING' }
+    const transaction = await prisma.transaction.findUnique({ where: { id: parseInt(transactionId) } });
+    if (!transaction) return res.status(404).json({ error: 'Transaction not found' });
+
+    // Find a random SALES user to assign
+    const salesUsers = await prisma.user.findMany({ where: { role: 'SALES' } });
+    const assignedSales = salesUsers.length > 0 ? salesUsers[Math.floor(Math.random() * salesUsers.length)] : null;
+
+    // Update Transaction to BOOKED and assign sales
+    const updatedTransaction = await prisma.transaction.update({
+      where: { id: parseInt(transactionId) },
+      data: { 
+        status: 'BOOKED',
+        salesId: assignedSales ? assignedSales.id : null
+      }
     });
 
-    // We could also emit a socket.io event here to notify the frontend
-    const io = req.app.get('io');
-    if (io) {
-      io.to(updatedReservation.customerId.toString()).emit('reservation_updated', updatedReservation);
-    }
+    // Reduce Car Stock
+    await prisma.car.update({
+      where: { id: transaction.carId },
+      data: { stock: { decrement: 1 } }
+    });
 
-    res.json({ message: 'Webhook processed successfully' });
+    res.json({ message: 'Webhook processed successfully, stock reduced, sales assigned.' });
   } catch (error) {
     console.error('Webhook error:', error);
     res.status(500).json({ error: 'Failed to process webhook' });

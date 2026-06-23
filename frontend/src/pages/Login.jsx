@@ -17,7 +17,7 @@ export default function Login() {
       if (loggedInUser.role === 'ADMIN' || loggedInUser.role === 'SALES') {
         navigate('/admin');
       } else {
-        navigate('/profile');
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');

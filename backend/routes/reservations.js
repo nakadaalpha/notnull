@@ -71,8 +71,8 @@ router.post('/', authMiddleware, async (req, res) => {
 
 // Update reservation status
 router.put('/:id/status', authMiddleware, async (req, res) => {
-  if (req.user.role === 'CUSTOMER') {
-    return res.status(403).json({ error: 'Access denied. Only sales/admin can update status.' });
+  if (req.user.role === 'CUSTOMER' || req.user.role === 'MECHANIC') {
+    return res.status(403).json({ error: 'Access denied. Only sales/manager/admin can update status.' });
   }
 
   const { id } = req.params;

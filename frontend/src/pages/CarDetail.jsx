@@ -7,6 +7,7 @@ import CarSpecsTabs from '../components/CarSpecsTabs';
 import FinancingCalculator from '../components/FinancingCalculator';
 import TradeInForm from '../components/TradeInForm';
 import ReservationModal from '../components/ReservationModal';
+import LoginModal from '../components/LoginModal';
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -37,6 +38,8 @@ export default function CarDetail() {
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   
   // Administrative Data
   const [fullName, setFullName] = useState('');
@@ -48,11 +51,7 @@ export default function CarDetail() {
   const [interestRate, setInterestRate] = useState(5.5);
   const [months, setMonths] = useState(60);
 
-  // Trade-In States
-  const [tradeInBrand, setTradeInBrand] = useState('');
-  const [tradeInYear, setTradeInYear] = useState('2020');
-  const [tradeInValue, setTradeInValue] = useState(0);
-  const [isEstimating, setIsEstimating] = useState(false);
+
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -69,8 +68,7 @@ export default function CarDetail() {
     fetchCar();
   }, [id]);
 
-  // Derived Calculations
-  const finalCarPrice = car ? Math.max(0, car.price - tradeInValue) : 0;
+  const finalCarPrice = car ? Math.max(0, car.price) : 0;
   
   const monthlyPayment = useMemo(() => {
     if (!finalCarPrice) return 0;
@@ -81,18 +79,6 @@ export default function CarDetail() {
     const payment = principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
     return payment.toFixed(0);
   }, [finalCarPrice, downPayment, interestRate, months]);
-
-  const handleTradeInEstimate = (e) => {
-    e.preventDefault();
-    if (!tradeInBrand) return;
-    setIsEstimating(true);
-    setTimeout(() => {
-      const baseValue = tradeInYear > 2018 ? 25000 : 15000;
-      const brandMultiplier = tradeInBrand.length > 5 ? 1.2 : 0.9;
-      setTradeInValue(Math.floor(baseValue * brandMultiplier));
-      setIsEstimating(false);
-    }, 1500);
-  };
 
   const handleReservationSubmit = async (e) => {
     e.preventDefault();
@@ -137,6 +123,22 @@ export default function CarDetail() {
       setSubmitMessage('Failed to connect to Payment Gateway. Please try again.');
       setIsSubmitting(false);
     }
+  };
+
+  const handlePurchase = () => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    navigate(`/checkout?carId=${car.id}`);
+  };
+
+  const handleTradeInCheckout = () => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    navigate(`/checkout?carId=${car.id}&tradeIn=true`);
   };
 
   if (loading) {
@@ -194,13 +196,8 @@ export default function CarDetail() {
               monthlyPayment={monthlyPayment}
             />
 
-            {/* Trade-In Valuation Form */}
-            <TradeInForm 
-              tradeInBrand={tradeInBrand} setTradeInBrand={setTradeInBrand}
-              tradeInYear={tradeInYear} setTradeInYear={setTradeInYear}
-              tradeInValue={tradeInValue} isEstimating={isEstimating}
-              handleTradeInEstimate={handleTradeInEstimate}
-            />
+            {/* Trade-In Promotional Card */}
+            <TradeInForm onTradeInCheckout={handleTradeInCheckout} />
           </div>
         </div>
 
@@ -252,12 +249,6 @@ export default function CarDetail() {
             </div>
 
             <div className="mb-8">
-              {tradeInValue > 0 && (
-                <div className="flex justify-between items-end mb-2 text-primary/50 line-through">
-                  <span className="text-[10px] uppercase tracking-widest">Original MSRP</span>
-                  <span className="text-sm">${car.price.toLocaleString()}</span>
-                </div>
-              )}
               <div className="flex flex-col">
                 <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50 mb-1">Net Purchase Price</p>
                 <p className="text-3xl md:text-4xl font-light tracking-tight text-foreground">
@@ -268,14 +259,19 @@ export default function CarDetail() {
             
             <div className="flex flex-col gap-4">
               <button 
-                disabled={car.stock <= 0}
-                className={`w-full py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 rounded-md ${
+                disabled={car.stock <= 0 || isPurchasing}
+                onClick={handlePurchase}
+                className={`w-full py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 rounded-md flex items-center justify-center space-x-2 ${
                   car.stock > 0 
                   ? 'bg-foreground text-background hover:bg-primary hover:text-background' 
                   : 'bg-primary/5 text-primary/30 cursor-not-allowed border border-primary/10'
                 }`}
               >
-                {car.stock > 0 ? 'Purchase Vehicle' : 'Out of Stock'}
+                {isPurchasing ? (
+                  <span className="animate-pulse">Processing...</span>
+                ) : (
+                  car.stock > 0 ? 'Purchase Vehicle' : 'Out of Stock'
+                )}
               </button>
               
               <button 
@@ -306,6 +302,8 @@ export default function CarDetail() {
         handleReservationSubmit={handleReservationSubmit}
         isSubmitting={isSubmitting} submitMessage={submitMessage}
       />
+
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>
   );
 }

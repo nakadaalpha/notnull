@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { FileText } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import api from '../../api';
 
 export default function TransactionsAdmin() {
+  const { user } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +25,18 @@ export default function TransactionsAdmin() {
     };
     fetchTransactions();
   }, []);
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    try {
+      await api.put(`/transactions/${id}/status`, { status: newStatus });
+      setTransactions(transactions.map(trx => 
+        trx.id === id ? { ...trx, status: newStatus } : trx
+      ));
+    } catch (error) {
+      console.error('Failed to update status', error);
+      alert(error.response?.data?.error || 'Failed to update transaction status');
+    }
+  };
 
   return (
     <div>
@@ -91,13 +105,26 @@ export default function TransactionsAdmin() {
                   <td className="p-4">{new Date(trx.createdAt).toLocaleDateString()}</td>
                   <td className="p-4">${trx.totalPrice?.toLocaleString()}</td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      trx.status === 'COMPLETED' ? 'bg-green-500/10 text-green-500' :
-                      trx.status === 'PENDING' ? 'bg-orange-500/10 text-orange-500' :
-                      'bg-red-500/10 text-red-500'
-                    }`}>
-                      {trx.status}
-                    </span>
+                    <select 
+                      value={trx.status}
+                      onChange={(e) => handleUpdateStatus(trx.id, e.target.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border focus:outline-none cursor-pointer appearance-none ${
+                        trx.status === 'COMPLETED' ? 'bg-green-500/10 text-green-600 border-green-500/20' :
+                        trx.status === 'PENDING_PAYMENT' ? 'bg-orange-500/10 text-orange-600 border-orange-500/20' :
+                        trx.status === 'AWAITING_PAYMENT' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' :
+                        trx.status === 'BOOKED' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
+                        'bg-red-500/10 text-red-600 border-red-500/20'
+                      }`}
+                    >
+                      <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
+                      <option value="BOOKED">BOOKED</option>
+                      <option value="AWAITING_PAYMENT">AWAITING_PAYMENT</option>
+                      {/* SALES role cannot mark as COMPLETED */}
+                      {(user?.role === 'ADMIN' || user?.role === 'MANAGER' || trx.status === 'COMPLETED') && (
+                        <option value="COMPLETED" disabled={user?.role === 'SALES'}>COMPLETED</option>
+                      )}
+                      <option value="CANCELLED">CANCELLED</option>
+                    </select>
                   </td>
                 </tr>
               ))

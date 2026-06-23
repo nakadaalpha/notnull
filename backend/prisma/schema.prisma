@@ -16,8 +16,10 @@ model User {
   address          String?
   role             String        @default("CUSTOMER") // ADMIN, SALES, CUSTOMER
   transactions     Transaction[]
-  reservationsAsCust Reservation[] @relation("CustomerReservations")
-  reservationsAsSales Reservation[] @relation("SalesReservations")
+  reservationsAsCust   Reservation[] @relation("CustomerReservations")
+  reservationsAsSales  Reservation[] @relation("SalesReservations")
+  tradeIns             TradeIn[]     @relation("CustomerTradeIns")
+  transactionsAsSales  Transaction[] @relation("SalesTransactions")
   sentMessages     Message[]     @relation("SentMessages")
   receivedMessages Message[]     @relation("ReceivedMessages")
   createdAt        DateTime      @default(now())
@@ -55,11 +57,34 @@ model Transaction {
   customer    User     @relation(fields: [customerId], references: [id])
   carId       Int
   car         Car      @relation(fields: [carId], references: [id])
+  tradeInId   Int?     @unique
+  tradeIn     TradeIn? @relation(fields: [tradeInId], references: [id])
+  salesId     String?
+  sales       User?    @relation("SalesTransactions", fields: [salesId], references: [id])
   amount      Int      @default(1) // Quantity bought
   totalPrice  Float
-  status      String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  bookingFee  Float?
+  invoiceUrl  String?
+  status      String   @default("PENDING_PAYMENT") // PENDING_PAYMENT, BOOKED, AWAITING_PAYMENT, COMPLETED, CANCELLED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model TradeIn {
+  id             Int      @id @default(autoincrement())
+  customerId     String
+  customer       User     @relation("CustomerTradeIns", fields: [customerId], references: [id])
+  licensePlate   String
+  brand          String
+  model          String
+  year           Int
+  photoUrl       String?
+  status         String   @default("TRADE_IN_PENDING") // TRADE_IN_PENDING, INSPECTION_SCHEDULED, WAITING_APPROVAL, APPROVED, REJECTED
+  appraisedValue Float?
+  notes          String?
+  transaction    Transaction?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Message {
@@ -86,4 +111,9 @@ model Reservation {
   notes          String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model Setting {
+  key   String @id
+  value String
 }

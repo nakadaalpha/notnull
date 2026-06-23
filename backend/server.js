@@ -10,6 +10,31 @@ const prisma = new PrismaClient();
 
 const app = express();
 const server = http.createServer(app);
+// Background Sweeper (Simulating node-cron for 24h expiration)
+// Runs every minute, cancels transactions that have been PENDING_PAYMENT for over 24 hours (for testing we can assume 24 minutes)
+setInterval(async () => {
+  try {
+    const expiredTransactions = await prisma.transaction.findMany({
+      where: {
+        status: 'PENDING_PAYMENT',
+        createdAt: {
+          lt: new Date(Date.now() - 24 * 60 * 60 * 1000) // 24 hours ago
+        }
+      }
+    });
+
+    for (let trx of expiredTransactions) {
+      await prisma.transaction.update({
+        where: { id: trx.id },
+        data: { status: 'CANCELLED' }
+      });
+      console.log(`[Cron] Transaction ${trx.id} cancelled due to payment expiration.`);
+    }
+  } catch (error) {
+    console.error('Sweeper Error:', error);
+  }
+}, 60 * 1000); // Check every minute
+
 const PORT = process.env.PORT || 5000;
 
 // Serve static files
@@ -83,6 +108,8 @@ const messageRoutes = require('./routes/messages');
 const reservationRoutes = require('./routes/reservations');
 const webhookRoutes = require('./routes/webhooks');
 const uploadRoutes = require('./routes/uploads');
+const settingsRoutes = require('./routes/settings');
+const tradeInRouter = require('./routes/tradein');
 
 // Mount Routes
 const swaggerOptions = {
@@ -99,6 +126,8 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/trade-in', tradeInRouter);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
