@@ -44,6 +44,8 @@ export default function CarsAdmin() {
   // Search and Filter states
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStock, setFilterStock] = useState('ALL');
+  const [filterBrand, setFilterBrand] = useState('ALL');
+  const [sortBy, setSortBy] = useState('DEFAULT');
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,7 +58,14 @@ export default function CarsAdmin() {
     price: '',
     stock: '',
     imageUrl: '',
-    specifications: defaultSpecsTemplate
+    specifications: defaultSpecsTemplate,
+    has_bpkb: false,
+    has_stnk: false,
+    stnk_expiry_date: '',
+    has_faktur: false,
+    has_kwitansi_blanko: false,
+    has_form_a: false,
+    scanned_files: []
   });
   const [isUploading, setIsUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
@@ -98,7 +107,14 @@ export default function CarsAdmin() {
           dimensions: {},
           interior: {},
           safety_and_features: {}
-        }
+        },
+        has_bpkb: car.document?.has_bpkb || false,
+        has_stnk: car.document?.has_stnk || false,
+        stnk_expiry_date: car.document?.stnk_expiry_date ? car.document.stnk_expiry_date.split('T')[0] : '',
+        has_faktur: car.document?.has_faktur || false,
+        has_kwitansi_blanko: car.document?.has_kwitansi_blanko || false,
+        has_form_a: car.document?.has_form_a || false,
+        scanned_files: car.document?.scanned_files || []
       });
     } else {
       setSelectedCarId(null);
@@ -109,7 +125,14 @@ export default function CarsAdmin() {
         price: '', 
         stock: '1', 
         imageUrl: '',
-        specifications: defaultSpecsTemplate
+        specifications: defaultSpecsTemplate,
+        has_bpkb: false,
+        has_stnk: false,
+        stnk_expiry_date: '',
+        has_faktur: false,
+        has_kwitansi_blanko: false,
+        has_form_a: false,
+        scanned_files: []
       });
     }
     setActiveTab('basic');
@@ -146,11 +169,25 @@ export default function CarsAdmin() {
     e.preventDefault();
     if (modalMode === 'edit' && !window.confirm('Are you sure you want to save these changes?')) return;
     try {
+      let carId = selectedCarId;
       if (modalMode === 'create') {
-        await api.post('/cars', formData);
+        const res = await api.post('/cars', formData);
+        carId = res.data.id;
       } else {
         await api.put(`/cars/${selectedCarId}`, formData);
       }
+
+      // Save document metadata
+      await api.post(`/documents/${carId}`, {
+        has_bpkb: formData.has_bpkb,
+        has_stnk: formData.has_stnk,
+        stnk_expiry_date: formData.stnk_expiry_date,
+        has_faktur: formData.has_faktur,
+        has_kwitansi_blanko: formData.has_kwitansi_blanko,
+        has_form_a: formData.has_form_a,
+        scanned_files: formData.scanned_files
+      });
+
       closeModal();
       fetchData();
     } catch (error) {
@@ -192,6 +229,16 @@ export default function CarsAdmin() {
         />
         <select 
           className="bg-background border border-primary/20 px-4 py-2 rounded-lg focus:outline-none focus:border-primary text-primary"
+          value={filterBrand}
+          onChange={(e) => setFilterBrand(e.target.value)}
+        >
+          <option value="ALL">All Brands</option>
+          {brands.map(brand => (
+            <option key={brand.id} value={brand.id}>{brand.name}</option>
+          ))}
+        </select>
+        <select 
+          className="bg-background border border-primary/20 px-4 py-2 rounded-lg focus:outline-none focus:border-primary text-primary"
           value={filterStock}
           onChange={(e) => setFilterStock(e.target.value)}
         >
@@ -199,10 +246,44 @@ export default function CarsAdmin() {
           <option value="AVAILABLE">Available</option>
           <option value="OUT_OF_STOCK">Out of Stock</option>
         </select>
+        <select 
+          className="bg-background border border-primary/20 px-4 py-2 rounded-lg focus:outline-none focus:border-primary text-primary"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="DEFAULT">Sort By: Default (ID)</option>
+          <option value="NAME_ASC">Name: A to Z</option>
+          <option value="NAME_DESC">Name: Z to A</option>
+          <option value="PRICE_ASC">Price: Low to High</option>
+          <option value="PRICE_DESC">Price: High to Low</option>
+          <option value="YEAR_DESC">Year: Newest First</option>
+          <option value="YEAR_ASC">Year: Oldest First</option>
+        </select>
       </div>
 
-      <div className="bg-background border border-primary/10 rounded-2xl overflow-x-auto" data-lenis-prevent>
-        <table className="w-full text-left border-collapse whitespace-nowrap">
+      {(() => {
+        const filteredCars = cars.filter(car => {
+          const matchesSearch = car.model.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                car.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+          const isAvailable = car.stock > 0;
+          const matchesStatus = filterStock === 'ALL' || 
+                                (filterStock === 'AVAILABLE' && isAvailable) ||
+                                (filterStock === 'OUT_OF_STOCK' && !isAvailable);
+          const matchesBrand = filterBrand === 'ALL' || car.brandId === parseInt(filterBrand);
+          return matchesSearch && matchesStatus && matchesBrand;
+        }).sort((a, b) => {
+          if (sortBy === 'NAME_ASC') return a.model.localeCompare(b.model);
+          if (sortBy === 'NAME_DESC') return b.model.localeCompare(a.model);
+          if (sortBy === 'PRICE_ASC') return a.price - b.price;
+          if (sortBy === 'PRICE_DESC') return b.price - a.price;
+          if (sortBy === 'YEAR_ASC') return a.yearMade - b.yearMade;
+          if (sortBy === 'YEAR_DESC') return b.yearMade - a.yearMade;
+          return a.id - b.id;
+        });
+
+        return (
+          <div className="bg-background border border-primary/10 rounded-2xl overflow-x-auto" data-lenis-prevent>
+            <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr className="bg-secondary/50 border-b border-primary/10">
               <th className="p-4 font-medium text-primary/60">ID</th>
@@ -218,26 +299,10 @@ export default function CarsAdmin() {
           <tbody>
             {loading ? (
               <tr><td colSpan="8" className="p-4 text-center">Loading...</td></tr>
-            ) : cars.filter(car => {
-                const matchesSearch = car.model.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                      car.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-                const isAvailable = car.stock > 0;
-                const matchesStatus = filterStock === 'ALL' || 
-                                      (filterStock === 'AVAILABLE' && isAvailable) ||
-                                      (filterStock === 'OUT_OF_STOCK' && !isAvailable);
-                return matchesSearch && matchesStatus;
-            }).length === 0 ? (
-              <tr><td colSpan="7" className="p-4 text-center">No cars found matching filters.</td></tr>
+            ) : filteredCars.length === 0 ? (
+              <tr><td colSpan="8" className="p-4 text-center">No cars found matching filters.</td></tr>
             ) : (
-              cars.filter(car => {
-                const matchesSearch = car.model.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                      car.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase());
-                const isAvailable = car.stock > 0;
-                const matchesStatus = filterStock === 'ALL' || 
-                                      (filterStock === 'AVAILABLE' && isAvailable) ||
-                                      (filterStock === 'OUT_OF_STOCK' && !isAvailable);
-                return matchesSearch && matchesStatus;
-              }).map((car) => (
+              filteredCars.map((car) => (
                 <tr key={car.id} onClick={() => openModal('edit', car)} className="cursor-pointer border-b border-primary/5 hover:bg-secondary/50 transition-colors">
                   <td className="p-4">#{car.id}</td>
                   <td className="p-4 font-medium">{car.brand?.name || 'Unknown'}</td>
@@ -266,6 +331,8 @@ export default function CarsAdmin() {
           </tbody>
         </table>
       </div>
+      );
+    })()}
 
       <Modal isOpen={isModalOpen} onClose={closeModal} title={modalMode === 'create' ? 'Add New Car' : 'Edit Car'} maxWidth="max-w-5xl">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -280,10 +347,10 @@ export default function CarsAdmin() {
               </div>
             )}
             {formData.imageUrl ? (
-              <img 
+              <img loading="lazy" 
                 src={formData.imageUrl.startsWith('http') ? formData.imageUrl : `/images/cars/${formData.imageUrl}`} 
                 alt="Car Preview" 
-                className="max-w-full max-h-full object-contain rounded-xl drop-shadow-2xl transition-transform hover:scale-105 duration-500"
+                className="max-w-full max-h-full object-contain rounded-xl transition-transform hover:scale-105 duration-500"
                 onError={(e) => { e.target.src = 'https://via.placeholder.com/400?text=Invalid+Image'; }}
               />
             ) : (
@@ -312,6 +379,13 @@ export default function CarsAdmin() {
                 className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'specs' ? 'border-primary text-primary' : 'border-transparent text-primary/40 hover:text-primary/70'}`}
               >
                 Specifications
+              </button>
+              <button 
+                type="button"
+                onClick={() => setActiveTab('documents')}
+                className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'documents' ? 'border-primary text-primary' : 'border-transparent text-primary/40 hover:text-primary/70'}`}
+              >
+                Documents
               </button>
             </div>
 
@@ -409,13 +483,75 @@ export default function CarsAdmin() {
                 </div>
               </div>
               </div>
-              ) : (
+              ) : activeTab === 'specs' ? (
                 <div className="flex-1 min-h-[300px]">
                   <CarSpecsEditor 
                     key={selectedCarId || 'new'}
                     specs={formData.specifications} 
                     onChange={(newSpecs) => setFormData({ ...formData, specifications: newSpecs })} 
                   />
+                </div>
+              ) : (
+                <div className="flex-1 space-y-6 min-h-[300px]">
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80 mb-4 border-b border-primary/10 pb-2">Physical Documents</h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input type="checkbox" checked={formData.has_bpkb} onChange={(e) => setFormData({...formData, has_bpkb: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
+                      <span className="text-sm font-medium">BPKB Physical Copy</span>
+                    </label>
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input type="checkbox" checked={formData.has_stnk} onChange={(e) => setFormData({...formData, has_stnk: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
+                      <span className="text-sm font-medium">STNK Physical Copy</span>
+                    </label>
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input type="checkbox" checked={formData.has_faktur} onChange={(e) => setFormData({...formData, has_faktur: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
+                      <span className="text-sm font-medium">Faktur Pembelian</span>
+                    </label>
+                    <label className="flex items-center space-x-3 cursor-pointer">
+                      <input type="checkbox" checked={formData.has_kwitansi_blanko} onChange={(e) => setFormData({...formData, has_kwitansi_blanko: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
+                      <span className="text-sm font-medium">Kwitansi Blanko</span>
+                    </label>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">STNK Expiry Date</label>
+                    <input type="date" value={formData.stnk_expiry_date} onChange={(e) => setFormData({...formData, stnk_expiry_date: e.target.value})} className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary text-sm" />
+                  </div>
+
+                  <div className="mt-6 border-t border-primary/10 pt-4">
+                    <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Scanned Documents (PDF/Images)</label>
+                    <div className="flex items-center space-x-4">
+                      <input type="file" multiple accept=".pdf,image/*" onChange={async (e) => {
+                        const files = Array.from(e.target.files);
+                        if(files.length === 0) return;
+                        const uploadData = new FormData();
+                        files.forEach(f => uploadData.append('files', f));
+                        try {
+                          setIsUploading(true);
+                          const res = await api.post('/documents/upload', uploadData, { headers: { 'Content-Type': 'multipart/form-data' }});
+                          setFormData({...formData, scanned_files: [...formData.scanned_files, ...res.data.files]});
+                        } catch (error) {
+                          alert('Failed to upload document files.');
+                        } finally {
+                          setIsUploading(false);
+                        }
+                      }} className="block w-full text-sm text-primary/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" disabled={isUploading}/>
+                    </div>
+                    {formData.scanned_files && formData.scanned_files.length > 0 && (
+                      <ul className="mt-4 space-y-2">
+                        {formData.scanned_files.map((file, idx) => (
+                          <li key={idx} className="text-xs bg-secondary/5 px-3 py-2 rounded flex justify-between items-center">
+                            <span className="truncate max-w-[200px]">{file}</span>
+                            <div className="flex space-x-2">
+                              <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${file}`} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">View</a>
+                              <button type="button" onClick={() => setFormData({...formData, scanned_files: formData.scanned_files.filter(f => f !== file)})} className="text-red-500 hover:underline">Remove</button>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
               )}
 

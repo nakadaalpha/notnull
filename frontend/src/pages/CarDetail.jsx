@@ -211,6 +211,17 @@ export default function CarDetail() {
               }`}>
                 {car.stock > 0 ? `${car.stock} In Stock` : 'Out of Stock'}
               </span>
+
+              {car.document && car.document.has_bpkb && car.document.has_stnk && new Date(car.document.stnk_expiry_date) > new Date() && (
+                <span className="px-4 py-1.5 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">
+                  Pajak Hidup & Surat Lengkap
+                </span>
+              )}
+              {car.document && car.document.stnk_expiry_date && new Date(car.document.stnk_expiry_date) <= new Date() && (
+                <span className="px-4 py-1.5 border border-amber-500/30 text-amber-600 dark:text-amber-400 bg-amber-500/5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">
+                  Pajak Mati
+                </span>
+              )}
             </div>
             
             <h4 className="text-primary/50 text-xs md:text-sm font-bold tracking-[0.3em] uppercase mb-2">

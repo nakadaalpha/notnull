@@ -50,6 +50,7 @@ export default function InspectionsAdmin() {
               <th className="p-4">Customer</th>
               <th className="p-4">Vehicle</th>
               <th className="p-4">Plate</th>
+              <th className="p-4">Requested Date</th>
               <th className="p-4">Status</th>
               <th className="p-4">Appraised Value</th>
               <th className="p-4 text-right">Actions</th>
@@ -65,21 +66,26 @@ export default function InspectionsAdmin() {
                 <td className="p-4 font-bold">{trade.brand} {trade.model} ({trade.year})</td>
                 <td className="p-4">{trade.licensePlate}</td>
                 <td className="p-4">
+                  {trade.inspectionDate ? new Date(trade.inspectionDate).toLocaleString() : '-'}
+                  {trade.mechanic && <p className="text-[10px] text-primary/50 font-bold uppercase tracking-widest mt-1">Mechanic: {trade.mechanic.username}</p>}
+                </td>
+                <td className="p-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border ${
                     trade.status === 'APPROVED' ? 'bg-green-500/10 text-green-600 border-green-500/20' :
                     trade.status === 'WAITING_APPROVAL' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' :
+                    trade.status === 'SCHEDULE_REQUESTED' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
                     'bg-orange-500/10 text-orange-600 border-orange-500/20'
                   }`}>
-                    {trade.status}
+                    {trade.status.replace(/_/g, ' ')}
                   </span>
                 </td>
                 <td className="p-4">
                   {trade.appraisedValue ? `$${trade.appraisedValue.toLocaleString()}` : '-'}
                 </td>
                 <td className="p-4 text-right space-x-2">
-                  {(user?.role === 'SALES' || user?.role === 'MANAGER' || user?.role === 'ADMIN') && trade.status === 'TRADE_IN_PENDING' && (
-                    <button onClick={() => updateStatus(trade.id, 'INSPECTION_SCHEDULED')} className="px-3 py-1 bg-primary text-background text-xs rounded uppercase font-bold">
-                      Schedule
+                  {(user?.role === 'MECHANIC' || user?.role === 'MANAGER' || user?.role === 'ADMIN') && trade.status === 'SCHEDULE_REQUESTED' && (
+                    <button onClick={() => updateStatus(trade.id, 'INSPECTION_SCHEDULED')} className="px-3 py-1 bg-blue-600 text-white text-xs rounded uppercase font-bold">
+                      Accept Schedule
                     </button>
                   )}
                   {(user?.role === 'MECHANIC' || user?.role === 'MANAGER' || user?.role === 'ADMIN') && trade.status === 'INSPECTION_SCHEDULED' && (
@@ -93,6 +99,15 @@ export default function InspectionsAdmin() {
                   {(user?.role === 'MANAGER' || user?.role === 'ADMIN') && trade.status === 'WAITING_APPROVAL' && (
                     <button onClick={() => updateStatus(trade.id, 'APPROVED')} className="px-3 py-1 bg-green-600 text-white text-xs rounded uppercase font-bold">
                       Approve
+                    </button>
+                  )}
+                  {(user?.role === 'MANAGER' || user?.role === 'ADMIN' || user?.role === 'SALES' || user?.role === 'MECHANIC') && ['SCHEDULE_REQUESTED', 'INSPECTION_SCHEDULED', 'WAITING_APPROVAL'].includes(trade.status) && (
+                    <button onClick={() => {
+                      if (window.confirm('Are you sure you want to cancel this schedule?')) {
+                        updateStatus(trade.id, 'TRADE_IN_PENDING');
+                      }
+                    }} className="px-3 py-1 bg-red-600/20 text-red-600 text-xs rounded uppercase font-bold hover:bg-red-600/40">
+                      Cancel
                     </button>
                   )}
                 </td>

@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import Warehouse from './pages/Warehouse';
 import CarDetail from './pages/CarDetail';
 import Checkout from './pages/Checkout';
+import PaymentSuccess from './pages/PaymentSuccess';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -91,6 +92,19 @@ function App() {
                       <Navbar />
                       <main className="flex-grow">
                         <Checkout />
+                      </main>
+                      <Footer />
+                      <ChatWidget />
+                    </div>
+                  </ProtectedRoute>
+                } />
+
+                <Route path="/payment-success" element={
+                  <ProtectedRoute>
+                    <div className="min-h-screen flex flex-col font-sans selection:bg-primary selection:text-background">
+                      <Navbar />
+                      <main className="flex-grow">
+                        <PaymentSuccess />
                       </main>
                       <Footer />
                       <ChatWidget />

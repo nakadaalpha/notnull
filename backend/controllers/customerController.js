@@ -49,7 +49,7 @@ const createCustomer = async (req, res) => {
 
 const updateCustomerRole = async (req, res) => {
   const { role } = req.body;
-  if (!['CUSTOMER', 'SALES', 'ADMIN'].includes(role)) {
+  if (!['CUSTOMER', 'SALES', 'MANAGER', 'MECHANIC', 'ADMIN'].includes(role)) {
     return res.status(400).json({ error: 'Invalid role' });
   }
   try {

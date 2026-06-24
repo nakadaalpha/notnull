@@ -1,20 +1,41 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import api from '../api';
 import { User, Mail, Phone, MapPin, Shield, Edit2, Check, X, KeyRound, Car, ExternalLink, Calendar } from 'lucide-react';
+import ScheduleInspectionModal from '../components/ScheduleInspectionModal';
+import TransactionDetailModal from '../components/TransactionDetailModal';
+import TradeInDetailModal from '../components/TradeInDetailModal';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [reservations, setReservations] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [tradeIns, setTradeIns] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Tab State
-  const [activeTab, setActiveTab] = useState('identity'); // 'identity' | 'garage'
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'identity';
+  const setActiveTab = (tab) => setSearchParams({ tab }, { replace: true });
 
-  // Inline edit state
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [selectedTradeIn, setSelectedTradeIn] = useState(null);
+
+  const [selectedTransactionDetail, setSelectedTransactionDetail] = useState(null);
+  const [selectedTradeInDetail, setSelectedTradeInDetail] = useState(null);
+
+  useEffect(() => {
+    if (scheduleModalOpen || selectedTransactionDetail || selectedTradeInDetail) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [scheduleModalOpen, selectedTransactionDetail, selectedTradeInDetail]);
+
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
@@ -28,20 +49,43 @@ export default function Profile() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // We can run these in parallel to be faster
-      const [profileRes, reservationsRes, transactionsRes] = await Promise.all([
+      const [profileRes, reservationsRes, transactionsRes, tradeInsRes] = await Promise.all([
         api.get('/auth/me'),
         api.get(`/reservations/user/${user.id}`),
-        api.get(`/transactions/user/${user.id}`)
+        api.get(`/transactions/user/${user.id}`),
+        api.get('/trade-in/me')
       ]);
       setProfile(profileRes.data);
       setReservations(reservationsRes.data);
       setTransactions(transactionsRes.data);
+      setTradeIns(tradeInsRes.data);
     } catch (err) {
       console.error('Failed to load account data', err);
       setError('Failed to load some account details.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const cancelTransaction = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this purchase?')) return;
+    try {
+      await api.put(`/transactions/${id}/cancel`);
+      fetchData();
+    } catch (error) {
+      console.error(error);
+      alert('Failed to cancel payment');
+    }
+  };
+
+  const cancelTradeIn = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this trade-in?')) return;
+    try {
+      await api.put(`/trade-in/${id}/cancel`);
+      fetchData();
+    } catch (error) {
+      console.error(error);
+      alert('Failed to cancel trade-in');
     }
   };
 
@@ -66,7 +110,6 @@ export default function Profile() {
 
     try {
       setSaving(true);
-      
       const payload = {
         username: profile.username,
         email: profile.email,
@@ -187,8 +230,6 @@ export default function Profile() {
   return (
     <div className="min-h-screen pt-32 pb-20 bg-background text-foreground">
       <div className="max-w-[1200px] mx-auto px-6 md:px-12">
-        
-        {/* Header Section */}
         <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4">
@@ -203,7 +244,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Custom Tab Navigation */}
         <div className="flex space-x-8 border-b border-primary/10 mb-10 overflow-x-auto scrollbar-hide">
           <button
             onClick={() => setActiveTab('identity')}
@@ -224,7 +264,7 @@ export default function Profile() {
           >
             My Garage
             <span className="ml-2 bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px]">
-              {reservations.length + transactions.length}
+              {reservations.length + transactions.length + tradeIns.length}
             </span>
             {activeTab === 'garage' && (
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary"></span>
@@ -244,10 +284,8 @@ export default function Profile() {
           </div>
         )}
 
-        {/* Tab Content: Identity */}
         {activeTab === 'identity' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Avatar Card */}
             <div className="md:col-span-1">
               <div className="bg-secondary/20 border border-primary/10 rounded-2xl p-8 flex flex-col items-center text-center">
                 <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mb-6 relative group overflow-hidden">
@@ -261,7 +299,6 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Details Form */}
             <div className="md:col-span-2">
               <div className="bg-secondary/10 border border-primary/10 rounded-2xl p-6 md:p-10">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-primary/40 mb-6 border-b border-primary/10 pb-4">Personal Details</h3>
@@ -277,10 +314,9 @@ export default function Profile() {
           </div>
         )}
 
-        {/* Tab Content: Garage */}
         {activeTab === 'garage' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {reservations.length === 0 && transactions.length === 0 ? (
+            {reservations.length === 0 && transactions.length === 0 && tradeIns.length === 0 ? (
               <div className="bg-secondary/5 border border-primary/10 rounded-xl p-16 text-center max-w-2xl mx-auto">
                 <Car size={48} strokeWidth={1} className="mx-auto mb-6 text-primary/20" />
                 <p className="text-sm font-light text-primary/60 tracking-widest uppercase mb-8">Your garage is currently empty.</p>
@@ -291,33 +327,50 @@ export default function Profile() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {transactions.map(tx => (
-                  <div key={`tx-${tx.id}`} className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors">
-                    <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative">
-                      <div className="absolute top-2 left-2 px-2 py-1 bg-foreground text-background text-[8px] font-bold tracking-widest uppercase rounded z-10">PURCHASE</div>
-                      <img 
-                        src={tx.car?.imageUrl ? `/images/cars/${tx.car.imageUrl}` : '/images/cars/default.png'} 
-                        alt={tx.car?.model} 
-                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50">{tx.car?.brand?.name}</span>
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
-                            tx.status === 'COMPLETED' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-                          }`}>
-                            {tx.status}
-                          </span>
-                        </div>
-                        <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{tx.car?.model}</h3>
-                        
-                        <div className="space-y-2 mb-6">
-                          <div className="flex items-center text-xs font-light text-primary/70">
-                            <Calendar size={14} className="mr-3 text-primary/40" />
-                            <span>Purchased: {new Date(tx.createdAt).toLocaleDateString()}</span>
+                  <div key={`tx-${tx.id}`} className="group relative">
+                    <div 
+                      onClick={() => setSelectedTransactionDetail(tx)}
+                      className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-0"
+                    />
+                    <div className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors pointer-events-none">
+                      <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative pointer-events-auto">
+                        <div className="absolute top-2 left-2 px-2 py-1 bg-foreground text-background text-[8px] font-bold tracking-widest uppercase rounded z-10">PURCHASE</div>
+                        <img loading="lazy" 
+                          src={tx.car?.imageUrl ? `/images/cars/${tx.car.imageUrl}` : '/images/cars/default.png'} 
+                          alt={tx.car?.model} 
+                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50">{tx.car?.brand?.name}</span>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                              tx.status === 'COMPLETED' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                            }`}>
+                              {tx.status}
+                            </span>
+                          </div>
+                          <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{tx.car?.model}</h3>
+                          <div className="space-y-2 mb-6">
+                            <div className="flex items-center text-xs font-light text-primary/70">
+                              <Calendar size={14} className="mr-3 text-primary/40" />
+                              <span>Purchased: {new Date(tx.createdAt).toLocaleDateString()}</span>
+                            </div>
                           </div>
                         </div>
+                        {tx.status === 'PENDING_PAYMENT' && (
+                          <div className="flex space-x-2 mt-auto pointer-events-auto">
+                            <button onClick={(e) => { e.stopPropagation(); window.location.href = tx.invoiceUrl; }} className="flex-1 py-3 bg-primary text-background text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity rounded-lg flex items-center justify-center space-x-2">
+                              <span>Pay</span>
+                              <ExternalLink size={14} />
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); cancelTransaction(tx.id); }} className="flex-1 py-3 border border-red-500/50 text-red-500 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500/10 transition-colors rounded-lg flex items-center justify-center space-x-2">
+                              <span>Cancel</span>
+                              <X size={14} />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -326,7 +379,7 @@ export default function Profile() {
                   <div key={`res-${res.id}`} className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors">
                     <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative">
                       <div className="absolute top-2 left-2 px-2 py-1 bg-primary/10 text-primary text-[8px] font-bold tracking-widest uppercase rounded z-10">INSPECTION</div>
-                      <img 
+                      <img loading="lazy" 
                         src={res.car?.imageUrl ? `/images/cars/${res.car.imageUrl}` : '/images/cars/default.png'} 
                         alt={res.car?.model} 
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
@@ -343,7 +396,6 @@ export default function Profile() {
                           </span>
                         </div>
                         <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{res.car?.model}</h3>
-                        
                         <div className="space-y-2 mb-6">
                           <div className="flex items-center text-xs font-light text-primary/70">
                             <Calendar size={14} className="mr-3 text-primary/40" />
@@ -351,7 +403,6 @@ export default function Profile() {
                           </div>
                         </div>
                       </div>
-                      
                       {res.status === 'PENDING' && (
                         <button className="w-full py-3 border border-primary/20 text-[10px] font-bold uppercase tracking-widest hover:bg-primary/5 transition-colors rounded-lg flex items-center justify-center space-x-2">
                           <span>Complete Payment</span>
@@ -361,12 +412,112 @@ export default function Profile() {
                     </div>
                   </div>
                 ))}
+                {tradeIns.map(trade => (
+                  <div key={`trade-${trade.id}`} className="group relative">
+                    <div 
+                      onClick={() => setSelectedTradeInDetail(trade)}
+                      className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-0"
+                    />
+                    <div className="bg-secondary/5 border border-primary/10 rounded-xl p-6 flex flex-col md:flex-row gap-6 group hover:border-primary/20 transition-colors pointer-events-none">
+                      <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative pointer-events-auto">
+                        <div className="absolute top-2 left-2 px-2 py-1 bg-purple-500/10 text-purple-600 border border-purple-500/20 text-[8px] font-bold tracking-widest uppercase rounded z-10">TRADE-IN</div>
+                        {trade.photoUrl ? (
+                          <img loading="lazy" 
+                            src={`/images/tradeins/${trade.photoUrl}`} 
+                            alt={trade.model} 
+                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-xl"
+                          />
+                        ) : (
+                          <img loading="lazy" 
+                            src="/images/cars/default.png" 
+                            alt="Trade-In" 
+                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 opacity-50 grayscale"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50">{trade.brand}</span>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                              trade.status === 'APPROVED' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 
+                              trade.status === 'SCHEDULE_REQUESTED' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
+                              'bg-orange-500/10 text-orange-600 border-orange-500/20'
+                            }`}>
+                              {trade.status.replace(/_/g, ' ')}
+                            </span>
+                          </div>
+                          <h3 className="text-2xl font-black uppercase tracking-tight mb-4">{trade.model} ({trade.year})</h3>
+                          <div className="space-y-2 mb-6">
+                            <div className="flex items-center text-xs font-light text-primary/70">
+                              <Car size={14} className="mr-3 text-primary/40" />
+                              <span>Plate: {trade.licensePlate}</span>
+                            </div>
+                            {trade.inspectionDate && (
+                              <div className="flex items-center text-xs font-bold text-primary">
+                                <Calendar size={14} className="mr-3" />
+                                <span>{trade.status === 'SCHEDULE_REQUESTED' ? 'Requested' : 'Scheduled'}: {new Date(trade.inspectionDate).toLocaleString()}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex space-x-2 mt-auto pointer-events-auto">
+                          {trade.status === 'TRADE_IN_PENDING' && (
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); setSelectedTradeIn(trade); setScheduleModalOpen(true); }}
+                              className="flex-1 py-3 bg-primary text-background text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity rounded-lg flex items-center justify-center space-x-2"
+                            >
+                              <span>Schedule</span>
+                              <Calendar size={14} />
+                            </button>
+                          )}
+                          {['TRADE_IN_PENDING', 'SCHEDULE_REQUESTED'].includes(trade.status) && (
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); cancelTradeIn(trade.id); }}
+                              className="flex-1 py-3 border border-red-500/50 text-red-500 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500/10 transition-colors rounded-lg flex items-center justify-center space-x-2"
+                            >
+                              <span>Cancel</span>
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
         )}
-
       </div>
+      
+      {scheduleModalOpen && selectedTradeIn && (
+        <ScheduleInspectionModal 
+          tradeIn={selectedTradeIn}
+          onClose={() => { setScheduleModalOpen(false); setSelectedTradeIn(null); }}
+          onScheduled={() => {
+            setScheduleModalOpen(false);
+            setSelectedTradeIn(null);
+            fetchData();
+          }}
+        />
+      )}
+
+      {selectedTransactionDetail && (
+        <TransactionDetailModal 
+          transaction={selectedTransactionDetail}
+          onClose={() => setSelectedTransactionDetail(null)}
+          onCancel={cancelTransaction}
+        />
+      )}
+
+      {selectedTradeInDetail && (
+        <TradeInDetailModal 
+          tradeIn={selectedTradeInDetail}
+          onClose={() => setSelectedTradeInDetail(null)}
+          onCancel={cancelTradeIn}
+        />
+      )}
     </div>
   );
 }

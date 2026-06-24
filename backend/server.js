@@ -110,6 +110,7 @@ const webhookRoutes = require('./routes/webhooks');
 const uploadRoutes = require('./routes/uploads');
 const settingsRoutes = require('./routes/settings');
 const tradeInRouter = require('./routes/tradein');
+const documentRoutes = require('./routes/documents');
 
 // Mount Routes
 const swaggerOptions = {
@@ -128,6 +129,7 @@ app.use('/api/webhooks', webhookRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/trade-in', tradeInRouter);
+app.use('/api/documents', documentRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -16,7 +16,7 @@ const BrandsGrid = forwardRef(({ brands = [] }, ref) => {
           brands.map((brand) => (
             <Link to={`/warehouse?brand=${brand.id}`} key={brand.id} className="block group w-[40%] md:w-[25%] lg:w-[15%]">
               <div className="h-40 flex flex-col items-center justify-center transition-all duration-500">
-                <img 
+                <img loading="lazy" 
                   src={brand.imageUrl ? `/images/brands/${brand.imageUrl}` : `/images/brands/${brand.name.toLowerCase()}.png`} 
                   alt={brand.name}
                   className="max-h-24 max-w-[160px] object-contain opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 filter dark:invert"

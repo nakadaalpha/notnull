@@ -149,7 +149,7 @@ export default function Checkout() {
               
               <div className="flex items-center space-x-4 mb-6 pb-6 border-b border-primary/10">
                 <div className="w-16 h-12 bg-white rounded-md flex items-center justify-center p-1">
-                  <img src={car.imageUrl ? `/images/cars/${car.imageUrl}` : '/images/cars/default.png'} alt={car.model} className="w-full h-full object-contain" />
+                  <img loading="lazy" src={car.imageUrl ? `/images/cars/${car.imageUrl}` : '/images/cars/default.png'} alt={car.model} className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/50">{car.brand?.name}</p>

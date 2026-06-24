@@ -118,4 +118,31 @@ const updateTransactionStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAllTransactions, getUserTransactions, createTransaction, updateTransactionStatus };
+const cancelUserTransaction = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const transaction = await prisma.transaction.findUnique({ where: { id: parseInt(id) } });
+    if (!transaction || transaction.customerId !== req.user.userId) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    
+    if (transaction.status !== 'CANCELLED') {
+      const car = await prisma.car.findUnique({ where: { id: transaction.carId } });
+      await prisma.car.update({
+        where: { id: transaction.carId },
+        data: { stock: car.stock + transaction.amount }
+      });
+      
+      const updated = await prisma.transaction.update({
+        where: { id: parseInt(id) },
+        data: { status: 'CANCELLED' }
+      });
+      return res.json(updated);
+    }
+    res.json(transaction);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to cancel transaction' });
+  }
+};
+
+module.exports = { getAllTransactions, getUserTransactions, createTransaction, updateTransactionStatus, cancelUserTransaction };

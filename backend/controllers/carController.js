@@ -6,7 +6,8 @@ const getAllCars = async (req, res) => {
   try {
     const cars = await prisma.car.findMany({
       include: {
-        brand: true
+        brand: true,
+        document: true
       }
     });
     res.json(cars);
@@ -20,7 +21,7 @@ const getCarById = async (req, res) => {
   try {
     const car = await prisma.car.findUnique({
       where: { id: parseInt(req.params.id) },
-      include: { brand: true }
+      include: { brand: true, document: true }
     });
     if (car) {
       res.json(car);

@@ -184,6 +184,8 @@ export default function CustomersAdmin() {
                       >
                         <option value="CUSTOMER">CUSTOMER</option>
                         <option value="SALES">SALES</option>
+                        <option value="MANAGER">MANAGER</option>
+                        <option value="MECHANIC">MECHANIC</option>
                         <option value="ADMIN">ADMIN</option>
                       </select>
                     </td>
@@ -244,6 +246,20 @@ export default function CustomersAdmin() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Role</label>
+            <select
+              className="w-full bg-secondary text-primary px-4 py-2 rounded-lg border border-primary/20 focus:outline-none focus:border-primary"
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+            >
+              <option value="CUSTOMER">CUSTOMER</option>
+              <option value="SALES">SALES</option>
+              <option value="MANAGER">MANAGER</option>
+              <option value="MECHANIC">MECHANIC</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Phone</label>

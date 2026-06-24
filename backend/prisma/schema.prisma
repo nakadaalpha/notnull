@@ -19,6 +19,7 @@ model User {
   reservationsAsCust   Reservation[] @relation("CustomerReservations")
   reservationsAsSales  Reservation[] @relation("SalesReservations")
   tradeIns             TradeIn[]     @relation("CustomerTradeIns")
+  tradeInsAsMechanic   TradeIn[]     @relation("MechanicTradeIns")
   transactionsAsSales  Transaction[] @relation("SalesTransactions")
   sentMessages     Message[]     @relation("SentMessages")
   receivedMessages Message[]     @relation("ReceivedMessages")
@@ -45,6 +46,7 @@ model Car {
   stock        Int           @default(1)
   imageUrl     String?
   specifications Json?
+  document     CarDocument?
   transactions Transaction[]
   reservations Reservation[]
   createdAt    DateTime      @default(now())
@@ -82,6 +84,9 @@ model TradeIn {
   status         String   @default("TRADE_IN_PENDING") // TRADE_IN_PENDING, INSPECTION_SCHEDULED, WAITING_APPROVAL, APPROVED, REJECTED
   appraisedValue Float?
   notes          String?
+  inspectionDate DateTime?
+  mechanicId     String?
+  mechanic       User?    @relation("MechanicTradeIns", fields: [mechanicId], references: [id])
   transaction    Transaction?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -116,4 +121,19 @@ model Reservation {
 model Setting {
   key   String @id
   value String
+}
+
+model CarDocument {
+  id                  Int       @id @default(autoincrement())
+  carId               Int       @unique
+  car                 Car       @relation(fields: [carId], references: [id], onDelete: Cascade)
+  has_bpkb            Boolean   @default(false)
+  has_stnk            Boolean   @default(false)
+  stnk_expiry_date    DateTime?
+  has_faktur          Boolean   @default(false)
+  has_kwitansi_blanko Boolean   @default(false)
+  has_form_a          Boolean   @default(false)
+  scanned_files       Json?     // Array of local paths
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }

@@ -143,7 +143,7 @@ export default function BrandsAdmin() {
                   <td className="p-4">#{brand.id}</td>
                   <td className="p-4">
                     {brand.imageUrl ? (
-                      <img src={brand.imageUrl} alt={brand.name} className="w-10 h-10 object-contain bg-white rounded p-1" />
+                      <img loading="lazy" src={brand.imageUrl.startsWith('http') ? brand.imageUrl : `/images/brands/${brand.imageUrl}`} alt={brand.name} className="w-10 h-10 object-contain bg-white rounded p-1" />
                     ) : (
                       <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center text-primary/50">
                         <Tag size={16} />
@@ -184,8 +184,8 @@ export default function BrandsAdmin() {
               </div>
             )}
             {formData.imageUrl ? (
-              <img 
-                src={formData.imageUrl} 
+              <img loading="lazy" 
+                src={formData.imageUrl.startsWith('http') ? formData.imageUrl : `/images/brands/${formData.imageUrl}`} 
                 alt="Brand Preview" 
                 className="max-w-full max-h-full object-contain rounded-xl drop-shadow-xl"
                 onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=Invalid+Image'; }}

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getAllTransactions, getUserTransactions, createTransaction, updateTransactionStatus } = require('../controllers/transactionController');
+const { getAllTransactions, getUserTransactions, createTransaction, updateTransactionStatus, cancelUserTransaction } = require('../controllers/transactionController');
+const { finalizeHandover } = require('../controllers/handoverController');
 
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
@@ -35,7 +36,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
         totalPrice: finalPrice + tax,
         bookingFee: bookingFee,
         status: 'PENDING_PAYMENT',
-        invoiceUrl: `https://checkout.xendit.co/web/mock-${Date.now()}`
+        invoiceUrl: `http://localhost:5173/payment-success?txId=${Date.now()}`
       }
     });
 
@@ -52,5 +53,7 @@ router.post('/checkout', authMiddleware, async (req, res) => {
 
 router.post('/', authMiddleware, createTransaction);
 router.put('/:id/status', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER', 'SALES']), updateTransactionStatus);
+router.post('/:id/handover', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER', 'SALES']), finalizeHandover);
+router.put('/:id/cancel', authMiddleware, cancelUserTransaction);
 
 module.exports = router;

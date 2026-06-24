@@ -15,9 +15,19 @@ export default function CarCard({ car, isRecommended = false, className = '' }) 
             <span className="text-[10px] font-bold tracking-widest uppercase text-primary">For You</span>
           </div>
         )}
+        {car.document && car.document.has_bpkb && car.document.has_stnk && new Date(car.document.stnk_expiry_date) > new Date() && (
+          <div className="absolute top-4 left-4 z-20 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 px-2 py-1 flex items-center shadow-sm rounded">
+            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400">Pajak Hidup</span>
+          </div>
+        )}
+        {car.document && car.document.stnk_expiry_date && new Date(car.document.stnk_expiry_date) <= new Date() && (
+          <div className="absolute top-4 left-4 z-20 bg-amber-500/10 backdrop-blur-md border border-amber-500/20 px-2 py-1 flex items-center shadow-sm rounded">
+            <span className="text-[8px] font-bold tracking-widest uppercase text-amber-600 dark:text-amber-400">Pajak Mati</span>
+          </div>
+        )}
         <div className="bg-background overflow-hidden h-full flex flex-col transition-all duration-500 border border-transparent hover:border-primary/10 group-hover:shadow-lg">
           <div className="aspect-[4/3] md:aspect-[16/10] bg-white p-2 md:p-4 flex items-center justify-center overflow-hidden relative">
-            <img 
+            <img loading="lazy" 
               src={car.imageUrl ? `/images/cars/${car.imageUrl}` : `/images/cars/default.png`} 
               alt={car.model}
               className="w-full h-full object-contain relative z-0 transform group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
