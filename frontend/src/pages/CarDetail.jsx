@@ -8,12 +8,14 @@ import FinancingCalculator from '../components/FinancingCalculator';
 import TradeInForm from '../components/TradeInForm';
 import ReservationModal from '../components/ReservationModal';
 import LoginModal from '../components/LoginModal';
+import CarCard from '../components/CarCard';
 
 export default function CarDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [car, setCar] = useState(null);
+  const [recommendedCars, setRecommendedCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Specifications UI State
@@ -59,6 +61,15 @@ export default function CarDetail() {
         const response = await api.get('/cars');
         const found = response.data.find(c => c.id === parseInt(id));
         setCar(found);
+        
+        // Fetch recommendations
+        try {
+          const recRes = await api.get(`/cars/${id}/recommendations`);
+          setRecommendedCars(recRes.data);
+        } catch (recErr) {
+          console.error("Failed to fetch recommendations", recErr);
+        }
+
       } catch (error) {
         console.error("Failed to fetch car details", error);
       } finally {
@@ -302,6 +313,26 @@ export default function CarDetail() {
           
         </div>
       </div>
+
+      {/* Recommendations Section */}
+      {recommendedCars.length > 0 && (
+        <div className="w-full py-12 md:py-20 border-t border-primary/10 mt-12">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+            <div>
+              <h2 className="text-3xl md:text-5xl font-light tracking-tight mb-4">You Might Also Like</h2>
+              <p className="text-primary/60 max-w-2xl text-lg">
+                Based on your interest in the {car.brand?.name} {car.model}, we selected a few other extraordinary vehicles that match its caliber.
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {recommendedCars.map(recCar => (
+              <CarCard key={recCar.id} car={recCar} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Reservation & Secure Payment Modal */}
       <ReservationModal 

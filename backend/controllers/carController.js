@@ -97,10 +97,63 @@ const deleteCar = async (req, res) => {
   }
 };
 
+// Get Content-Based Recommendations
+const getCarRecommendations = async (req, res) => {
+  try {
+    const targetId = parseInt(req.params.id);
+    const targetCar = await prisma.car.findUnique({ where: { id: targetId } });
+    
+    if (!targetCar) return res.status(404).json({ error: 'Car not found' });
+
+    // Fetch all other available cars
+    const otherCars = await prisma.car.findMany({
+      where: { 
+        id: { not: targetId },
+        stock: { gt: 0 }
+      },
+      include: {
+        brand: true,
+        document: true
+      }
+    });
+
+    // Calculate similarity score for each car
+    const scoredCars = otherCars.map(car => {
+      let score = 0;
+
+      // 1. Brand Match (50 points)
+      if (car.brandId === targetCar.brandId) score += 50;
+
+      // 2. Price Similarity (30 points)
+      const maxPrice = Math.max(car.price, targetCar.price);
+      if (maxPrice > 0) {
+        const priceDiff = Math.abs(car.price - targetCar.price);
+        score += 30 * (1 - (priceDiff / maxPrice));
+      }
+
+      // 3. Year Similarity (20 points)
+      const yearDiff = Math.abs(car.yearMade - targetCar.yearMade);
+      score += Math.max(0, 20 - (yearDiff * 2));
+
+      return { ...car, _similarityScore: score };
+    });
+
+    // Sort by highest score descending and take top 4
+    scoredCars.sort((a, b) => b._similarityScore - a._similarityScore);
+    const topRecommendations = scoredCars.slice(0, 4);
+
+    res.json(topRecommendations);
+  } catch (error) {
+    console.error('Recommendation Error:', error);
+    res.status(500).json({ error: 'Failed to fetch recommendations' });
+  }
+};
+
 module.exports = {
   getAllCars,
   getCarById,
   createCar,
   updateCar,
-  deleteCar
+  deleteCar,
+  getCarRecommendations
 };
