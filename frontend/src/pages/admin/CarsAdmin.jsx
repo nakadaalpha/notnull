@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, Image, UploadCloud, CheckCircle2 } from 'lucide-react';
 import api from '../../api';
 import Modal from '../../components/Modal';
 import CarSpecsEditor from '../../components/CarSpecsEditor';
+
+const formatFilename = (name) => {
+  if (!name) return '';
+  return name.replace(/^\d+-/, '');
+};
 
 const defaultSpecsTemplate = {
   hero_specs: {
@@ -165,6 +170,27 @@ export default function CarsAdmin() {
     }
   };
 
+  const handleSpecificUpload = async (e, docKey) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const uploadData = new FormData();
+    uploadData.append('files', file);
+    try {
+      setIsUploading(true);
+      const res = await api.post('/documents/upload', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const newFile = res.data.files[0];
+      const currentScanned = (formData.scanned_files && !Array.isArray(formData.scanned_files)) ? formData.scanned_files : {};
+      setFormData({...formData, [docKey]: true, scanned_files: { ...currentScanned, [docKey]: newFile }});
+    } catch (error) {
+      console.error('Upload failed', error);
+      alert('Failed to upload document file.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (modalMode === 'edit' && !window.confirm('Are you sure you want to save these changes?')) return;
@@ -179,6 +205,8 @@ export default function CarsAdmin() {
 
       // Save document metadata
       await api.post(`/documents/${carId}`, {
+        licensePlate: formData.licensePlate,
+        vin: formData.vin,
         has_bpkb: formData.has_bpkb,
         has_stnk: formData.has_stnk,
         stnk_expiry_date: formData.stnk_expiry_date,
@@ -291,7 +319,6 @@ export default function CarsAdmin() {
               <th className="p-4 font-medium text-primary/60">Model</th>
               <th className="p-4 font-medium text-primary/60">Year</th>
               <th className="p-4 font-medium text-primary/60">Price ($)</th>
-              <th className="p-4 font-medium text-primary/60">Stock</th>
               <th className="p-4 font-medium text-primary/60">Status</th>
               <th className="p-4 font-medium text-primary/60 text-right">Actions</th>
             </tr>
@@ -309,7 +336,6 @@ export default function CarsAdmin() {
                   <td className="p-4">{car.model}</td>
                   <td className="p-4">{car.yearMade}</td>
                   <td className="p-4">${car.price}</td>
-                  <td className="p-4">{car.stock}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                       car.stock > 0 ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
@@ -385,7 +411,7 @@ export default function CarsAdmin() {
                 onClick={() => setActiveTab('documents')}
                 className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 ${activeTab === 'documents' ? 'border-primary text-primary' : 'border-transparent text-primary/40 hover:text-primary/70'}`}
               >
-                Documents
+                Identity & Docs
               </button>
             </div>
 
@@ -468,20 +494,6 @@ export default function CarsAdmin() {
                   />
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Stock</label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary transition-colors text-sm font-medium"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                  />
-                </div>
-              </div>
               </div>
               ) : activeTab === 'specs' ? (
                 <div className="flex-1 min-h-[300px]">
@@ -493,64 +505,95 @@ export default function CarsAdmin() {
                 </div>
               ) : (
                 <div className="flex-1 space-y-6 min-h-[300px]">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80 mb-4 border-b border-primary/10 pb-2">Physical Documents</h3>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input type="checkbox" checked={formData.has_bpkb} onChange={(e) => setFormData({...formData, has_bpkb: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
-                      <span className="text-sm font-medium">BPKB Physical Copy</span>
-                    </label>
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input type="checkbox" checked={formData.has_stnk} onChange={(e) => setFormData({...formData, has_stnk: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
-                      <span className="text-sm font-medium">STNK Physical Copy</span>
-                    </label>
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input type="checkbox" checked={formData.has_faktur} onChange={(e) => setFormData({...formData, has_faktur: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
-                      <span className="text-sm font-medium">Faktur Pembelian</span>
-                    </label>
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input type="checkbox" checked={formData.has_kwitansi_blanko} onChange={(e) => setFormData({...formData, has_kwitansi_blanko: e.target.checked})} className="w-4 h-4 rounded border-primary/30 text-primary focus:ring-primary" />
-                      <span className="text-sm font-medium">Kwitansi Blanko</span>
-                    </label>
-                  </div>
-
-                  <div className="mt-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">STNK Expiry Date</label>
-                    <input type="date" value={formData.stnk_expiry_date} onChange={(e) => setFormData({...formData, stnk_expiry_date: e.target.value})} className="w-full bg-background text-primary px-3 py-2 rounded border border-primary/20 focus:outline-none focus:border-primary text-sm" />
-                  </div>
-
-                  <div className="mt-6 border-t border-primary/10 pt-4">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Scanned Documents (PDF/Images)</label>
-                    <div className="flex items-center space-x-4">
-                      <input type="file" multiple accept=".pdf,image/*" onChange={async (e) => {
-                        const files = Array.from(e.target.files);
-                        if(files.length === 0) return;
-                        const uploadData = new FormData();
-                        files.forEach(f => uploadData.append('files', f));
-                        try {
-                          setIsUploading(true);
-                          const res = await api.post('/documents/upload', uploadData, { headers: { 'Content-Type': 'multipart/form-data' }});
-                          setFormData({...formData, scanned_files: [...formData.scanned_files, ...res.data.files]});
-                        } catch (error) {
-                          alert('Failed to upload document files.');
-                        } finally {
-                          setIsUploading(false);
-                        }
-                      }} className="block w-full text-sm text-primary/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" disabled={isUploading}/>
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80 mb-4 border-b border-primary/10 pb-2">Physical Identity</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">License Plate (Nomor Polisi)</label>
+                      <input type="text" placeholder="e.g. B 1234 XYZ" value={formData.licensePlate || ''} onChange={(e) => setFormData({...formData, licensePlate: e.target.value.toUpperCase()})} className="w-full bg-background text-primary px-4 py-3 rounded-xl border border-primary/20 focus:outline-none focus:border-primary text-sm font-medium transition-colors" />
                     </div>
-                    {formData.scanned_files && formData.scanned_files.length > 0 && (
-                      <ul className="mt-4 space-y-2">
-                        {formData.scanned_files.map((file, idx) => (
-                          <li key={idx} className="text-xs bg-secondary/5 px-3 py-2 rounded flex justify-between items-center">
-                            <span className="truncate max-w-[200px]">{file}</span>
-                            <div className="flex space-x-2">
-                              <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${file}`} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">View</a>
-                              <button type="button" onClick={() => setFormData({...formData, scanned_files: formData.scanned_files.filter(f => f !== file)})} className="text-red-500 hover:underline">Remove</button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">Chassis No. (Nomor Rangka / VIN)</label>
+                      <input type="text" placeholder="e.g. MHXXXX..." value={formData.vin || ''} onChange={(e) => setFormData({...formData, vin: e.target.value.toUpperCase()})} className="w-full bg-background text-primary px-4 py-3 rounded-xl border border-primary/20 focus:outline-none focus:border-primary text-sm font-medium transition-colors" />
+                    </div>
+                  </div>
+
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80 mb-4 border-b border-primary/10 pb-2 mt-8">Physical Documents</h3>
+                  
+                  <div className="grid grid-cols-1 gap-6">
+                    {[
+                      { key: 'has_bpkb', label: 'Vehicle Title (BPKB)' },
+                      { key: 'has_stnk', label: 'Registration Certificate (STNK)' },
+                      { key: 'has_faktur', label: 'Purchase Invoice' },
+                      { key: 'has_kwitansi_blanko', label: 'Blank Receipt' }
+                    ].map(doc => {
+                      const currentScanned = (formData.scanned_files && !Array.isArray(formData.scanned_files)) ? formData.scanned_files : {};
+                      const uploadedFile = currentScanned[doc.key];
+                      const isPdf = uploadedFile?.toLowerCase().endsWith('.pdf');
+
+                      return (
+                        <div key={doc.key} className="flex flex-col bg-secondary/5 rounded-xl border border-primary/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                          {/* Top row: Toggle */}
+                          <div className="flex items-center justify-between px-5 py-4 bg-background/50">
+                            <span className="text-sm font-bold tracking-wide">{doc.label}</span>
+                            {uploadedFile ? (
+                              <span className="flex items-center space-x-1.5 text-emerald-500 bg-emerald-500/10 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                                <CheckCircle2 size={14} />
+                                <span>Verified</span>
+                              </span>
+                            ) : (
+                              <span className="flex items-center space-x-1.5 text-red-500 bg-red-500/10 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                                <span>Missing</span>
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Bottom row: File Upload / Display */}
+                          <div className="px-5 py-4 border-t border-primary/5 flex items-center">
+                            {uploadedFile ? (
+                              <div className="flex w-full items-center justify-between">
+                                <div className="flex items-center space-x-3 overflow-hidden">
+                                  <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+                                    <CheckCircle2 size={20} />
+                                  </div>
+                                  <div className="flex flex-col overflow-hidden">
+                                    <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Scanned & Uploaded</span>
+                                    <span className="text-sm font-medium truncate text-primary/70" title={formatFilename(uploadedFile)}>{formatFilename(uploadedFile)}</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${uploadedFile}?token=${localStorage.getItem('token')}`} target="_blank" rel="noreferrer" className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors" title="View Document">
+                                    <FileText size={18} />
+                                  </a>
+                                  <button type="button" onClick={() => {
+                                    const newScanned = {...currentScanned};
+                                    delete newScanned[doc.key];
+                                    const updates = { [doc.key]: false, scanned_files: newScanned };
+                                    if (doc.key === 'has_stnk') updates.stnk_expiry_date = '';
+                                    setFormData({...formData, ...updates});
+                                  }} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Remove Document">
+                                    <Trash2 size={18} />
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex w-full items-center justify-between text-primary/50">
+                                <span className="text-xs font-medium tracking-wide italic">Not Scanned</span>
+                                <label className={`flex items-center space-x-2 px-4 py-2 rounded-lg bg-primary/5 hover:bg-primary/10 text-primary cursor-pointer transition-colors text-xs font-bold tracking-widest uppercase ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                                  <UploadCloud size={16} />
+                                  <span>Upload</span>
+                                  <input type="file" accept=".pdf,image/*" className="hidden" onChange={(e) => handleSpecificUpload(e, doc.key)} disabled={isUploading} />
+                                </label>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className={`mt-6 transition-all duration-300 ${formData.has_stnk ? 'opacity-100' : 'opacity-40 grayscale pointer-events-none'}`}>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">STNK Expiry Date</label>
+                    <input type="date" value={formData.stnk_expiry_date || ''} onChange={(e) => setFormData({...formData, stnk_expiry_date: e.target.value})} disabled={!formData.has_stnk} className="w-full bg-background text-primary px-4 py-3 rounded-xl border border-primary/20 focus:outline-none focus:border-primary text-sm font-medium transition-colors" />
                   </div>
                 </div>
               )}

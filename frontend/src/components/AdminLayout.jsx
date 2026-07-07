@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings, MessageSquare, Wrench } from 'lucide-react';
+import { Home, Car, Users, ClipboardList, LogOut, Sun, Moon, Tag, Settings, MessageSquare, Wrench, ShieldAlert } from 'lucide-react';
 
 export default function AdminLayout() {
   const { theme, toggleTheme } = useTheme();
@@ -67,10 +67,16 @@ export default function AdminLayout() {
           )}
 
           {user?.role === 'ADMIN' && (
-            <Link to="/admin/settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
-              <Settings size={20} />
-              <span className="font-medium">System Settings</span>
-            </Link>
+            <>
+              <Link to="/admin/audit-logs" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-red-500/80 hover:text-red-500">
+                <ShieldAlert size={20} />
+                <span className="font-medium">Audit Trail</span>
+              </Link>
+              <Link to="/admin/settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <Settings size={20} />
+                <span className="font-medium">System Settings</span>
+              </Link>
+            </>
           )}
         </nav>
 

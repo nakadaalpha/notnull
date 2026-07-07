@@ -45,7 +45,7 @@ const createCar = async (req, res) => {
         price: parseFloat(price),
         imageUrl,
         specifications,
-        stock: parseInt(stock || 1)
+        stock: 1 // Locked to 1 physical unit
       }
     });
     res.status(201).json(newCar);
@@ -65,7 +65,7 @@ const updateCar = async (req, res) => {
         model,
         yearMade: yearMade ? parseInt(yearMade) : undefined,
         price: price ? parseFloat(price) : undefined,
-        stock: stock ? parseInt(stock) : undefined,
+        // stock field is no longer editable manually
         imageUrl,
         specifications
       }

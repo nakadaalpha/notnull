@@ -26,6 +26,7 @@ import TransactionsAdmin from './pages/admin/TransactionsAdmin';
 import MessagesAdmin from './pages/admin/MessagesAdmin';
 import SettingsAdmin from './pages/admin/SettingsAdmin';
 import InspectionsAdmin from './pages/admin/InspectionsAdmin';
+import AuditLogsAdmin from './pages/admin/AuditLogsAdmin';
 import ProtectedRoute from './components/ProtectedRoute';
 
 
@@ -122,6 +123,7 @@ function App() {
                     <Route path="transactions" element={<TransactionsAdmin />} />
                     <Route path="messages" element={<MessagesAdmin />} />
                     <Route path="inspections" element={<InspectionsAdmin />} />
+                    <Route path="audit-logs" element={<AuditLogsAdmin />} />
                     <Route path="settings" element={<SettingsAdmin />} />
                   </Route>
                 </Route>

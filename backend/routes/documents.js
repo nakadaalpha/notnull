@@ -61,28 +61,32 @@ router.get('/view/:filename', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER'
 router.post('/:carId', authMiddleware, roleMiddleware(['ADMIN', 'MECHANIC']), async (req, res) => {
   try {
     const carId = parseInt(req.params.carId);
-    const { has_bpkb, has_stnk, stnk_expiry_date, has_faktur, has_kwitansi_blanko, has_form_a, scanned_files } = req.body;
+    const { licensePlate, vin, has_bpkb, has_stnk, stnk_expiry_date, has_faktur, has_kwitansi_blanko, has_form_a, scanned_files } = req.body;
 
     const document = await prisma.carDocument.upsert({
       where: { carId },
       update: {
+        licensePlate: licensePlate || null,
+        vin: vin || null,
         has_bpkb: has_bpkb || false,
         has_stnk: has_stnk || false,
         stnk_expiry_date: stnk_expiry_date ? new Date(stnk_expiry_date) : null,
         has_faktur: has_faktur || false,
         has_kwitansi_blanko: has_kwitansi_blanko || false,
         has_form_a: has_form_a || false,
-        scanned_files: scanned_files || [],
+        scanned_files: scanned_files || {},
       },
       create: {
         carId,
+        licensePlate: licensePlate || null,
+        vin: vin || null,
         has_bpkb: has_bpkb || false,
         has_stnk: has_stnk || false,
         stnk_expiry_date: stnk_expiry_date ? new Date(stnk_expiry_date) : null,
         has_faktur: has_faktur || false,
         has_kwitansi_blanko: has_kwitansi_blanko || false,
         has_form_a: has_form_a || false,
-        scanned_files: scanned_files || [],
+        scanned_files: scanned_files || {},
       }
     });
 

@@ -50,8 +50,10 @@ const io = new Server(server, {
 });
 
 // Middleware
+const auditMiddleware = require('./middleware/auditMiddleware');
 app.use(cors());
 app.use(express.json());
+app.use(auditMiddleware);
 
 // Pass io to routes if needed
 app.set('io', io);
@@ -111,6 +113,7 @@ const uploadRoutes = require('./routes/uploads');
 const settingsRoutes = require('./routes/settings');
 const tradeInRouter = require('./routes/tradein');
 const documentRoutes = require('./routes/documents');
+const auditRoutes = require('./routes/audit');
 
 // Mount Routes
 const swaggerOptions = {
@@ -130,6 +133,7 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/trade-in', tradeInRouter);
 app.use('/api/documents', documentRoutes);
+app.use('/api/audit', auditRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

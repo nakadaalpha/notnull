@@ -174,11 +174,11 @@ export default function TransactionsAdmin() {
                    {doc.toLowerCase().endsWith('.pdf') ? (
                      <div className="w-full aspect-[4/3] bg-secondary/10 flex flex-col items-center justify-center">
                        <span className="font-bold text-lg mb-2">PDF Document</span>
-                       <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${doc}`} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">Open PDF</a>
+                       <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${doc}?token=${localStorage.getItem('token')}`} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">Open PDF</a>
                      </div>
                    ) : (
-                     <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${doc}`} target="_blank" rel="noreferrer">
-                       <img loading="lazy" src={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${doc}`} alt="Document" className="w-full aspect-[4/3] object-cover group-hover:opacity-80 transition-opacity" />
+                     <a href={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${doc}?token=${localStorage.getItem('token')}`} target="_blank" rel="noreferrer">
+                       <img loading="lazy" src={`${api.defaults.baseURL.replace('/api', '')}/api/documents/view/${doc}?token=${localStorage.getItem('token')}`} alt="Document" className="w-full aspect-[4/3] object-cover group-hover:opacity-80 transition-opacity" />
                      </a>
                    )}
                 </div>

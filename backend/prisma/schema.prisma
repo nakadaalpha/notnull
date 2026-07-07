@@ -23,6 +23,7 @@ model User {
   transactionsAsSales  Transaction[] @relation("SalesTransactions")
   sentMessages     Message[]     @relation("SentMessages")
   receivedMessages Message[]     @relation("ReceivedMessages")
+  auditLogs        AuditLog[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }
@@ -127,6 +128,8 @@ model CarDocument {
   id                  Int       @id @default(autoincrement())
   carId               Int       @unique
   car                 Car       @relation(fields: [carId], references: [id], onDelete: Cascade)
+  licensePlate        String?
+  vin                 String?
   has_bpkb            Boolean   @default(false)
   has_stnk            Boolean   @default(false)
   stnk_expiry_date    DateTime?
@@ -136,4 +139,15 @@ model CarDocument {
   scanned_files       Json?     // Array of local paths
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  resource  String?
+  ipAddress String?
+  payload   Json?
+  createdAt DateTime @default(now())
 }
