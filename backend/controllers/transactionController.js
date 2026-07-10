@@ -2,13 +2,23 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const fs = require('fs');
 const path = require('path');
+const { assignToSalesRep } = require('../utils/assignment');
+const { Xendit } = require('xendit-node');
+
+let xenditClient;
+try {
+  xenditClient = new Xendit({ secretKey: process.env.XENDIT_SECRET_KEY || 'dummy_key' });
+} catch (err) {
+  console.warn('Xendit init failed, using mock mode.');
+}
 
 const getAllTransactions = async (req, res) => {
   try {
     const transactions = await prisma.transaction.findMany({
       include: {
         customer: true,
-        car: { include: { brand: true } }
+        car: { include: { brand: true } },
+        sales: { select: { username: true } }
       }
     });
     res.json(transactions);
@@ -44,25 +54,61 @@ const createTransaction = async (req, res) => {
       return res.status(400).json({ error: 'Insufficient stock or car not found' });
     }
 
-    // 2. Create transaction
+    // 2. Determine Sales Assignment
+    const autoAssignedSalesId = await assignToSalesRep(prisma);
+
+    // 3. Create transaction
     const newTransaction = await prisma.transaction.create({
       data: {
         customerId: customerId,
         carId: parseInt(carId),
+        salesId: autoAssignedSalesId,
         amount: buyAmount,
         totalPrice: parseFloat(totalPrice),
         status: 'PENDING'
       }
     });
 
-    // 3. Update car stock
+    // 4. Update car stock
     await prisma.car.update({
       where: { id: parseInt(carId) },
       data: { stock: car.stock - buyAmount }
     });
 
-    res.status(201).json(newTransaction);
+    // 5. Generate Xendit Invoice
+    let checkoutUrl = `/mock-payment/${newTransaction.id}`;
+    
+    try {
+      if (xenditClient && xenditClient.Invoice) {
+        // Find customer details for invoice
+        const customer = await prisma.user.findUnique({ where: { id: customerId } });
+        
+        const invoiceData = {
+          externalId: `invoice-${newTransaction.id}-${Date.now()}`,
+          amount: parseFloat(totalPrice),
+          payerEmail: customer.email || 'customer@example.com',
+          description: `Payment for ${car.brand?.name || ''} ${car.model}`,
+          successRedirectUrl: 'http://localhost:5173/payment-success',
+          failureRedirectUrl: 'http://localhost:5173/checkout',
+          currency: 'IDR'
+        };
+
+        const invoice = await xenditClient.Invoice.createInvoice({ data: invoiceData });
+        if (invoice && invoice.invoiceUrl) {
+          checkoutUrl = invoice.invoiceUrl;
+        }
+      }
+    } catch (xenditError) {
+      console.error('Xendit Error (fallback to mock):', xenditError.message);
+    }
+
+    res.status(201).json({
+      message: 'Transaction created. Redirect to checkout.',
+      transaction: newTransaction,
+      checkout_url: checkoutUrl
+    });
   } catch (error) {
+    console.error('Transaction Error:', error);
     res.status(500).json({ error: 'Failed to create transaction' });
   }
 };

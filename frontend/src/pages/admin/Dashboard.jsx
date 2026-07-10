@@ -25,13 +25,15 @@ export default function Dashboard() {
       setLoading(true);
       try {
         if (user?.role === 'ADMIN' || user?.role === 'MANAGER') {
-          const [carsRes, custRes, transRes] = await Promise.all([
+          const [carsRes, custRes, transRes, reserRes] = await Promise.all([
             api.get('/cars').catch(e => ({ data: [] })),
             api.get('/customers').catch(e => ({ data: [] })),
-            api.get('/transactions').catch(e => ({ data: [] }))
+            api.get('/transactions').catch(e => ({ data: [] })),
+            api.get('/reservations').catch(e => ({ data: [] }))
           ]);
           const cars = carsRes.data;
           const transactions = transRes.data;
+          const reservations = reserRes.data;
           
           const completedTx = transactions.filter(t => t.status === 'COMPLETED');
           const revenue = completedTx.reduce((acc, t) => acc + (t.totalPrice || 0), 0);

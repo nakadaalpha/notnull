@@ -108,7 +108,7 @@ const customerRoutes = require('./routes/customers');
 const transactionRoutes = require('./routes/transactions');
 const messageRoutes = require('./routes/messages');
 const reservationRoutes = require('./routes/reservations');
-const webhookRoutes = require('./routes/webhooks');
+const webhooksRouter = require('./routes/webhooks');
 const uploadRoutes = require('./routes/uploads');
 const settingsRoutes = require('./routes/settings');
 const tradeInRouter = require('./routes/tradein');
@@ -128,7 +128,7 @@ app.use('/api/customers', customerRoutes); // To be renamed/refactored later
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/reservations', reservationRoutes);
-app.use('/api/webhooks', webhookRoutes);
+app.use('/api/webhooks', webhooksRouter);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/trade-in', tradeInRouter);

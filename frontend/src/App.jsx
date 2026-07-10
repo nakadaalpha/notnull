@@ -14,6 +14,7 @@ import Warehouse from './pages/Warehouse';
 import CarDetail from './pages/CarDetail';
 import Checkout from './pages/Checkout';
 import PaymentSuccess from './pages/PaymentSuccess';
+import MockPayment from './pages/MockPayment';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -22,6 +23,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import BrandsAdmin from './pages/admin/BrandsAdmin';
 import CarsAdmin from './pages/admin/CarsAdmin';
 import CustomersAdmin from './pages/admin/CustomersAdmin';
+import StaffDashboard from './pages/admin/StaffDashboard';
 import TransactionsAdmin from './pages/admin/TransactionsAdmin';
 import MessagesAdmin from './pages/admin/MessagesAdmin';
 import SettingsAdmin from './pages/admin/SettingsAdmin';
@@ -73,6 +75,8 @@ function App() {
                 } />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
+                <Route path="/mock-payment/:id" element={<ProtectedRoute><MockPayment /></ProtectedRoute>} />
                 
                 <Route path="/profile" element={<ProtectedRoute />}>
                   <Route index element={
@@ -120,6 +124,7 @@ function App() {
                     <Route path="brands" element={<BrandsAdmin />} />
                     <Route path="cars" element={<CarsAdmin />} />
                     <Route path="customers" element={<CustomersAdmin />} />
+                    <Route path="staff" element={<StaffDashboard />} />
                     <Route path="transactions" element={<TransactionsAdmin />} />
                     <Route path="messages" element={<MessagesAdmin />} />
                     <Route path="inspections" element={<InspectionsAdmin />} />

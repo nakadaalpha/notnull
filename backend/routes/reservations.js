@@ -3,6 +3,25 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
+const { assignToSalesRep } = require('../utils/assignment');
+
+// Get all reservations (for Admin/Manager)
+router.get('/', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER', 'SALES']), async (req, res) => {
+  try {
+    const reservations = await prisma.reservation.findMany({
+      include: {
+        car: { include: { brand: true } },
+        customer: { select: { username: true, email: true, phone: true } },
+        sales: { select: { username: true, email: true, phone: true } }
+      },
+      orderBy: { inspectionDate: 'asc' }
+    });
+    res.json(reservations);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch all reservations' });
+  }
+});
 
 // Get all reservations for a specific user (either customer or sales)
 router.get('/user/:userId', authMiddleware, async (req, res) => {
@@ -45,11 +64,16 @@ router.post('/', authMiddleware, async (req, res) => {
       userNotes: notes || ''
     };
 
+    let finalSalesId = salesId;
+    if (!finalSalesId) {
+      finalSalesId = await assignToSalesRep(prisma);
+    }
+
     const newReservation = await prisma.reservation.create({
       data: {
         customerId: customerId,
         carId: parseInt(carId),
-        salesId: salesId ? salesId : null,
+        salesId: finalSalesId,
         inspectionDate: new Date(inspectionDate),
         notes: JSON.stringify(adminData),
         status: 'PENDING'
