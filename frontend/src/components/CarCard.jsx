@@ -17,7 +17,7 @@ export default function CarCard({ car, isRecommended = false, className = '' }) 
         )}
         {car.document && car.document.has_bpkb && car.document.has_stnk && new Date(car.document.stnk_expiry_date) > new Date() && (
           <div className="absolute top-4 left-4 z-20 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 px-2 py-1 flex items-center shadow-sm rounded">
-            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400">Pajak Hidup</span>
+            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400">Surat Lengkap & Pajak Hidup</span>
           </div>
         )}
         {car.document && car.document.stnk_expiry_date && new Date(car.document.stnk_expiry_date) <= new Date() && (
