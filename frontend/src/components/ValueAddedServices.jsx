@@ -28,10 +28,10 @@ export default function ValueAddedServices() {
           </div>
           <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">Upgrade <br/>Your Drive</h2>
           <p className="text-background/80 text-sm md:text-base max-w-sm mb-8">
-            Dapatkan penawaran tukar tambah terbaik untuk mobil lama Anda dan gunakan sebagai DP untuk kendaraan impian berikutnya.
+            Get the best trade-in offer for your old car and use it as a down payment for your next dream vehicle.
           </p>
           <Link to="/warehouse" className="bg-background text-primary font-bold uppercase tracking-widest text-xs px-8 py-4 rounded-xl hover:opacity-90 transition-opacity flex items-center">
-            Taksir Harga Mobil Saya <ArrowRight size={16} className="ml-2" />
+            Estimate My Car's Value <ArrowRight size={16} className="ml-2" />
           </Link>
         </div>
       </div>
@@ -39,8 +39,8 @@ export default function ValueAddedServices() {
       {/* Financing Simulator */}
       <div>
         <div className="mb-8">
-          <h2 className="text-3xl font-black uppercase tracking-tighter mb-2">Simulasi Pembiayaan</h2>
-          <p className="text-primary/60 text-sm">Sesuaikan DP dan tenor untuk menemukan cicilan bulanan yang paling nyaman bagi Anda. (Simulasi berdasarkan unit seharga $100,000)</p>
+          <h2 className="text-3xl font-black uppercase tracking-tighter mb-2">Financing Simulator</h2>
+          <p className="text-primary/60 text-sm">Adjust the down payment and term to find the most comfortable monthly installment. (Simulation based on a $100,000 vehicle)</p>
         </div>
         <FinancingCalculator 
           downPayment={downPayment} setDownPayment={setDownPayment}

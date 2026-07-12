@@ -6,7 +6,7 @@ export default function ContactLocation() {
       <div className="flex flex-col md:flex-row gap-12 items-center">
         {/* Contact Info */}
         <div className="w-full md:w-1/3">
-          <h2 className="text-3xl font-black uppercase tracking-tighter mb-8">Kunjungi <br/>Showroom Kami</h2>
+          <h2 className="text-3xl font-black uppercase tracking-tighter mb-8">Visit Our <br/>Showroom</h2>
           
           <div className="space-y-6">
             <div className="flex items-start">
@@ -20,22 +20,22 @@ export default function ContactLocation() {
             <div className="flex items-start">
               <Clock className="text-primary mt-1 mr-4" size={24} />
               <div>
-                <h4 className="font-bold uppercase tracking-wider mb-1">Jam Operasional</h4>
-                <p className="text-primary/70 text-sm">Senin - Jumat: 09:00 - 20:00<br/>Sabtu - Minggu: 10:00 - 18:00</p>
+                <h4 className="font-bold uppercase tracking-wider mb-1">Operating Hours</h4>
+                <p className="text-primary/70 text-sm">Monday - Friday: 09:00 - 20:00<br/>Saturday - Sunday: 10:00 - 18:00</p>
               </div>
             </div>
             
             <div className="flex items-start">
               <Phone className="text-primary mt-1 mr-4" size={24} />
               <div>
-                <h4 className="font-bold uppercase tracking-wider mb-1">Hubungi Sales</h4>
+                <h4 className="font-bold uppercase tracking-wider mb-1">Contact Sales</h4>
                 <p className="text-primary/70 text-sm">+62 811 9999 8888<br/>sales@notnull.com</p>
               </div>
             </div>
           </div>
           
           <p className="text-xs text-primary/40 mt-8">
-            *Untuk layanan komplain fisik dan pengambilan unit mandiri, silakan kunjungi meja resepsionis di lantai 1.
+            *For physical complaints and self pick-up services, please visit the reception desk on the 1st floor.
           </p>
         </div>
         

@@ -42,13 +42,6 @@ export default function Home() {
 
   useEffect(() => {
     if (cars.length > 0 || brands.length > 0) {
-      // Hero Animation
-      gsap.fromTo(
-        heroRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out', delay: 0.2 }
-      );
-
       // Highlight Cars Stagger
       if (highlightRef.current && highlightRef.current.children.length > 0) {
         gsap.fromTo(
@@ -66,7 +59,7 @@ export default function Home() {
   return (
     <div className="w-full bg-background min-h-screen">
       {/* 1. Hero Area (Visual Premium & USP) */}
-      <section className="relative w-full h-[90vh] min-h-[600px] overflow-hidden flex items-center" ref={heroRef}>
+      <section className="relative w-full h-screen min-h-[800px] overflow-hidden flex items-center" ref={heroRef}>
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         <video 
           autoPlay 
@@ -89,18 +82,18 @@ export default function Home() {
             <Sparkles size={16} className="mr-2" />
             The Ultimate Garage
           </p>
-          <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.9] drop-shadow-2xl mb-6 max-w-4xl">
-            Mobil Premium, Lulus Inspeksi Ketat, & Bergaransi.
+          <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[1.1] drop-shadow-2xl mb-6 max-w-3xl">
+            Premium Vehicles, Rigorously Inspected, & Fully Warrantied.
           </h1>
-          <p className="text-white/80 text-lg md:text-xl font-light mb-10 max-w-2xl">
-            Kami mengubah cara Anda membeli mobil mewah. Transparansi penuh, jaminan kualitas tanpa kompromi, dan pengalaman yang tak terlupakan.
+          <p className="text-white/80 text-base md:text-lg font-light mb-8 max-w-2xl">
+            We are changing the way you buy luxury cars. Full transparency, uncompromising quality assurance, and an unforgettable experience.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/warehouse" className="bg-primary text-background font-bold uppercase tracking-widest text-sm px-8 py-4 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center">
-              Lihat Koleksi Mobil <ArrowRight size={18} className="ml-2" />
+              Explore Collection <ArrowRight size={18} className="ml-2" />
             </Link>
             <Link to="/warehouse" className="bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold uppercase tracking-widest text-sm px-8 py-4 rounded-xl hover:bg-white/20 transition-colors flex items-center justify-center">
-              <Play size={18} className="mr-2 fill-white" /> Jadwalkan Test Drive
+              <Play size={18} className="mr-2 fill-white" /> Schedule Test Drive
             </Link>
           </div>
         </div>
@@ -114,7 +107,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center mb-16 text-center">
           <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-primary/50 mb-2">New Arrivals</h2>
           <h3 className="text-4xl md:text-5xl font-black tracking-widest uppercase">
-            Penawaran Spesial
+            Special Offers
           </h3>
         </div>
         
@@ -123,13 +116,13 @@ export default function Home() {
             cars.map((car) => <CarCard key={car.id} car={car} />)
           ) : (
             <div className="col-span-3 h-40 flex items-center justify-center border border-primary/10">
-              <p className="text-primary/40 font-light tracking-widest uppercase">Katalog sedang diperbarui</p>
+              <p className="text-primary/40 font-light tracking-widest uppercase">Catalog is being updated</p>
             </div>
           )}
         </div>
         <div className="mt-16 text-center">
           <Link to="/warehouse" className="inline-block border border-primary px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-primary hover:text-background transition-colors">
-            Lihat Semua Unit
+            View All Vehicles
           </Link>
         </div>
       </section>

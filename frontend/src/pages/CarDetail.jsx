@@ -9,6 +9,8 @@ import TradeInForm from '../components/TradeInForm';
 import ReservationModal from '../components/ReservationModal';
 import LoginModal from '../components/LoginModal';
 import CarCard from '../components/CarCard';
+import KycModal from '../components/KycModal';
+import TestDriveModal from '../components/TestDriveModal';
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -43,6 +45,10 @@ export default function CarDetail() {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   
+  // Test Drive States
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+  const [isTestDriveModalOpen, setIsTestDriveModalOpen] = useState(false);
+
   // Administrative Data
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -142,6 +148,20 @@ export default function CarDetail() {
       return;
     }
     navigate(`/checkout?carId=${car.id}`);
+  };
+
+  const handleTestDriveClick = () => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    api.get('/users/me').then(res => {
+      if (res.data.is_sim_verified) {
+        setIsTestDriveModalOpen(true);
+      } else {
+        setIsKycModalOpen(true);
+      }
+    }).catch(err => console.error(err));
   };
 
   const handleTradeInCheckout = () => {
@@ -308,6 +328,13 @@ export default function CarDetail() {
               >
                 <span>Book Inspection</span>
               </button>
+              
+              <button 
+                onClick={handleTestDriveClick}
+                className="w-full py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 bg-transparent border border-primary/20 text-foreground hover:bg-primary/5 rounded-md flex items-center justify-center space-x-2 mt-2"
+              >
+                <span>Request Test Drive</span>
+              </button>
             </div>
           </div>
           
@@ -346,6 +373,25 @@ export default function CarDetail() {
       />
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      
+      <KycModal 
+        isOpen={isKycModalOpen} 
+        onClose={() => setIsKycModalOpen(false)} 
+        onSuccess={(updatedUser) => {
+          setIsKycModalOpen(false);
+          setIsTestDriveModalOpen(true);
+        }}
+      />
+
+      <TestDriveModal 
+        isOpen={isTestDriveModalOpen} 
+        onClose={() => setIsTestDriveModalOpen(false)} 
+        carId={car.id}
+        onSuccess={(data) => {
+          setIsTestDriveModalOpen(false);
+          alert('Test Drive request submitted successfully!');
+        }}
+      />
     </div>
   );
 }

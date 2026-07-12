@@ -114,6 +114,8 @@ const settingsRoutes = require('./routes/settings');
 const tradeInRouter = require('./routes/tradein');
 const documentRoutes = require('./routes/documents');
 const auditRoutes = require('./routes/audit');
+const testDrivesRoutes = require('./routes/testDrives');
+const usersRoutes = require('./routes/users');
 
 // Mount Routes
 const swaggerOptions = {
@@ -134,6 +136,8 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/trade-in', tradeInRouter);
 app.use('/api/documents', documentRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/test-drives', testDrivesRoutes);
+app.use('/api/users', usersRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

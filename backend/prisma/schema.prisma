@@ -24,6 +24,15 @@ model User {
   sentMessages     Message[]     @relation("SentMessages")
   receivedMessages Message[]     @relation("ReceivedMessages")
   auditLogs        AuditLog[]
+  testDrives       TestDrive[]   @relation("CustomerTestDrives")
+  testDrivesAsSales TestDrive[]  @relation("SalesTestDrives")
+  
+  // KYC / Identitas Hukum (SIM)
+  sim_number       String?
+  sim_expiry_date  DateTime?
+  sim_file_path    String?
+  is_sim_verified  Boolean       @default(false)
+  
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }
@@ -50,6 +59,7 @@ model Car {
   document     CarDocument?
   transactions Transaction[]
   reservations Reservation[]
+  testDrives   TestDrive[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -117,6 +127,23 @@ model Reservation {
   notes          String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model TestDrive {
+  id                  Int      @id @default(autoincrement())
+  carId               Int
+  car                 Car      @relation(fields: [carId], references: [id])
+  customerId          String
+  customer            User     @relation("CustomerTestDrives", fields: [customerId], references: [id])
+  salesId             String?
+  sales       User?    @relation("SalesTestDrives", fields: [salesId], references: [id])
+  schedule_date       DateTime
+  location_type       String   @default("SHOWROOM") // SHOWROOM, HOME_SERVICE
+  liability_agreed    Boolean  @default(false)
+  liability_agreed_at DateTime?
+  status              String   @default("REQUESTED") // REQUESTED, SCHEDULED, ON_GOING, COMPLETED, CANCELLED
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model Setting {
