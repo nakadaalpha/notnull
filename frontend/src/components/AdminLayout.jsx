@@ -67,10 +67,16 @@ export default function AdminLayout() {
           )}
 
           {['ADMIN', 'MANAGER', 'SALES', 'MECHANIC'].includes(user?.role) && (
-            <Link to="/admin/inspections" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
-              <Wrench size={20} />
-              <span className="font-medium">Inspection Queue</span>
-            </Link>
+            <>
+              <Link to="/admin/inspections" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <Wrench size={20} />
+                <span className="font-medium">Inspection Queue</span>
+              </Link>
+              <Link to="/admin/test-drives" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
+                <Car size={20} />
+                <span className="font-medium">Test Drives & KYC</span>
+              </Link>
+            </>
           )}
 
           {user?.role === 'ADMIN' && (

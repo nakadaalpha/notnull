@@ -10,24 +10,20 @@ export default function StaffDashboard() {
   // States
   const [salesLeaderboard, setSalesLeaderboard] = useState([]);
   const [mechanicStats, setMechanicStats] = useState([]);
-  const [testDrives, setTestDrives] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [custRes, transRes, reserRes, testDriveRes] = await Promise.all([
+        const [custRes, transRes, reserRes] = await Promise.all([
           api.get('/customers').catch(e => ({ data: [] })),
           api.get('/transactions').catch(e => ({ data: [] })),
-          api.get('/reservations').catch(e => ({ data: [] })),
-          api.get('/test-drives').catch(e => ({ data: [] }))
+          api.get('/reservations').catch(e => ({ data: [] }))
         ]);
         
         const allUsers = custRes.data;
         const transactions = transRes.data;
         const reservations = reserRes.data;
-        
-        setTestDrives(testDriveRes.data);
 
         // --- 1. Process Sales Leaderboard ---
         const salesTeam = allUsers.filter(u => u.role === 'SALES');
@@ -187,101 +183,6 @@ export default function StaffDashboard() {
               No mechanics found in the system.
             </div>
           )}
-        </div>
-      </div>
-
-      {/* TIER 3: TEST DRIVE & KYC MANAGEMENT */}
-      <div className="mt-12">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-primary/80 mb-4 border-b border-primary/10 pb-2 flex items-center space-x-2">
-          <Clock size={16} />
-          <span>Test Drive Queue & KYC Verifications</span>
-        </h2>
-        
-        <div className="bg-background border border-primary/10 rounded-2xl overflow-x-auto shadow-sm">
-          <table className="w-full text-left border-collapse whitespace-nowrap">
-            <thead>
-              <tr className="bg-secondary/50 border-b border-primary/10">
-                <th className="p-4 font-medium text-primary/60">Customer</th>
-                <th className="p-4 font-medium text-primary/60">Vehicle</th>
-                <th className="p-4 font-medium text-primary/60">Schedule</th>
-                <th className="p-4 font-medium text-primary/60">KYC Status</th>
-                <th className="p-4 font-medium text-primary/60">Drive Status</th>
-                <th className="p-4 font-medium text-primary/60 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {testDrives.map(td => (
-                <tr key={td.id} className="border-b border-primary/5 hover:bg-secondary/50 transition-colors">
-                  <td className="p-4">
-                    <div className="font-bold">{td.customer?.username}</div>
-                    <div className="text-xs text-primary/60">{td.customer?.phone || td.customer?.email}</div>
-                  </td>
-                  <td className="p-4">
-                    <div className="font-medium">{td.car?.brand?.name} {td.car?.model}</div>
-                    <div className="text-xs text-primary/50">{td.location_type}</div>
-                  </td>
-                  <td className="p-4">
-                    {new Date(td.schedule_date).toLocaleString()}
-                  </td>
-                  <td className="p-4">
-                    {td.customer?.is_sim_verified ? (
-                      <span className="text-xs px-2 py-1 rounded bg-green-500/10 text-green-500 font-bold">Verified</span>
-                    ) : (
-                      <div className="flex flex-col space-y-1">
-                        <span className="text-xs px-2 py-1 rounded bg-yellow-500/10 text-yellow-500 font-bold">Pending Review</span>
-                        <a 
-                          href={`/api/users/kyc/sim/image/${td.customer?.id}`} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="text-[10px] text-blue-500 hover:underline"
-                        >
-                          View License
-                        </a>
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-4">
-                    <span className="text-xs font-bold uppercase tracking-widest">{td.status}</span>
-                  </td>
-                  <td className="p-4 text-right space-x-2">
-                    {td.status === 'REQUESTED' && !td.customer?.is_sim_verified && (
-                      <button 
-                        onClick={async () => {
-                          if (confirm('Are you sure the License matches and is valid?')) {
-                            try {
-                              await api.patch(`/test-drives/${td.id}/verify`);
-                              setTestDrives(prev => prev.map(t => t.id === td.id ? { ...t, status: 'SCHEDULED', customer: {...t.customer, is_sim_verified: true} } : t));
-                            } catch (e) { alert('Verification failed'); }
-                          }
-                        }}
-                        className="px-3 py-1 bg-green-500 text-white rounded text-xs font-bold"
-                      >
-                        Verify KYC & Approve
-                      </button>
-                    )}
-                    {td.status === 'SCHEDULED' && (
-                      <button 
-                        onClick={async () => {
-                          try {
-                            await api.patch(`/test-drives/${td.id}/complete`);
-                            setTestDrives(prev => prev.map(t => t.id === td.id ? { ...t, status: 'COMPLETED' } : t));
-                          } catch (e) { alert('Completion failed'); }
-                        }}
-                        className="px-3 py-1 bg-blue-500 text-white rounded text-xs font-bold"
-                      >
-                        Mark Completed
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              {testDrives.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="p-8 text-center text-primary/40">No test drives scheduled.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
         </div>
       </div>
 

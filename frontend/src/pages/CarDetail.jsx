@@ -331,7 +331,7 @@ export default function CarDetail() {
               
               <button 
                 onClick={handleTestDriveClick}
-                className="w-full py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 bg-transparent border border-primary/20 text-foreground hover:bg-primary/5 rounded-md flex items-center justify-center space-x-2 mt-2"
+                className="w-full py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all duration-300 bg-transparent border border-primary/20 text-foreground hover:bg-primary/5 rounded-md flex items-center justify-center space-x-2"
               >
                 <span>Request Test Drive</span>
               </button>

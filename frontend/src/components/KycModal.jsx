@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, X, AlertTriangle } from 'lucide-react';
+import { Upload, X, AlertTriangle, CheckCircle } from 'lucide-react';
 import api from '../api';
 
 export default function KycModal({ isOpen, onClose, onSuccess }) {
@@ -83,14 +83,29 @@ export default function KycModal({ isOpen, onClose, onSuccess }) {
 
             <div>
               <label className="block text-[10px] font-bold tracking-widest uppercase text-primary/70 mb-2">Upload Photo of SIM</label>
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/20 rounded-xl cursor-pointer bg-secondary/20 hover:bg-secondary/40 transition-colors">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-3 text-primary/40" />
-                  <p className="mb-2 text-sm text-primary/60">
-                    <span className="font-bold">Click to upload</span> or drag and drop
-                  </p>
-                  <p className="text-xs text-primary/40">PNG, JPG up to 5MB</p>
-                </div>
+              <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-primary/20 rounded-xl cursor-pointer bg-secondary/20 hover:bg-secondary/40 transition-colors overflow-hidden relative">
+                {file ? (
+                  <div className="w-full h-full relative group">
+                    <img 
+                      src={URL.createObjectURL(file)} 
+                      alt="SIM Preview" 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                      <span className="text-white text-xs font-bold uppercase tracking-widest flex items-center">
+                        <Upload size={14} className="mr-2" /> Change Photo
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 mb-3 text-primary/40" />
+                    <p className="mb-2 text-sm text-primary/60">
+                      <span className="font-bold">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-primary/40">PNG, JPG up to 5MB</p>
+                  </div>
+                )}
                 <input 
                   type="file" 
                   className="hidden" 
@@ -98,7 +113,23 @@ export default function KycModal({ isOpen, onClose, onSuccess }) {
                   onChange={(e) => setFile(e.target.files[0])}
                 />
               </label>
-              {file && <p className="text-xs text-green-500 mt-2 font-bold uppercase tracking-widest flex items-center"><X size={12} className="mr-1 cursor-pointer" onClick={()=>setFile(null)} /> {file.name}</p>}
+              {file && (
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-xs text-green-500 font-bold uppercase tracking-widest flex items-center">
+                    <CheckCircle size={12} className="mr-1" /> Document Attached
+                  </p>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setFile(null);
+                    }}
+                    className="text-xs text-red-500 font-bold uppercase tracking-widest flex items-center hover:text-red-600 transition-colors"
+                  >
+                    <X size={12} className="mr-1" /> Remove
+                  </button>
+                </div>
+              )}
             </div>
 
             <button 

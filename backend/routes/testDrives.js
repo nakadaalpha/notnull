@@ -34,7 +34,7 @@ const checkScheduleConflict = async (carId, scheduleDate) => {
     where: {
       carId: parseInt(carId),
       status: { in: ['PENDING', 'CONFIRMED'] },
-      scheduledAt: { // wait, inspectionDate in reservation schema
+      inspectionDate: {
         gte: oneHourBefore,
         lte: oneHourAfter,
       }
@@ -56,8 +56,8 @@ router.post('/', authMiddleware, async (req, res) => {
 
     // Verify KYC status
     const user = await prisma.user.findUnique({ where: { id: customerId } });
-    if (!user || !user.is_sim_verified) {
-      return res.status(403).json({ error: 'Driver License (SIM) must be verified first.' });
+    if (!user || !user.sim_file_path) {
+      return res.status(403).json({ error: 'Please upload your Driver License (SIM) first.' });
     }
 
     // Check conflict
