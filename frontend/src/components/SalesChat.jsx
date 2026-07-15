@@ -68,7 +68,7 @@ export default function SalesChat({ customers, currentUserId }) {
   );
 
   return (
-    <div className="bg-background border border-primary/10 rounded-2xl overflow-hidden shadow-sm flex h-[500px]">
+    <div className="bg-background flex h-full">
       {/* Sidebar: Customer List */}
       <div className="w-1/3 border-r border-primary/10 flex flex-col bg-secondary/5">
         <div className="p-4 border-b border-primary/10">

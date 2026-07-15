@@ -50,23 +50,19 @@ export default function TestDrivesAdmin() {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto w-full">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tighter">Test Drives</h1>
-          <p className="text-primary/60 text-sm mt-1">Manage test drive queues and verify driver's licenses (KYC).</p>
-        </div>
-        
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-primary/40" size={18} />
-          <input 
-            type="text"
-            placeholder="Search customer or car..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-background border border-primary/20 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary"
-          />
-        </div>
+    <div>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Test Drives & KYC</h1>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <input 
+          type="text"
+          placeholder="Search customer or car..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-1 bg-background border border-primary/20 px-4 py-2 rounded-lg focus:outline-none focus:border-primary text-primary"
+        />
       </div>
 
       <div className="bg-background border border-primary/10 rounded-2xl overflow-x-auto shadow-sm">
@@ -87,10 +83,12 @@ export default function TestDrivesAdmin() {
                 <td className="p-4">
                   <div className="font-bold">{td.customer?.username}</div>
                   <div className="text-xs text-primary/60">{td.customer?.phone || td.customer?.email}</div>
+                  <div className="text-[10px] text-primary/40 font-mono mt-1">ID: {td.customer?.id}</div>
                 </td>
                 <td className="p-4">
                   <div className="font-medium">{td.car?.brand?.name} {td.car?.model}</div>
                   <div className="text-xs text-primary/50">{td.location_type}</div>
+                  <div className="text-[10px] text-primary/40 font-mono mt-1">ID: {td.car?.id}</div>
                 </td>
                 <td className="p-4">
                   {new Date(td.schedule_date).toLocaleString()}

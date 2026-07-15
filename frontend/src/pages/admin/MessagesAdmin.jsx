@@ -11,22 +11,29 @@ export default function MessagesAdmin() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (user?.role === 'SALES') {
-        try {
+      try {
+        if (user?.role === 'SALES') {
           const res = await api.get(`/reservations/user/${user.id}`);
           setSalesData(res.data);
-        } catch (error) {
-          console.error('Failed to fetch sales data for messages', error);
-        } finally {
-          setLoading(false);
+        } else if (user?.role === 'ADMIN' || user?.role === 'MANAGER') {
+          // Admins and Managers can view all customers who made reservations or all users.
+          // For simplicity, let's fetch all customers to allow admin to monitor all chats.
+          const res = await api.get('/customers');
+          // For admin, the structure is just an array of users, we'll map them so it looks like reservations output
+          const fakeReservations = res.data.map(c => ({ customer: c }));
+          setSalesData(fakeReservations);
         }
+      } catch (error) {
+        console.error('Failed to fetch data for messages', error);
+      } finally {
+        setLoading(false);
       }
     };
     if (user) fetchData();
   }, [user]);
 
-  // Protect this route from non-SALES users (though the App.jsx might also protect it)
-  if (user && user.role !== 'SALES') {
+  // Protect this route from non-authorized users
+  if (user && !['ADMIN', 'MANAGER', 'SALES'].includes(user.role)) {
     return <Navigate to="/admin" replace />;
   }
 
@@ -48,11 +55,8 @@ export default function MessagesAdmin() {
   const assignedCustomers = Array.from(uniqueCustomersMap.values());
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col">
-      <h1 className="text-3xl font-bold mb-2">Live Concierge</h1>
-      <p className="text-primary/60 text-sm mb-6 tracking-widest uppercase">Inbox & Messaging</p>
-      
-      <div className="flex-1 min-h-0">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 absolute inset-0 flex flex-col">
+      <div className="flex-1 min-h-0 bg-background">
         <SalesChat customers={assignedCustomers} currentUserId={user.id} />
       </div>
     </div>
