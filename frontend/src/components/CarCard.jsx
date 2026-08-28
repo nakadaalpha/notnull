@@ -28,7 +28,7 @@ export default function CarCard({ car, isRecommended = false, className = '' }) 
         <div className="bg-background overflow-hidden h-full flex flex-col transition-all duration-500 border border-transparent hover:border-primary/10 group-hover:shadow-lg">
           <div className="aspect-[4/3] md:aspect-[16/10] bg-white p-2 md:p-4 flex items-center justify-center overflow-hidden relative">
             <img loading="lazy" 
-              src={car.imageUrl ? `/images/cars/${car.imageUrl}` : `/images/cars/default.png`} 
+              src={car.imageUrl ? (car.imageUrl.startsWith('http') ? car.imageUrl : `/images/cars/${car.imageUrl}`) : `/images/cars/default.png`} 
               alt={car.model}
               className="w-full h-full object-contain relative z-0 transform group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
               onError={(e) => { e.target.src = 'https://via.placeholder.com/600x400?text=Premium+Vehicle'; }}

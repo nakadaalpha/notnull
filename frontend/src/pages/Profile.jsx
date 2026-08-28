@@ -336,7 +336,7 @@ export default function Profile() {
                       <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative pointer-events-auto">
                         <div className="absolute top-2 left-2 px-2 py-1 bg-foreground text-background text-[8px] font-bold tracking-widest uppercase rounded z-10">PURCHASE</div>
                         <img loading="lazy" 
-                          src={tx.car?.imageUrl ? `/images/cars/${tx.car.imageUrl}` : '/images/cars/default.png'} 
+                          src={tx.car?.imageUrl ? (tx.car.imageUrl.startsWith('http') ? tx.car.imageUrl : `/images/cars/${tx.car.imageUrl}`) : '/images/cars/default.png'} 
                           alt={tx.car?.model} 
                           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                         />
@@ -380,7 +380,7 @@ export default function Profile() {
                     <div className="w-full md:w-1/3 aspect-[4/3] bg-white rounded-lg flex items-center justify-center p-4 overflow-hidden relative">
                       <div className="absolute top-2 left-2 px-2 py-1 bg-primary/10 text-primary text-[8px] font-bold tracking-widest uppercase rounded z-10">INSPECTION</div>
                       <img loading="lazy" 
-                        src={res.car?.imageUrl ? `/images/cars/${res.car.imageUrl}` : '/images/cars/default.png'} 
+                        src={res.car?.imageUrl ? (res.car.imageUrl.startsWith('http') ? res.car.imageUrl : `/images/cars/${res.car.imageUrl}`) : '/images/cars/default.png'} 
                         alt={res.car?.model} 
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                       />

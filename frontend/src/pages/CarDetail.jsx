@@ -226,7 +226,7 @@ export default function CarDetail() {
 						<img
 							src={
 								car.imageUrl
-									? `/images/cars/${car.imageUrl}`
+									? (car.imageUrl.startsWith('http') ? car.imageUrl : `/images/cars/${car.imageUrl}`)
 									: `/images/cars/default.png`
 							}
 							alt={car.model}

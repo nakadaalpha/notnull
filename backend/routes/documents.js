@@ -36,9 +36,11 @@ router.post('/upload', authMiddleware, roleMiddleware(['ADMIN', 'MECHANIC']), up
 });
 
 // 2. Endpoint Akses/Lihat Dokumen (Hanya ADMIN dan MANAGER)
-router.get('/view/:filename(*)', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER']), (req, res) => {
+router.get(/^\/view\/(.+)$/, authMiddleware, roleMiddleware(['ADMIN', 'MANAGER']), (req, res) => {
   try {
-    const filename = req.params.filename;
+    // Parameter matched by RegExp capture group (.+) is available at req.params[0]
+    const filename = req.params[0];
+    
     // Generate secure URL directly from Cloudinary using the public_id (filename)
     const url = cloudinary.url(filename, { secure: true });
     
