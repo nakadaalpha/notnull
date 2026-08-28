@@ -32,7 +32,7 @@ export default function AdminLayout() {
           {['ADMIN', 'MANAGER'].includes(user?.role) && (
             <Link to="/admin/staff" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-secondary transition-colors text-primary/80 hover:text-primary">
               <BarChart size={20} />
-              <span className="font-medium">Staff Performance</span>
+              <span className="font-medium">Staffs</span>
             </Link>
           )}
 

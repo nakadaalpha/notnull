@@ -35,15 +35,20 @@ const getCustomerById = async (req, res) => {
 };
 
 const createCustomer = async (req, res) => {
-  const { username, password, email, phone, address } = req.body;
+  const { username, password, email, phone, address, role } = req.body;
   try {
+    let assignedRole = 'CUSTOMER';
+    if (role && (req.user.role === 'ADMIN' || req.user.role === 'MANAGER')) {
+      assignedRole = role;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newCustomer = await prisma.user.create({
-      data: { id: generateId(), username, password: hashedPassword, email, phone, address, role: 'CUSTOMER' }
+      data: { id: generateId(), username, password: hashedPassword, email, phone, address, role: assignedRole }
     });
     res.status(201).json(newCustomer);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create customer' });
+    res.status(500).json({ error: 'Failed to create user' });
   }
 };
 
