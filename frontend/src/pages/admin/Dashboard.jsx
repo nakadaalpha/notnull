@@ -13,7 +13,8 @@ export default function Dashboard() {
     totalCustomers: 0,
     totalTransactions: 0, completedTransactions: 0,
     totalRevenue: 0, pendingReceivables: 0,
-    agingStock: { fresh: 0, warning: 0, critical: 0 }
+    agingStock: { fresh: 0, warning: 0, critical: 0 },
+    salesLeaderboard: []
   });
   
   // Sales stats
@@ -53,6 +54,25 @@ export default function Dashboard() {
             else fresh++;
           });
 
+          const salesTeam = custRes.data.filter(u => u.role === 'SALES');
+          const leaderboard = salesTeam.map(salesRep => {
+            const assignedLeads = reservations.filter(r => r.salesId === salesRep.id);
+            const closedDeals = transactions.filter(t => t.salesId === salesRep.id && (t.status === 'COMPLETED' || t.status === 'PAID'));
+            const totalLeads = assignedLeads.length;
+            const unitsSold = closedDeals.length;
+            const conversionRate = totalLeads > 0 ? ((unitsSold / totalLeads) * 100).toFixed(1) : 0;
+            const revenue = closedDeals.reduce((acc, t) => acc + (t.totalPrice || 0), 0);
+            
+            return {
+              id: salesRep.id,
+              username: salesRep.username,
+              totalLeads,
+              unitsSold,
+              conversionRate,
+              revenue
+            };
+          }).sort((a, b) => b.unitsSold - a.unitsSold || b.revenue - a.revenue);
+
           setAdminStats({
             totalCars: cars.length,
             availableCars: activeInventory.length,
@@ -62,7 +82,8 @@ export default function Dashboard() {
             completedTransactions: completedTx.length,
             totalRevenue: revenue,
             pendingReceivables: receivables,
-            agingStock: { fresh, warning, critical }
+            agingStock: { fresh, warning, critical },
+            salesLeaderboard: leaderboard
           });
         } else if (user?.role === 'SALES') {
           const res = await api.get(`/reservations/user/${user.id}`).catch(e => ({ data: [] }));
@@ -201,6 +222,70 @@ export default function Dashboard() {
               <h3 className="text-2xl font-black">{adminStats.agingStock.critical} <span className="text-sm font-medium text-red-500/50 font-normal">units</span></h3>
             </div>
           </div>
+        </div>
+
+        {/* TIER 4: SALES LEADERBOARD */}
+        <h2 className="text-sm font-bold uppercase tracking-widest text-primary/80 mb-4 mt-10 border-b border-primary/10 pb-2 flex items-center justify-between">
+          <span>Sales Performance Leaderboard</span>
+          <span className="text-[10px] bg-primary/10 px-2 py-1 rounded text-primary/60">Target: 5 Units / Month</span>
+        </h2>
+        <div className="bg-background border border-primary/10 rounded-2xl overflow-x-auto mb-10" data-lenis-prevent>
+          <table className="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+              <tr className="bg-secondary/50 border-b border-primary/10">
+                <th className="p-4 font-medium text-primary/60">Rank</th>
+                <th className="p-4 font-medium text-primary/60">Sales Representative</th>
+                <th className="p-4 font-medium text-primary/60">Assigned Leads</th>
+                <th className="p-4 font-medium text-primary/60">Units Sold</th>
+                <th className="p-4 font-medium text-primary/60">Conversion Rate</th>
+                <th className="p-4 font-medium text-primary/60 text-right">Revenue Generated</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adminStats.salesLeaderboard.map((sales, index) => {
+                const targetProgress = Math.min((sales.unitsSold / 5) * 100, 100);
+                const isTopSeller = index === 0 && sales.unitsSold > 0;
+                return (
+                  <tr key={sales.id} className={`border-b border-primary/5 hover:bg-secondary/50 transition-colors ${isTopSeller ? 'bg-amber-500/5' : ''}`}>
+                    {/* Rank */}
+                    <td className="p-4">#{index + 1}</td>
+                    {/* Sales Representative */}
+                    <td className="p-4 font-medium flex items-center space-x-2">
+                      {isTopSeller && <span title="Top Seller">🏆</span>}
+                      <span>{sales.username}</span>
+                    </td>
+                    {/* Assigned Leads */}
+                    <td className="p-4">{sales.totalLeads}</td>
+                    {/* Units Sold */}
+                    <td className="p-4">
+                      <span>{sales.unitsSold}</span>
+                      <div className="w-full max-w-[100px] bg-primary/10 h-1.5 rounded-full mt-1 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full ${targetProgress >= 100 ? 'bg-green-500' : 'bg-primary/50'}`} 
+                          style={{ width: `${targetProgress}%` }}
+                        />
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        sales.conversionRate >= 20 ? 'bg-green-500/10 text-green-500' : 
+                        sales.conversionRate >= 10 ? 'bg-yellow-500/10 text-yellow-500' : 
+                        'bg-primary/10 text-primary/60'
+                      }`}>
+                        {sales.conversionRate}%
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">${sales.revenue.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+              {adminStats.salesLeaderboard.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="p-4 text-center">No sales representatives found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     );
