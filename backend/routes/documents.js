@@ -1,27 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
+
 const prisma = new PrismaClient();
 
-// Konfigurasi Multer untuk Direktori Privat
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '../uploads/private/documents');
-    // Ensure dir exists
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
+// Konfigurasi Multer untuk Cloudinary (Dokumen)
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'notnull/documents',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'pdf'],
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_'));
-  }
 });
 const upload = multer({ storage });
 
@@ -31,6 +26,7 @@ router.post('/upload', authMiddleware, roleMiddleware(['ADMIN', 'MECHANIC']), up
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'No files uploaded.' });
     }
+    // filename here is the Cloudinary public_id
     const filePaths = req.files.map(file => file.filename);
     res.json({ message: 'Files uploaded successfully', files: filePaths });
   } catch (error) {
@@ -40,17 +36,14 @@ router.post('/upload', authMiddleware, roleMiddleware(['ADMIN', 'MECHANIC']), up
 });
 
 // 2. Endpoint Akses/Lihat Dokumen (Hanya ADMIN dan MANAGER)
-router.get('/view/:filename', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER']), (req, res) => {
+router.get('/view/:filename(*)', authMiddleware, roleMiddleware(['ADMIN', 'MANAGER']), (req, res) => {
   try {
     const filename = req.params.filename;
-    const filePath = path.join(__dirname, '../uploads/private/documents', filename);
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'File not found.' });
-    }
-
-    // Mengirim file fisik langsung ke client/browser untuk streaming (res.sendFile)
-    res.sendFile(filePath);
+    // Generate secure URL directly from Cloudinary using the public_id (filename)
+    const url = cloudinary.url(filename, { secure: true });
+    
+    // Redirect browser to the Cloudinary URL
+    res.redirect(url);
   } catch (error) {
     console.error('View Document Error:', error);
     res.status(500).json({ error: 'Failed to retrieve file.' });

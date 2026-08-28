@@ -1,37 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const authMiddleware = require('../middleware/authMiddleware');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
 
-// Configure multer for private KYC uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = path.join(__dirname, '../uploads/private/users/sim');
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
+// Configure multer for private KYC uploads via Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'notnull/kyc',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+    transformation: [{ width: 1000, crop: 'limit' }],
   },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'sim-' + req.user.userId + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
 });
 
 const upload = multer({ 
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Not an image! Please upload an image.'), false);
-    }
-  }
 });
 
 // Upload KYC (SIM)
@@ -48,14 +36,15 @@ router.post('/kyc/sim', authMiddleware, upload.single('simFile'), async (req, re
       return res.status(400).json({ error: 'SIM Number and Expiry Date are required' });
     }
 
-    const relativePath = `/uploads/private/users/sim/${req.file.filename}`;
+    // Cloudinary stores the full secure URL in req.file.path
+    const cloudinaryUrl = req.file.path;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
         sim_number: simNumber,
         sim_expiry_date: new Date(simExpiry),
-        sim_file_path: relativePath,
+        sim_file_path: cloudinaryUrl,
         is_sim_verified: false // Will be verified by Sales
       },
       select: {
@@ -90,15 +79,11 @@ router.get('/kyc/sim/image/:userId', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'Document not found' });
     }
 
-    const absolutePath = path.join(__dirname, '..', targetUser.sim_file_path);
-    if (fs.existsSync(absolutePath)) {
-      res.sendFile(absolutePath);
-    } else {
-      res.status(404).json({ error: 'File not found on disk' });
-    }
+    // Since sim_file_path is now a Cloudinary URL, we can redirect to it
+    res.redirect(targetUser.sim_file_path);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to retrieve document' });
+    res.status(500).json({ error: 'Failed to retrieve file' });
   }
 });
 
