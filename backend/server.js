@@ -97,7 +97,14 @@ const usersRoutes = require('./routes/users');
 
 // Mount Routes
 const swaggerOptions = {
-  customCssUrl: '/swagger-theme.css',
+  customCssUrl: [
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    '/swagger-theme.css'
+  ],
+  customJs: [
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js'
+  ],
   customSiteTitle: 'NOTNULL API Documentation'
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
