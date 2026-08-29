@@ -102,6 +102,7 @@ const path = require('path');
 const swaggerCss = fs.readFileSync(path.join(__dirname, 'public', 'swagger-theme.css'), 'utf8');
 
 const swaggerOptions = {
+  customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
   customCss: swaggerCss,
   customSiteTitle: 'NOTNULL API Documentation',
   customJs: [
