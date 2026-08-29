@@ -96,16 +96,18 @@ const testDrivesRoutes = require('./routes/testDrives');
 const usersRoutes = require('./routes/users');
 
 // Mount Routes
+const fs = require('fs');
+const path = require('path');
+
+const swaggerCss = fs.readFileSync(path.join(__dirname, 'public', 'swagger-theme.css'), 'utf8');
+
 const swaggerOptions = {
-  customCssUrl: [
-    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
-    '/swagger-theme.css'
-  ],
+  customCss: swaggerCss,
+  customSiteTitle: 'NOTNULL API Documentation',
   customJs: [
     'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
     'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js'
-  ],
-  customSiteTitle: 'NOTNULL API Documentation'
+  ]
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 app.use('/api/cars', carRoutes);
