@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { io } from 'socket.io-client';
+import { supabase } from '../supabaseClient';
 import { Send, User, Search, MessageSquare } from 'lucide-react';
 import api from '../api';
 
@@ -13,17 +13,23 @@ export default function SalesChat({ customers, currentUserId }) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Connect to Socket
-    socketRef.current = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000');
-    socketRef.current.emit('join', currentUserId);
+    // Connect to Supabase Realtime
+    const channel = supabase.channel('sales-chat')
+      .on('postgres_changes', { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'Message', 
+          filter: `receiverId=eq.${currentUserId}` 
+        }, (payload) => {
+          setMessages((prev) => [...prev, payload.new]);
+          scrollToBottom();
+      })
+      .subscribe();
 
-    socketRef.current.on('new_message', (msg) => {
-      setMessages((prev) => [...prev, msg]);
-      scrollToBottom();
-    });
+    socketRef.current = channel;
 
     return () => {
-      socketRef.current.disconnect();
+      if (socketRef.current) supabase.removeChannel(socketRef.current);
     };
   }, [currentUserId]);
 

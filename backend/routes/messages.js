@@ -34,11 +34,7 @@ router.post('/', async (req, res) => {
       }
     });
 
-    // Emit event via socket.io
-    const io = req.app.get('io');
-    if (io) {
-      io.to(receiverId.toString()).emit('new_message', message);
-    }
+    // Message broadcast is now handled entirely by Supabase Realtime (postgres_changes)
 
     res.status(201).json(message);
   } catch (error) {
