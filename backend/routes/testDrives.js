@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = require('../prismaClient');
 const authMiddleware = require('../middleware/authMiddleware'); // assuming we have this
 
 // Helper function to check for scheduling conflicts

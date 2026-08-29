@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = require('../prismaClient');
 
 // Get conversation between two users
 router.get('/:userId/:peerId', async (req, res) => {

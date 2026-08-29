@@ -1,7 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
+
 const fs = require('fs');
 
-const prisma = new PrismaClient();
+const prisma = require('./prismaClient');
 
 async function backup() {
   console.log('Starting backup...');

@@ -4,9 +4,9 @@ const http = require('http');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
-const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+
+const prisma = require('./prismaClient');
 
 const app = express();
 const server = http.createServer(app);

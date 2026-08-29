@@ -21,8 +21,8 @@ router.get('/user/:userId', authMiddleware, getUserTransactions);
 // Checkout Endpoint
 router.post('/checkout', authMiddleware, async (req, res) => {
   const { carId, customerId, tradeInId } = req.body;
-  const { PrismaClient } = require('@prisma/client');
-  const prisma = new PrismaClient();
+  
+  const prisma = require('../prismaClient');
 
   try {
     const car = await prisma.car.findUnique({ where: { id: parseInt(carId) } });

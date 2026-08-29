@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { PrismaClient } = require('@prisma/client');
+
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
-const prisma = new PrismaClient();
+const prisma = require('../prismaClient');
 
 // Konfigurasi Multer untuk Cloudinary (Dokumen)
 const storage = new CloudinaryStorage({

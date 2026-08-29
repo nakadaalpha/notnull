@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = require('../prismaClient');
 
 // Get a setting by key
 exports.getSetting = async (req, res) => {

@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = require('./prismaClient');
 async function main() {
   const admin = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
   console.log('Admin:', admin);

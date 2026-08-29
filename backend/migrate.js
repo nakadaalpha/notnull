@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = require('./prismaClient');
 
 async function migrate() {
   console.log('Connecting to MySQL (gt3)...');

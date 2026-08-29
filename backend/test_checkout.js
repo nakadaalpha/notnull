@@ -4,8 +4,8 @@ async function test() {
     console.log("Logging in...");
     // Need to login first to get a token, but I don't know the password for 'admin'.
     // Let's create a transaction directly using prisma.
-    const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
+    
+    const prisma = require('./prismaClient');
     
     // Find an admin user
     const adminUser = await prisma.user.findFirst({ where: { role: 'ADMIN' } });

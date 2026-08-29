@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+
 const fs = require('fs');
 const generateId = require('./utils/generateId');
 
-const prisma = new PrismaClient();
+const prisma = require('./prismaClient');
 
 async function restore() {
   console.log('Starting restoration...');

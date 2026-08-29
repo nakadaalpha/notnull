@@ -1,5 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+
+const prisma = require('../prismaClient');
 
 // Create a new Trade-In request
 const createTradeIn = async (req, res) => {
