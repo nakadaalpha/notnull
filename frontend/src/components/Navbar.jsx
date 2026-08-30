@@ -36,7 +36,6 @@ export default function Navbar() {
 	const menuItems = [
 		{ name: "Home", path: "/" },
 		{ name: "Vehicle Collection", path: "/warehouse" },
-		{ name: "Admin Portal", path: "/admin" },
 	];
 
 	const isDarkHeroPage =

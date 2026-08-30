@@ -68,9 +68,6 @@ export default function Footer() {
               <li>
                 <AnimatedLink to="/warehouse">The Collection</AnimatedLink>
               </li>
-              <li>
-                <AnimatedLink to="/admin">Admin Portal</AnimatedLink>
-              </li>
             </ul>
           </div>
 
